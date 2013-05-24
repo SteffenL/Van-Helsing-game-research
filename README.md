@@ -3,8 +3,6 @@ Van-Helsing-game-research
 
 Just want to fiddle a bit with the game "The Incredible Adventures of Van Helsing".
 
-Please see the [wiki](https://github.com/SteffenL/Van-Helsing-game-research/wiki) as well.
-
 ## About
 
 Research is done by myself, Steffen André Langnes. I'm just doing this "research" for fun, and it might become something useful for myself and other developers, or end-users.
@@ -13,6 +11,12 @@ A few links for search engines:
 
 - [Dead Island Save Editor (DISE)](http://deadislandsaveeditor.steffenl.com/)
 - ["Private" blog](http://blog.steffenl.com/)
+
+## Pages
+
+- [Keep the game running in the background](https://github.com/SteffenL/Van-Helsing-game-research/wiki/Keep-the-game-running-in-the-background)
+- [Skip logos on startup](https://github.com/SteffenL/Van-Helsing-game-research/wiki/Skip-logos-on-startup)
+- [Use the 32 bit version of the game on 64 bit systems](https://github.com/SteffenL/Van-Helsing-game-research/wiki/Use-the-32-bit-version-of-the-game-on-64-bit-systems)
 
 ## Game-save location (PC)
 `Documents\NeocoreGames\Van Helsing\SaveGame\21801362`
