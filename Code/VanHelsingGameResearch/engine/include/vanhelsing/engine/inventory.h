@@ -7,34 +7,37 @@
 
 namespace vanhelsing { namespace engine { namespace inventory {
 
+struct EquipSlot
+{
+    enum type {
+        Melee, Ranged, Helmet, Amulet, Armor, Gloves, Boots, Cape, Belt, Trophy,
+        Ring1, // Right hand
+        Ring2 // Left hand
+    };
+};
+
 class Item
 {
 public:
-    struct Rarity { enum type { Normal, Magic, Rare, Epic, Set, Random }; };
-    struct Quality { enum type { Normal, Cracked, Masterwork }; };
+    struct Rarity { enum type : unsigned int { Normal, Magic, Rare, Epic, Set, Random }; };
+    struct Quality { enum type : unsigned int { Normal, Cracked, Masterwork }; };
 
 public:
+    unsigned int BagNumber;
+    unsigned int SlotNumber;
 
-protected:
-    unsigned int m_bagNumber;
-    unsigned int m_slotNumber;
-    unsigned int m_itemId;
-    bool m_isIdentified;
-
-    char m_v1;
-    char m_v2[4];
+    unsigned int Id;
+    int Attribute1;
+    int Attribute2;
+    int Quantity;
+    Item::Quality::type Quality;
+    Item::Rarity::type Rarity;
+    bool IsIdentified;
 };
 
-class ArmorItem
-{
-protected:
-    unsigned int m_defencePoints;
-    unsigned int m_essenceCapacity;
-    std::vector<std::array<char, 8>> m_v1;
-    Item::Quality::type m_quality;
-    Item::Rarity::type m_rarity;
-    char m_v2[8];
-};
+
+// Item attributes:
+// Armor: Defense, Essence capacity
 
 class Manager
 {
