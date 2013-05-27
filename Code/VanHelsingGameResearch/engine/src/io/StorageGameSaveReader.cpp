@@ -18,8 +18,11 @@ StorageGameSaveReader::StorageGameSaveReader(GameSave& gameSave, std::istream& i
 
 void StorageGameSaveReader::readItems(StreamHelper& stream)
 {
-    for (int i = 0, count = stream.Read<int>(); i < count; ++i) {
-        LOG("Item " << i << ":");
+    auto count = stream.Read<int>();
+    LOG("Items (" << count << "):");
+    LOG_INDENT();
+    for (int i = 0; i < count; ++i) {
+        LOG("#" << i << ":");
         LOG_INDENT();
         auto bagNumber = stream.Read<int>();
         auto slotNumber = stream.Read<int>();
@@ -35,6 +38,8 @@ void StorageGameSaveReader::readItems(StreamHelper& stream)
         // TODO: Need to test with more files because there are more reads here
         throw std::runtime_error("This file must be investigated");
     }
+
+    LOG_OUTDENT();
 }
 
 void StorageGameSaveReader::readItem(StreamHelper& stream)
@@ -51,10 +56,11 @@ void StorageGameSaveReader::readItem(StreamHelper& stream)
     LOG("Attribute1: " << item->Attribute1);
     LOG("Attribute2: " << item->Attribute2);
     LOG("Quantity: " << item->Quantity);
-
-    LOG("Unknown:");
+    
+    auto count = stream.Read<int>();
+    LOG("Unknown (" << count << "):");
     LOG_INDENT();
-    for (int i = 0, count = stream.Read<int>(); i < count; ++i) {
+    for (int i = 0; i < count; ++i) {
         auto v1 = stream.Read<unsigned int>();
         auto v2 = stream.Read<int>();
         LOG(v1 << ", " << v2);
@@ -83,9 +89,10 @@ void StorageGameSaveReader::readItem(StreamHelper& stream)
 
 void StorageGameSaveReader::readItem2(StreamHelper& stream)
 {
-    LOG("Unknown:");
+    auto count = stream.Read<unsigned int>();
+    LOG("Unknown (" << count << "):");
     LOG_INDENT();
-    for (int i = 0, count = stream.Read<unsigned int>(); i < count; ++i) {
+    for (unsigned int i = 0; i < count; ++i) {
         LOG("#" << i << ":");
         LOG_INDENT();
 
@@ -113,9 +120,10 @@ void StorageGameSaveReader::readItem2(StreamHelper& stream)
 
 void StorageGameSaveReader::readItem3(StreamHelper& stream)
 {
-    LOG("Unknown:");
+    auto count = stream.Read<unsigned int>();
+    LOG("Unknown (" << count << "):");
     LOG_INDENT();
-    for (int i = 0, count = stream.Read<unsigned int>(); i < count; ++i) {
+    for (unsigned int i = 0; i < count; ++i) {
         LOG("#" << i << ":");
         LOG_INDENT();
 
