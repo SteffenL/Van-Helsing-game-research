@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "storage", "storage\storage.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine", "engine\engine.vcxproj", "{5D6B5D96-121B-4DE6-8EF6-DC88C1697FB9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unpack_n2pk", "unpack_n2pk\unpack_n2pk.vcxproj", "{47C577A7-189E-44DA-A7AC-78CE80FB82AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -26,6 +28,12 @@ Global
 		{5D6B5D96-121B-4DE6-8EF6-DC88C1697FB9}.Release|Win32.ActiveCfg = Release|Win32
 		{5D6B5D96-121B-4DE6-8EF6-DC88C1697FB9}.Release|Win32.Build.0 = Release|Win32
 		{5D6B5D96-121B-4DE6-8EF6-DC88C1697FB9}.Release|Win32.Deploy.0 = Release|Win32
+		{47C577A7-189E-44DA-A7AC-78CE80FB82AE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{47C577A7-189E-44DA-A7AC-78CE80FB82AE}.Debug|Win32.Build.0 = Debug|Win32
+		{47C577A7-189E-44DA-A7AC-78CE80FB82AE}.Debug|Win32.Deploy.0 = Debug|Win32
+		{47C577A7-189E-44DA-A7AC-78CE80FB82AE}.Release|Win32.ActiveCfg = Release|Win32
+		{47C577A7-189E-44DA-A7AC-78CE80FB82AE}.Release|Win32.Build.0 = Release|Win32
+		{47C577A7-189E-44DA-A7AC-78CE80FB82AE}.Release|Win32.Deploy.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

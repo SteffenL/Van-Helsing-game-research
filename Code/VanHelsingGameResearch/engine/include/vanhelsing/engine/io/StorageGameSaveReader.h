@@ -9,10 +9,11 @@ namespace vanhelsing { namespace engine { namespace io {
 
 class StreamHelper;
 
-class StorageGameSaveReader : GameSaveReader
+class StorageGameSaveReader : public GameSaveReader
 {
 public:
     StorageGameSaveReader(GameSave& gameSave, std::istream& inStream);
+    virtual ~StorageGameSaveReader();
 
 private:
     void readItems(StreamHelper& stream);

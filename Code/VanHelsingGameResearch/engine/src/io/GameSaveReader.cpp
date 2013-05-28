@@ -18,6 +18,8 @@ GameSaveReader::GameSaveReader(GameSave& gameSave, std::istream& inStream) : m_g
     }
 }
 
+GameSaveReader::~GameSaveReader() {}
+
 std::istream& GameSaveReader::getStream() const
 {
     return m_inStream;

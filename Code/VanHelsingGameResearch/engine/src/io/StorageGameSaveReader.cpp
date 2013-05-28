@@ -1,12 +1,8 @@
 #include <vanhelsing/engine/io/StorageGameSaveReader.h>
 #include <vanhelsing/engine/io/StreamHelper.h>
+#include <vanhelsing/engine/log.h>
 #include <nowide/iostream.hpp>
 #include <iomanip>
-
-int g_logIndent = 0;
-#define LOG_INDENT() g_logIndent += 1
-#define LOG_OUTDENT() g_logIndent -= 1
-#define LOG(s) nowide::cout << std::setfill(' ') << std::setw(2 * g_logIndent) << "" << s << std::dec << std::endl
 
 namespace vanhelsing { namespace engine { namespace io {
 
@@ -19,19 +15,19 @@ StorageGameSaveReader::StorageGameSaveReader(GameSave& gameSave, std::istream& i
 void StorageGameSaveReader::readItems(StreamHelper& stream)
 {
     auto count = stream.Read<int>();
-    LOG("Items (" << count << "):");
-    LOG_INDENT();
+    Log() << "Items (" << count << "):" << std::endl;
+    Log::Indent();
     for (int i = 0; i < count; ++i) {
-        LOG("#" << i << ":");
-        LOG_INDENT();
+        Log() << "#" << i << ":" << std::endl;
+        Log::Indent();
         auto bagNumber = stream.Read<int>();
         auto slotNumber = stream.Read<int>();
-        LOG("Bag #: " << bagNumber);
-        LOG("Slot #: " << slotNumber);
-        LOG("");
+        Log() << "Bag #: " << bagNumber << std::endl;
+        Log() << "Slot #: " << slotNumber << std::endl;
+        Log() << "" << std::endl;
         readItem(stream);
-        LOG_OUTDENT();
-        LOG("");
+        Log::Outdent();
+        Log() << "" << std::endl;
     }
 
     if (stream.Read<int>() > 0) {
@@ -39,7 +35,7 @@ void StorageGameSaveReader::readItems(StreamHelper& stream)
         throw std::runtime_error("This file must be investigated");
     }
 
-    LOG_OUTDENT();
+    Log::Outdent();
 }
 
 void StorageGameSaveReader::readItem(StreamHelper& stream)
@@ -52,34 +48,34 @@ void StorageGameSaveReader::readItem(StreamHelper& stream)
     item->Attribute2 = stream.Read<int>();
     item->Quantity = stream.Read<int>();
 
-    LOG("ID: 0x" << std::hex << item->Id);
-    LOG("Attribute1: " << item->Attribute1);
-    LOG("Attribute2: " << item->Attribute2);
-    LOG("Quantity: " << item->Quantity);
+    Log() << "ID: 0x" << std::hex << item->Id << std::endl;
+    Log() << "Attribute1: " << item->Attribute1 << std::endl;
+    Log() << "Attribute2: " << item->Attribute2 << std::endl;
+    Log() << "Quantity: " << item->Quantity << std::endl;
     
     auto count = stream.Read<int>();
-    LOG("Unknown (" << count << "):");
-    LOG_INDENT();
+    Log() << "Unknown (" << count << ":" << std::endl;
+    Log::Indent();
     for (int i = 0; i < count; ++i) {
         auto v1 = stream.Read<unsigned int>();
         auto v2 = stream.Read<int>();
-        LOG(v1 << ", " << v2);
+        Log() << v1 << ", " << v2 << std::endl;
     }
 
-    LOG_OUTDENT();
+    Log::Outdent();
 
     item->Quality = stream.Read<Item::Quality::type>();
     item->Rarity = stream.Read<Item::Rarity::type>();
-    LOG("Quality: " << item->Quality);
-    LOG("Rarity: " << item->Rarity);
+    Log() << "Quality: " << item->Quality << std::endl;
+    Log() << "Rarity: " << item->Rarity << std::endl;
 
     readItem2(stream);
     readItem3(stream);
 
     item->IsIdentified = stream.Read<bool>();
-    LOG("Is identified: " << item->IsIdentified);
+    Log() << "Is identified: " << item->IsIdentified << std::endl;
     auto v1 = stream.Read<bool>();
-    LOG("Unknown: " << v1);
+    Log() << "Unknown: " << v1 << std::endl;
 
     auto& manager = getGameSave().GetInventoryManager();
     manager.Add(item.get());
@@ -90,69 +86,71 @@ void StorageGameSaveReader::readItem(StreamHelper& stream)
 void StorageGameSaveReader::readItem2(StreamHelper& stream)
 {
     auto count = stream.Read<unsigned int>();
-    LOG("Unknown (" << count << "):");
-    LOG_INDENT();
+    Log() << "Unknown (" << count << ":" << std::endl;
+    Log::Indent();
     for (unsigned int i = 0; i < count; ++i) {
-        LOG("#" << i << ":");
-        LOG_INDENT();
+        Log() << "#" << i << ":" << std::endl;
+        Log::Indent();
 
         auto v1 = stream.Read<unsigned int>();
         auto v2 = stream.Read<int>();
         auto v3 = stream.Read<float>();
         auto v4 = stream.Read<unsigned int>();
 
-        LOG("0x" << std::hex << v1 << ", " << v2 << ", " << v3 << ", " << v4);
+        Log() << "0x" << std::hex << v1 << ", " << v2 << ", " << v3 << ", " << v4 << std::endl;
 
         if (m_unknown1 >= 0x2b6) {
             auto v5 = stream.Read<int>();
             auto v6 = stream.Read<unsigned int>();
             auto v7 = stream.Read<int>();
 
-            LOG(v5 << ", " << v6 << ", " << v7);
+            Log() << v5 << ", " << v6 << ", " << v7 << std::endl;
         }
 
-        LOG_OUTDENT();
-        LOG("");
+        Log::Outdent();
+        Log() << "" << std::endl;
     }
 
-    LOG_OUTDENT();
+    Log::Outdent();
 }
 
 void StorageGameSaveReader::readItem3(StreamHelper& stream)
 {
     auto count = stream.Read<unsigned int>();
-    LOG("Unknown (" << count << "):");
-    LOG_INDENT();
+    Log() << "Unknown (" << count << "):" << std::endl;
+    Log::Indent();
     for (unsigned int i = 0; i < count; ++i) {
-        LOG("#" << i << ":");
-        LOG_INDENT();
+        Log() << "#" << i << ":" << std::endl;
+        Log::Indent();
 
         auto v1 = stream.Read<unsigned int>();
         auto v2 = stream.Read<int>();
         auto v3 = stream.Read<float>();
         auto v4 = stream.Read<unsigned int>();
 
-        LOG("0x" << std::hex << v1);
-        LOG(v2);
-        LOG(v3);
-        LOG(v4);
-        LOG("");
+        Log() << "0x" << std::hex << v1 << std::endl;
+        Log() << v2 << std::endl;
+        Log() << v3 << std::endl;
+        Log() << v4 << std::endl;
+        Log() << "" << std::endl;
 
         if (m_unknown1 >= 0x2b6) {
             auto v5 = stream.Read<int>();
             auto v6 = stream.Read<unsigned int>();
             auto v7 = stream.Read<int>();
 
-            LOG(v5);
-            LOG(v6);
-            LOG(v7);
+            Log() << v5 << std::endl;
+            Log() << v6 << std::endl;
+            Log() << v7 << std::endl;
         }
 
-        LOG_OUTDENT();
-        LOG("");
+        Log::Outdent();
+        Log() << "" << std::endl;
     }
 
-    LOG_OUTDENT();
+    Log::Outdent();
 }
+
+StorageGameSaveReader::~StorageGameSaveReader() {}
 
 }}} // namespace

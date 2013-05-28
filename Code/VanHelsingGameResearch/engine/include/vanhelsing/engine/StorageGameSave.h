@@ -5,7 +5,7 @@
 
 namespace vanhelsing { namespace engine {
 
-class StorageGameSave : GameSave
+class StorageGameSave : public GameSave
 {
 public:
 protected:

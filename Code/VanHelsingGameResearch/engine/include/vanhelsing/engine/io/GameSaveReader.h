@@ -10,6 +10,7 @@ class GameSaveReader
 {
 public:
     GameSaveReader(GameSave& gameSave, std::istream& inStream);
+    virtual ~GameSaveReader();
     std::istream& getStream() const;
 
 protected:

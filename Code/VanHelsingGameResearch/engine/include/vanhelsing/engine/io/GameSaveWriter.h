@@ -9,6 +9,7 @@ class GameSaveWriter
 {
 public:
     GameSaveWriter(GameSave& gameSave);
+    virtual ~GameSaveWriter();
 
 private:
     GameSave& m_gameSave;

@@ -7,4 +7,6 @@ inventory::Manager& GameSave::GetInventoryManager()
     return m_inventoryManager;
 }
 
+GameSave::~GameSave() {}
+
 }} // namespace

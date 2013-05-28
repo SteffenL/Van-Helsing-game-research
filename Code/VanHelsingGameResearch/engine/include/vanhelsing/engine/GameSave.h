@@ -9,6 +9,7 @@ class GameSave
 {
 public:
     inventory::Manager& GetInventoryManager();
+    virtual ~GameSave();
 
 protected:
 

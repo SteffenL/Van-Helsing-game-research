@@ -78,6 +78,11 @@ public:
         m_currentOffset += (m_stream.tellg() - oldOffset);
     }
 
+    std::streamoff Tell() const
+    {
+        return m_currentOffset;
+    }
+
     template<typename T>
     T Read()
     {
