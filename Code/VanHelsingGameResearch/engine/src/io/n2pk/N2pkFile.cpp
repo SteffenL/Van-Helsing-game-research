@@ -1,5 +1,6 @@
 #include <vanhelsing/engine/io/n2pk/N2pkFile.h>
 #include <vanhelsing/engine/io/StreamHelper.h>
+#include <vanhelsing/engine/log.h>
 #include <nowide/fstream.hpp>
 #include <misc/substreambuf.hpp>
 
@@ -52,22 +53,22 @@ unsigned int N2pkFile::GetFileCount() const
     return m_impl->Files.size();
 }
 
-std::unique_ptr<std::streambuf> N2pkFile::GetFile(unsigned int index) const
+N2pkIStream::N2pkIStream(std::streambuf* buf) : m_buf(buf), std::istream(buf) {}
+
+N2pkIStream::~N2pkIStream() {}
+
+std::unique_ptr<N2pkIStream> N2pkFile::GetFile(unsigned int index) const
 {
     auto& fileEntry = GetFileEntry(index);
-    m_stream->seekg(fileEntry.GetOffset());
-    return std::unique_ptr<std::streambuf>(
-        new substreambuf(m_stream->rdbuf(), fileEntry.GetOffset(), fileEntry.GetSize())
-    );
+    auto buf = new substreambuf(m_stream->rdbuf(), fileEntry.GetOffset(), fileEntry.GetSize());
+    return std::unique_ptr<N2pkIStream>(new N2pkIStream(buf));
 }
 
-std::unique_ptr<std::streambuf> N2pkFile::GetFile(const std::string& path) const
+std::unique_ptr<N2pkIStream> N2pkFile::GetFile(const std::string& path) const
 {
     auto& fileEntry = GetFileEntry(path);
-    m_stream->seekg(fileEntry.GetOffset());
-    return std::unique_ptr<std::streambuf>(
-        new substreambuf(m_stream->rdbuf(), fileEntry.GetOffset(), fileEntry.GetSize())
-    );
+    auto buf = new substreambuf(m_stream->rdbuf(), fileEntry.GetOffset(), fileEntry.GetSize());
+    return std::unique_ptr<N2pkIStream>(new N2pkIStream(buf));
 }
 
 vanhelsing::engine::io::n2pk::FileEntry N2pkFile::GetFileEntry(unsigned int index) const
@@ -103,8 +104,8 @@ N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(
     stream.Seek(2); // Null-terminator?
     m_entryTableOffset = stream.Read<unsigned int>();
     stream.Read<int>();
-    m_entryTableOffset += stream.Tell();
-    m_dataffset = stream.Tell();
+    m_entryTableOffset += m_stream->tellg();
+    m_dataffset = m_stream->tellg();
 
     readFileTable(stream);
 }
@@ -117,17 +118,29 @@ void N2pkFile::readFileTable(StreamHelper& stream)
     m_impl->Files.clear();
     auto fileCount = stream.Read<unsigned int>();
     for (unsigned int i = 0; i < fileCount; ++i) {
-        stream.Read<unsigned int>();
+        auto v1 = stream.Read<unsigned int>();
         auto nameLength = stream.Read<unsigned int>();
         auto& name = nowide::narrow(stream.ReadWString(nameLength));
-        stream.Seek(2); // Null-terminator?
+        auto v2 = stream.Read<unsigned short>(); // Null-terminator?
         auto dataOffset = stream.Read<unsigned int>();
-        stream.Read<int>();
+        auto v3 = stream.Read<int>();
         auto size = stream.Read<unsigned int>();
-        stream.Read<int>();
+        auto v4 = stream.Read<int>();
+
+        Log() << name << std::endl;
+        Log::Indent();
+        Log() << "Unknown:" << std::endl;
+        Log::Indent();
+        Log() << "v1: " << v1 << std::endl;
+        Log() << "v2: " << v2 << std::endl;
+        Log() << "v3: " << v3 << std::endl;
+        Log() << "v4: " << v4 << std::endl;
+        Log::Outdent();
+        Log::Outdent();
 
         FileEntry fileEntry(m_dataffset + dataOffset, size, name);
         m_impl->Files.push_back(fileEntry);
     }
 }
+
 }}}} // namespace

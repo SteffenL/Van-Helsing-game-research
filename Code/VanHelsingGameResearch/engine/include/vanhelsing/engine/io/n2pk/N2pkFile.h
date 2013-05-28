@@ -23,14 +23,24 @@ public:
     std::string Name;
 };
 
+class N2pkIStream : public std::istream
+{
+public:
+    N2pkIStream(std::streambuf* buf);
+    virtual ~N2pkIStream();
+
+private:
+    std::unique_ptr<std::streambuf> m_buf;
+};
+
 class N2pkFile
 {
 public:
     N2pkFile(const std::string& filePath);
     virtual ~N2pkFile();
     unsigned int GetFileCount() const;
-    std::unique_ptr<std::streambuf> GetFile(unsigned int index) const;
-    std::unique_ptr<std::streambuf> GetFile(const std::string& path) const;
+    std::unique_ptr<N2pkIStream> GetFile(unsigned int index) const;
+    std::unique_ptr<N2pkIStream> GetFile(const std::string& path) const;
     FileEntry GetFileEntry(unsigned int index) const;
     FileEntry GetFileEntry(const std::string& path) const;
 
