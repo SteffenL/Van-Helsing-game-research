@@ -1,8 +1,9 @@
-/*
+﻿/*
 Taken from http://stackoverflow.com/a/7657367
 Written by BHS
 
-Slightly modified.
+May 28 2013: Fixed bugs in underflow() and uflow().
+- Steffen André Langnes
 
 Usage:
 using namespace std;
@@ -36,16 +37,15 @@ protected:
     {
         if (m_read >= m_len)
             return traits_type::eof();
-        m_read += 1;
         return m_sbuf->sgetc();
     }
-
+    
     int uflow()
     {
         if (m_read >= m_len)
             return traits_type::eof();
         m_read += 1;
-        return m_sbuf->snextc();
+        return m_sbuf->sbumpc();
     }
 
     std::streampos seekoff ( std::streamoff off, std::ios_base::seekdir way,
