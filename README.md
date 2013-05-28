@@ -1,15 +1,13 @@
-Van-Helsing-game-research
+Van Helsing game research
 =========================
 
-Just want to fiddle a bit with the game "The Incredible Adventures of Van Helsing".
+This project was initiated for fun and learning. The goal is to research the internals of the game *The Incredible Adventures of Van Helsing*. The idea is to reverse engineer interesting parts of the game and its file formats. Eventually, it may become useful for myself and other developers, or even end-users.
 
-## About
-
-Research is done by myself, Steffen André Langnes. I'm just doing this "research" for fun, and it might become something useful for myself and other developers, or end-users.
+Research is currently done by myself, Steffen André Langnes. Please don't just take my work and claim it as your own. :)
 
 A few links for search engines:
 
-- [Dead Island Save Editor (DISE)](http://deadislandsaveeditor.steffenl.com/)
+- [Dead Island Save Editor (DISE)](http://deadislandsaveeditor.steffenl.com/) - My main project, a game-save editor.
 - ["Private" blog](http://blog.steffenl.com/)
 
 ## Pages
