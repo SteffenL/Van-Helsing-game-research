@@ -48,7 +48,7 @@ void StorageGameSaveReader::readItem(StreamHelper& stream)
     item->Attribute2 = stream.Read<int>();
     item->Quantity = stream.Read<int>();
 
-    m_logger << "ID: 0x" << std::hex << item->Id << std::endl;
+    m_logger << "ID: 0x" << std::hex << item->Id << std::dec << std::endl;
     m_logger << "Attribute1: " << item->Attribute1 << std::endl;
     m_logger << "Attribute2: " << item->Attribute2 << std::endl;
     m_logger << "Quantity: " << item->Quantity << std::endl;
@@ -97,7 +97,7 @@ void StorageGameSaveReader::readItemStats1(StreamHelper& stream)
         auto v3 = stream.Read<float>();
         auto v4 = stream.Read<unsigned int>();
 
-        m_logger << "0x" << std::hex << v1 << ", " << v2 << ", " << v3 << ", " << v4 << std::endl;
+        m_logger << "0x" << std::hex << v1 << std::dec << ", " << v2 << ", " << v3 << ", " << v4 << std::endl;
 
         if (m_unknown1 >= 0x2b6) {
             auto v5 = stream.Read<int>();
@@ -128,7 +128,7 @@ void StorageGameSaveReader::readItemStats2(StreamHelper& stream)
         auto v3 = stream.Read<float>();
         auto v4 = stream.Read<unsigned int>();
 
-        m_logger << "0x" << std::hex << v1 << std::endl;
+        m_logger << "0x" << std::hex << v1 << std::dec << std::endl;
         m_logger << v2 << std::endl;
         m_logger << v3 << std::endl;
         m_logger << v4 << std::endl;

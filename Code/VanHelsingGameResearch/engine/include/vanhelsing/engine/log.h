@@ -23,7 +23,6 @@ class Log : public std::ostream
     public:
         LogBuffer(std::ostream& stream, LogLevel::type logLevel);
         virtual int sync();
-        //virtual int overflow(int c);
         void Indent();
         void Outdent();
 

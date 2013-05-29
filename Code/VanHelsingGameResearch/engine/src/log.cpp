@@ -49,7 +49,7 @@ std::ostream& Log::outdent(std::ostream& os)
 int Log::LogBuffer::sync()
 {
     if (m_logLevel >= Log::GetLogLevelFilter()) {
-        m_stream << std::setfill(' ') << std::setw(2 * m_indentLevel) << "" << std::dec << str() << std::dec;
+        m_stream << std::setfill(' ') << std::setw(2 * m_indentLevel) << "" << str();
     }
 
     str("");
@@ -63,11 +63,5 @@ Log::LogBuffer::LogBuffer(std::ostream& stream, LogLevel::type logLevel)
 void Log::LogBuffer::Indent() { m_indentLevel += 1; }
 
 void Log::LogBuffer::Outdent() { m_indentLevel -= 1; }
-
-/*
-int Log::LogBuffer::overflow(int c)
-{
-    if (c)
-}*/
 
 }} // namespace
