@@ -10,6 +10,10 @@ A few links for search engines:
 - [Dead Island Save Editor (DISE)](http://deadislandsaveeditor.steffenl.com/) - My main project, a game-save editor.
 - ["Private" blog](http://blog.steffenl.com/)
 
+## Current programs
+- Unpacker for N2PK packages (*Files.N2PK*). These files contain textures, models, etc.
+- Storage viewer (*storage.sav*). Displays all of the items you have in your storage.
+
 ## Pages
 
 - [Keep the game running in the background](https://github.com/SteffenL/Van-Helsing-game-research/wiki/Keep-the-game-running-in-the-background)
