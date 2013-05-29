@@ -93,6 +93,8 @@ N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(
         throw std::runtime_error("Couldn't open file");
     }
 
+    fileStream->rdbuf()->pubsetbuf(m_buffer, sizeof(m_buffer));
+
     m_stream.reset(fileStream);
     StreamHelper stream(*m_stream);
     if ((stream.Read<int>() != 15) ||

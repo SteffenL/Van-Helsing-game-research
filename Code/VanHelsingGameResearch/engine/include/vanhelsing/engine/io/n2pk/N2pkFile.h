@@ -52,6 +52,7 @@ private:
     std::streamoff m_dataffset;
     std::streamoff m_entryTableOffset;
     Log m_logger;
+    char m_buffer[32 * 1024];
 
     void readFileTable(StreamHelper& stream);
 };
