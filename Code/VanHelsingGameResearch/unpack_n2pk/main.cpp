@@ -49,6 +49,14 @@ int main(int argc, char* argv[])
                 boost::filesystem::path unpackedFilePath = targetDir;
                 unpackedFilePath /= fileEntry.GetName();
 
+                // See if we actually need to unpack this file
+                if (boost::filesystem::exists(unpackedFilePath)) {
+                    auto fileSize = boost::filesystem::file_size(unpackedFilePath);
+                    if (fileSize == fileEntry.GetSize()) {
+                        continue;
+                    }
+                }
+
                 if (!boost::filesystem::exists(targetDir)) {
                     boost::filesystem::create_directories(targetDir);
                 }
