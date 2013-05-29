@@ -1,6 +1,5 @@
 #include <vanhelsing/engine/io/n2pk/N2pkFile.h>
 #include <vanhelsing/engine/io/StreamHelper.h>
-#include <vanhelsing/engine/log.h>
 #include <nowide/fstream.hpp>
 #include <misc/substreambuf.hpp>
 
@@ -87,7 +86,7 @@ vanhelsing::engine::io::n2pk::FileEntry N2pkFile::GetFileEntry(const std::string
     return *it;
 }
 
-N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(new Impl)
+N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(new Impl), m_logger(LogLevel::Trace)
 {
     auto fileStream = new nowide::ifstream(filePath.c_str(), std::ios::binary);
     if (!fileStream->is_open()) {
@@ -127,16 +126,16 @@ void N2pkFile::readFileTable(StreamHelper& stream)
         auto size = stream.Read<unsigned int>();
         auto v4 = stream.Read<int>();
 
-        Log() << name << std::endl;
-        Log::Indent();
-        Log() << "Unknown:" << std::endl;
-        Log::Indent();
-        Log() << "v1: " << v1 << std::endl;
-        Log() << "v2: " << v2 << std::endl;
-        Log() << "v3: " << v3 << std::endl;
-        Log() << "v4: " << v4 << std::endl;
-        Log::Outdent();
-        Log::Outdent();
+        m_logger << name << std::endl;
+        m_logger << Log::indent;
+        m_logger << "Unknown:" << std::endl;
+        m_logger << Log::indent;
+        m_logger << "v1: " << v1 << std::endl;
+        m_logger << "v2: " << v2 << std::endl;
+        m_logger << "v3: " << v3 << std::endl;
+        m_logger << "v4: " << v4 << std::endl;
+        m_logger << Log::outdent;
+        m_logger << Log::outdent;
 
         FileEntry fileEntry(m_dataffset + dataOffset, size, name);
         m_impl->Files.push_back(fileEntry);

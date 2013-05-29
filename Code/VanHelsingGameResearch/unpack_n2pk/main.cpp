@@ -6,6 +6,7 @@
 #include <nowide/fstream.hpp>
 #include <string>
 #include <iterator>
+#include <boost/filesystem.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -14,38 +15,48 @@ int main(int argc, char* argv[])
     argv = &argv[1];
 
     if (argc < 1) {
-        nowide::cout << "Usage: <path to n2pk file> [destination directory]" << std::endl;
+        nowide::cout << "Usage: <path to n2pk file> [destination directory] [verbose]" << std::endl;
         nowide::cout << "Destination directory: Use this when extracting files; omit to view contents." << std::endl;
+        nowide::cout << "Verbose: 1 = Extra output, 0 = No extra output." << std::endl;
         return 1;
     }
 
     std::string filePath(argv[0]);
-    std::string targetDir(argc > 1 ? argv[1] : std::string());
+    std::string targetDir(argc >= 2 ? argv[1] : std::string());
     bool shouldUnpack = !targetDir.empty();
+    bool shouldBeVerbose = (argc >= 3 ? (std::string(argv[2]) == "1") : false);
 
-    using vanhelsing::engine::Log;
+    using namespace vanhelsing::engine;
+
+    if (shouldBeVerbose) {
+        Log::SetLogLevelFilter(LogLevel::Trace);
+    }
+
+    auto& logger = Log();
 
     try {
-        using namespace vanhelsing::engine;
         io::n2pk::N2pkFile package(filePath);
         auto fileCount = package.GetFileCount();
-        Log() << "Files (" << fileCount << "):" << std::endl;
-        Log::Indent();
+        logger << "Files (" << fileCount << "):" << std::endl;
+        logger << Log::indent;
         for (unsigned int i = 0; i < fileCount; ++i) {
             auto& fileEntry = package.GetFileEntry(i);
 
-            Log() << fileEntry.GetName() << std::endl;
+            logger << fileEntry.GetName() << std::endl;
 
             if (shouldUnpack) {
                 auto packedFile = package.GetFile(i);
-                auto unpackedFilePath = targetDir;
-                unpackedFilePath += "/";
-                unpackedFilePath += fileEntry.GetName();
+                boost::filesystem::path unpackedFilePath = targetDir;
+                unpackedFilePath /= fileEntry.GetName();
 
-                nowide::ofstream unpackedFile(unpackedFilePath.c_str(), std::ios::binary);
+                if (!boost::filesystem::exists(targetDir)) {
+                    boost::filesystem::create_directories(targetDir);
+                }
+
+                nowide::ofstream unpackedFile(unpackedFilePath.string().c_str(), std::ios::binary);
                 if (!unpackedFile.is_open()) {
                     std::string ex("Couldn't open file: ");
-                    ex += unpackedFilePath;
+                    ex += unpackedFilePath.string();
                     throw std::runtime_error(ex);
                 }
 
@@ -61,10 +72,10 @@ int main(int argc, char* argv[])
             }
         }
 
-        Log::Outdent();
+        logger << Log::outdent;
     }
     catch (std::runtime_error& ex) {
-         Log() << "Exception: " << ex.what() << std::endl;
+        Log(LogLevel::Fatal) << "Exception: " << ex.what() << std::endl;
     }
 
     return 0;

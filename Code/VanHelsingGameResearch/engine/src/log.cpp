@@ -5,22 +5,69 @@
 
 namespace vanhelsing { namespace engine {
 
-int Log::m_indentLevel = 0;
+int Log::sm_indentLevel = 0;
+LogLevel::type Log::sm_logLevelFilter = LogLevel::Info;
 
-void Log::Indent() { m_indentLevel += 1; }
+void Log::Indent() { sm_indentLevel += 1; }
 
-void Log::Outdent() { m_indentLevel -= 1; }
+void Log::Outdent() { sm_indentLevel -= 1; }
 
-Log::Log() : std::ostream(&m_buffer), m_buffer(nowide::clog) {}
+Log::Log(LogLevel::type logLevel)
+    // May want to use nowide::clog
+    : std::ostream(&m_buffer), m_buffer(nowide::cout, logLevel) {}
+
+LogLevel::type Log::GetLogLevelFilter()
+{
+    return sm_logLevelFilter;
+}
+
+void Log::SetLogLevelFilter(LogLevel::type logLevel)
+{
+    sm_logLevelFilter = logLevel;
+}
+
+std::ostream& Log::indent(std::ostream& os)
+{
+    auto logger = dynamic_cast<Log*>(&os);
+    if (logger) {
+        logger->m_buffer.Indent();
+    }
+    
+    return os;
+}
+
+std::ostream& Log::outdent(std::ostream& os)
+{
+    auto logger = dynamic_cast<Log*>(&os);
+    if (logger) {
+        logger->m_buffer.Outdent();
+    }
+
+    return os;
+}
 
 int Log::LogBuffer::sync()
 {
-    m_stream << std::setfill(' ') << std::setw(2 * m_indentLevel) << "" << std::dec << str() << std::dec;
+    if (m_logLevel >= Log::GetLogLevelFilter()) {
+        m_stream << std::setfill(' ') << std::setw(2 * m_indentLevel) << "" << std::dec << str() << std::dec;
+    }
+
     str("");
     m_stream.flush();
     return 0;
 }
 
-Log::LogBuffer::LogBuffer(std::ostream& stream) : m_stream(stream) {}
+Log::LogBuffer::LogBuffer(std::ostream& stream, LogLevel::type logLevel)
+    : m_stream(stream), m_logLevel(logLevel), m_indentLevel(0) {}
+
+void Log::LogBuffer::Indent() { m_indentLevel += 1; }
+
+void Log::LogBuffer::Outdent() { m_indentLevel -= 1; }
+
+/*
+int Log::LogBuffer::overflow(int c)
+{
+    if (c)
+}*/
 
 }} // namespace

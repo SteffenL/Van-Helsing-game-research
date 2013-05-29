@@ -15,24 +15,33 @@ int main(int argc, char* argv[])
     argv = &argv[1];
 
     if (argc < 1) {
+        nowide::cout << "Usage: <path to storage.sav> [verbose]" << std::endl;
+        nowide::cout << "Verbose: 1 = Extra output, 0 = No extra output." << std::endl;
         return 1;
     }
 
+    std::string filePath(argv[0]);
+    bool shouldBeVerbose = (argc >= 2 ? (std::string(argv[1]) == "1") : false);
+
     using namespace vanhelsing::engine;
+
+    if (shouldBeVerbose) {
+        Log::SetLogLevelFilter(LogLevel::Trace);
+    }
+
     try {
         GameSave gameSave;
-        std::string filePath(argv[0]);
         nowide::ifstream inStream(filePath.c_str(), std::ios::binary);
         if (!inStream.is_open()) {
-            Log() << "Couldn't open file: " << filePath << std::endl;
+            Log(LogLevel::Error) << "Couldn't open file: " << filePath << std::endl;
             return 1;
         }
 
         io::StorageGameSaveReader reader(gameSave, inStream);
-        Log() << "Seems like the file was read properly!" << std::endl;
+        Log(LogLevel::Info) << "Seems like the file was read properly!" << std::endl;
     }
     catch (std::runtime_error& ex) {
-        Log() << "Exception: " << ex.what() << std::endl;
+        Log(LogLevel::Fatal) << "Exception: " << ex.what() << std::endl;
     }
 
     return 0;

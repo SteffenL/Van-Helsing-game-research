@@ -3,6 +3,7 @@
 
 #include <vanhelsing/engine/StorageGameSave.h>
 #include <vanhelsing/engine/io/GameSaveReader.h>
+#include <vanhelsing/engine/log.h>
 #include <iostream>
 
 namespace vanhelsing { namespace engine { namespace io {
@@ -18,8 +19,10 @@ public:
 private:
     void readItems(StreamHelper& stream);
     void readItem(StreamHelper& stream);
-    void readItem2(StreamHelper& stream);
-    void readItem3(StreamHelper& stream);
+    void readItemStats1(StreamHelper& stream);
+    void readItemStats2(StreamHelper& stream);
+
+    Log m_logger;
 };
 
 }}} // namespace

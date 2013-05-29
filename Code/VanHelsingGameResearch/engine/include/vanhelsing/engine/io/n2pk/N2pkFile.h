@@ -1,6 +1,7 @@
 #ifndef __vanhelsing_engine_io_n2pk_N2pkFile__
 #define __vanhelsing_engine_io_n2pk_N2pkFile__
 
+#include <vanhelsing/engine/log.h>
 #include <iostream>
 #include <memory>
 #include <streambuf>
@@ -50,6 +51,7 @@ private:
     std::unique_ptr<std::istream> m_stream;
     std::streamoff m_dataffset;
     std::streamoff m_entryTableOffset;
+    Log m_logger;
 
     void readFileTable(StreamHelper& stream);
 };
