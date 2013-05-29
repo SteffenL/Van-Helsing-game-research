@@ -62,11 +62,14 @@ int main(int argc, char* argv[])
 
                 // For some reason std::copy(), skips whitespace?
                 //std::copy(std::istream_iterator<char>(*packedFile), std::istream_iterator<char>(), std::ostream_iterator<char>(unpackedFile));
-                char buf[8192];
+                char readBuf[32 * 1024];
+                char writeBuf[32 * 1024];
+                // Set larger buffer for faster writes
+                unpackedFile.rdbuf()->pubsetbuf(writeBuf, sizeof(writeBuf));
                 do {
-                    packedFile->read(buf, sizeof(buf));
+                    packedFile->read(readBuf, sizeof(readBuf));
                     if (packedFile->gcount() > 0) {
-                        unpackedFile.write(buf, packedFile->gcount());
+                        unpackedFile.write(readBuf, packedFile->gcount());
                     }
                 } while (!packedFile->eof() && packedFile->good());
             }
