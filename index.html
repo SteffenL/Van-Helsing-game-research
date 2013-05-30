@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Van-helsing-game-research by SteffenL</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Van-helsing-game-research</h1>
+        <p>Just want to fiddle a bit with the game &quot;The Incredible Adventures of Van Helsing&quot;.</p>
+
+        <p class="view"><a href="https://github.com/SteffenL/Van-Helsing-game-research">View the Project on GitHub <small>SteffenL/Van-Helsing-game-research</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/SteffenL/Van-Helsing-game-research/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/SteffenL/Van-Helsing-game-research/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/SteffenL/Van-Helsing-game-research">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="van-helsing-game-research" class="anchor" href="#van-helsing-game-research"><span class="octicon octicon-link"></span></a>Van Helsing game research</h1>
+
+<p>This project was initiated for fun and learning. The goal is to research the internals of the game <em>The Incredible Adventures of Van Helsing</em>. The idea is to reverse engineer interesting parts of the game and its file formats. Eventually, it may become useful for myself and other developers, or even end-users.</p>
+
+<p>Research is currently done by myself, Steffen André Langnes. Please don't just take my work and claim it as your own. :)</p>
+
+<p>A few links for search engines:</p>
+
+<ul>
+<li>
+<a href="http://deadislandsaveeditor.steffenl.com/">Dead Island Save Editor (DISE)</a> - My main project, a game-save editor.</li>
+<li><a href="http://blog.steffenl.com/">"Private" blog</a></li>
+</ul><h2>
+<a name="current-programs" class="anchor" href="#current-programs"><span class="octicon octicon-link"></span></a>Current programs</h2>
+
+<ul>
+<li>Unpacker for N2PK packages (*Files.N2PK*). These files contain textures, models, etc.</li>
+<li>Storage viewer (*storage.sav*). Displays all of the items you have in your storage.</li>
+</ul><h2>
+<a name="pages" class="anchor" href="#pages"><span class="octicon octicon-link"></span></a>Pages</h2>
+
+<ul>
+<li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/Keep-the-game-running-in-the-background">Keep the game running in the background</a></li>
+<li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/Skip-logos-on-startup">Skip logos on startup</a></li>
+<li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/Use-the-32-bit-version-of-the-game-on-64-bit-systems">Use the 32 bit version of the game on 64 bit systems</a></li>
+</ul><h2>
+<a name="game-save-location-pc" class="anchor" href="#game-save-location-pc"><span class="octicon octicon-link"></span></a>Game-save location (PC)</h2>
+
+<p><code>Documents\NeocoreGames\Van Helsing\SaveGame\21801362</code></p>
+
+<h2>
+<a name="files" class="anchor" href="#files"><span class="octicon octicon-link"></span></a>Files</h2>
+
+<ul>
+<li>*.sav - Game-save/Character.</li>
+<li>timestamp.hts</li>
+<li>backup*.sav - Backup of old saves.</li>
+<li>common\storage.sav - Storage/Chest?</li>
+<li>achievements.sav</li>
+</ul><h2>
+<a name="saves-and-such-inside-repo-for-research" class="anchor" href="#saves-and-such-inside-repo-for-research"><span class="octicon octicon-link"></span></a>Saves (and such) inside repo (for research)</h2>
+
+<p>Very incomplete, but these files are the files I'm workong with <em>at the moment</em>.</p>
+
+<ul>
+<li>bookmarks.hbk - Bookmarks for Hex Workshop. Use with <code>TestCrve_orig.sav</code> to locate interesting values.</li>
+<li>TestCrve_orig.sav - The original (well, almost original) save. Revert <code>TestCrve.sav</code> to this one when needed.</li>
+<li>TestCrve.sav - Modded save or whatever; should not really keep it in the repo.</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/SteffenL">SteffenL</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
