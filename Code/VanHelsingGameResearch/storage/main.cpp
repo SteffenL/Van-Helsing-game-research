@@ -8,6 +8,7 @@
 #include <nowide/fstream.hpp>
 #include <nowide/iostream.hpp>
 #include <string>
+#include <cstdlib>
 
 int main(int argc, char* argv[])
 {
@@ -32,7 +33,13 @@ int main(int argc, char* argv[])
 
     try {
         // Temp solution for specifying the game dir
-        std::string gameDir(getenv("VH_GAME_DIR"));
+        auto gameDir_c = std::getenv("VH_GAME_DIR");
+        if (!gameDir_c) {
+            Log(LogLevel::Error) << "Environment variable must be set: VH_GAME_DIR" << std::endl;
+            return 1;
+        }
+
+        std::string gameDir(gameDir_c);
         GameData::Load(gameDir);
 
         GameSave gameSave;
