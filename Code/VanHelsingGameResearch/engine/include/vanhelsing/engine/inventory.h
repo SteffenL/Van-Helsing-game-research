@@ -21,12 +21,17 @@ class Item
 public:
     struct Rarity { enum type : unsigned int { Normal, Magic, Rare, Epic, Set, Random }; };
     struct Quality { enum type : unsigned int { Normal, Cracked, Masterwork }; };
+    typedef unsigned int IdType;
+
+    static IdType GetIdFromName(const std::string& name);
+    static std::string GetNameFromId(IdType id);
+    std::string GetName() const;
 
 public:
     unsigned int BagNumber;
     unsigned int SlotNumber;
 
-    unsigned int Id;
+    IdType Id;
     int Attribute1;
     int Attribute2;
     int Quantity;

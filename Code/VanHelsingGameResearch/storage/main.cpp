@@ -1,6 +1,7 @@
 #include <vanhelsing/engine/StorageGameSave.h>
 #include <vanhelsing/engine/io/StorageGameSaveReader.h>
 #include <vanhelsing/engine/log.h>
+#include <vanhelsing/engine/GameData.h>
 
 #include <nowide/args.hpp>
 #include <nowide/convert.hpp>
@@ -30,6 +31,10 @@ int main(int argc, char* argv[])
     }
 
     try {
+        // Temp solution for specifying the game dir
+        std::string gameDir(getenv("VH_GAME_DIR"));
+        GameData::Load(gameDir);
+
         GameSave gameSave;
         nowide::ifstream inStream(filePath.c_str(), std::ios::binary);
         if (!inStream.is_open()) {

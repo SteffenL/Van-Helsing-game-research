@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CfgParser.cpp" />
+    <ClCompile Include="src\GameData.cpp" />
     <ClCompile Include="src\GameSave.cpp" />
     <ClCompile Include="src\inventory.cpp" />
     <ClCompile Include="src\io\GameSaveReader.cpp" />
@@ -22,6 +24,8 @@
     <ClCompile Include="src\StorageGameSave.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\vanhelsing\engine\CfgParser.h" />
+    <ClInclude Include="include\vanhelsing\engine\GameData.h" />
     <ClInclude Include="include\vanhelsing\engine\GameSave.h" />
     <ClInclude Include="include\vanhelsing\engine\inventory.h" />
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveReader.h" />
@@ -68,8 +72,9 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_USING_V110_SDK71_;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOSTDIR);$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(SolutionDir)3rd_party\misc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BOOST_ALL_DYN_LINK;_USING_V110_SDK71_;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);$(SolutionDir)3rd_party\misc;$(SolutionDir)3rd_party\jsoncpp-src-0.5.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -85,8 +90,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_USING_V110_SDK71_;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOSTDIR);$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(SolutionDir)3rd_party\misc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);$(SolutionDir)3rd_party\misc;$(SolutionDir)3rd_party\jsoncpp-src-0.5.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

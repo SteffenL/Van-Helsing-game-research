@@ -43,7 +43,7 @@ void StorageGameSaveReader::readItem(StreamHelper& stream)
     using inventory::Item;
     std::unique_ptr<Item> item(new Item);
 
-    item->Id = stream.Read<unsigned int>();
+    item->Id = stream.Read<Item::IdType>();
     item->Attribute1 = stream.Read<int>();
     item->Attribute2 = stream.Read<int>();
     item->Quantity = stream.Read<int>();
@@ -52,6 +52,9 @@ void StorageGameSaveReader::readItem(StreamHelper& stream)
     m_logger << "Attribute1: " << item->Attribute1 << std::endl;
     m_logger << "Attribute2: " << item->Attribute2 << std::endl;
     m_logger << "Quantity: " << item->Quantity << std::endl;
+
+    auto& name = item->GetName();
+    m_logger << "Name: " << (!name.empty() ? name : "(unknown)") << std::endl;
     
     auto count = stream.Read<int>();
     m_logger << "Unknown (" << count << "):" << std::endl;
@@ -86,7 +89,7 @@ void StorageGameSaveReader::readItem(StreamHelper& stream)
 void StorageGameSaveReader::readItemStats1(StreamHelper& stream)
 {
     auto count = stream.Read<unsigned int>();
-    m_logger << "Unknown (" << count << "):" << std::endl;
+    m_logger << "Stats (" << count << "):" << std::endl;
     m_logger << Log::indent;
     for (unsigned int i = 0; i < count; ++i) {
         m_logger << "#" << i << ":" << std::endl;
