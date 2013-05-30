@@ -1,7 +1,9 @@
 Van Helsing game research
 =========================
 
-This project was initiated for fun and learning. The goal is to research the internals of the game *The Incredible Adventures of Van Helsing*. The idea is to reverse engineer interesting parts of the game and its file formats. Eventually, it may become useful for myself and other developers, or even end-users.
+This project was initiated for fun and learning. The main goal is to research the internals of the game *The Incredible Adventures of Van Helsing*. I plan to reverse engineer interesting parts of the game and its file formats. Eventually, it may become useful for myself and other developers, or even end-users.
+
+I with focus on extracting info and mainly do work related to the saves. Modding the game and creating proper game-save editors may not be too far away. :)
 
 Research is currently done by myself, Steffen André Langnes. Please don't just take my work and claim it as your own. :)
 
