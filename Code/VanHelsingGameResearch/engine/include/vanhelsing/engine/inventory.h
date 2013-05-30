@@ -16,41 +16,68 @@ struct EquipSlot
     };
 };
 
-class Artifact
+class Item
+{
+public:
+    typedef unsigned int IdType;
+
+    virtual std::string GetName() const = 0;
+
+    IdType Id;
+};
+
+class Artifact : public Item
 {
 public:
     struct Rarity { enum type : unsigned int { Normal, Magic, Rare, Epic, Set, Random }; };
     struct Quality { enum type : unsigned int { Normal, Cracked, Masterwork }; };
-    typedef unsigned int IdType;
+    
+    virtual std::string GetName() const;
 
-    static IdType GetIdFromName(const std::string& name);
-    static std::string GetNameFromId(IdType id);
-    std::string GetName() const;
-
-public:
     unsigned int BagNumber;
     unsigned int SlotNumber;
 
-    IdType Id;
-    int Stat1;
-    int Stat2;
+    int Attribute1;
+    int Attribute2;
     int Quantity;
     Artifact::Quality::type Quality;
     Artifact::Rarity::type Rarity;
     bool IsIdentified;
+    struct
+    {
+        
+    } Unknown;
 };
 
+class Enchantment : public Item
+{
+public:
+    virtual std::string GetName() const;
 
-// Artifact stats:
+    float Multiplier;
+    struct
+    {
+        int v2;
+        float v3;
+        unsigned int v4;
+        int v5;
+        unsigned int v6;
+        int v7;
+    } Unknown;
+};
+
+// Artifact attributes:
 // Armor: Defense, Essence capacity
 
 class Manager
 {
 public:
-    void Add(Artifact* artifact);
+    void Add(Artifact* item);
+    void Add(Enchantment* item);
 
 private:
     std::vector<std::unique_ptr<Artifact>> m_artifacts;
+    std::vector<std::unique_ptr<Enchantment>> m_enchantments;
 };
 
 }}} // namespace

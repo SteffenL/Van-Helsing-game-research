@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
         }
 
         std::string gameDir(gameDir_c);
-        GameData::Load(gameDir);
+        GameData::Get().Load(gameDir);
 
         GameSave gameSave;
         nowide::ifstream inStream(filePath.c_str(), std::ios::binary);

@@ -41,20 +41,18 @@ void StorageGameSaveReader::readArtifacts(StreamHelper& stream)
 void StorageGameSaveReader::readArtifact(StreamHelper& stream)
 {
     using inventory::Artifact;
-    std::unique_ptr<Artifact> artifact(new Artifact);
+    std::unique_ptr<Artifact> item(new Artifact);
 
-    artifact->Id = stream.Read<Artifact::IdType>();
-    artifact->Stat1 = stream.Read<int>();
-    artifact->Stat2 = stream.Read<int>();
-    artifact->Quantity = stream.Read<int>();
+    item->Id = stream.Read<Artifact::IdType>();
+    item->Attribute1 = stream.Read<int>();
+    item->Attribute2 = stream.Read<int>();
+    item->Quantity = stream.Read<int>();
 
-    m_logger << "ID: 0x" << std::hex << artifact->Id << std::dec << std::endl;
-    m_logger << "Stat 1: " << artifact->Stat1 << std::endl;
-    m_logger << "Stat 2: " << artifact->Stat2 << std::endl;
-    m_logger << "Quantity: " << artifact->Quantity << std::endl;
-
-    auto& name = artifact->GetName();
-    m_logger << "Name: " << (!name.empty() ? name : "(unknown)") << std::endl;
+    auto& name = item->GetName();
+    m_logger << "ID: 0x" << std::hex << item->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
+    m_logger << "Attribute 1: " << item->Attribute1 << std::endl;
+    m_logger << "Attribute 2: " << item->Attribute2 << std::endl;
+    m_logger << "Quantity: " << item->Quantity << std::endl;
     
     auto count = stream.Read<int>();
     m_logger << "Unknown (" << count << "):" << std::endl;
@@ -67,23 +65,23 @@ void StorageGameSaveReader::readArtifact(StreamHelper& stream)
 
     m_logger << Log::outdent;
 
-    artifact->Quality = stream.Read<Artifact::Quality::type>();
-    artifact->Rarity = stream.Read<Artifact::Rarity::type>();
-    m_logger << "Quality: " << artifact->Quality << std::endl;
-    m_logger << "Rarity: " << artifact->Rarity << std::endl;
+    item->Quality = stream.Read<Artifact::Quality::type>();
+    item->Rarity = stream.Read<Artifact::Rarity::type>();
+    m_logger << "Quality: " << item->Quality << std::endl;
+    m_logger << "Rarity: " << item->Rarity << std::endl;
 
     readEnchantments(stream);
     readUnknownMaybeEnchantments(stream);
 
-    artifact->IsIdentified = stream.Read<bool>();
-    m_logger << "Is identified: " << artifact->IsIdentified << std::endl;
+    item->IsIdentified = stream.Read<bool>();
+    m_logger << "Is identified: " << item->IsIdentified << std::endl;
     auto v1 = stream.Read<bool>();
     m_logger << "Unknown: " << v1 << std::endl;
 
     auto& manager = getGameSave().GetInventoryManager();
-    manager.Add(artifact.get());
+    manager.Add(item.get());
     // Manager owns it now
-    artifact.release();
+    item.release();
 }
 
 void StorageGameSaveReader::readEnchantments(StreamHelper& stream)
@@ -92,25 +90,32 @@ void StorageGameSaveReader::readEnchantments(StreamHelper& stream)
     m_logger << "Enchantments (" << count << "):" << std::endl;
     m_logger << Log::indent;
     for (unsigned int i = 0; i < count; ++i) {
+        using inventory::Enchantment;
+        std::unique_ptr<Enchantment> item(new Enchantment);
+
         m_logger << "#" << i << ":" << std::endl;
         m_logger << Log::indent;
 
-        auto v1 = stream.Read<unsigned int>();
-        auto v2 = stream.Read<int>();
-        auto v3 = stream.Read<float>();
-        auto v4 = stream.Read<unsigned int>();
+        item->Id = stream.Read<Enchantment::IdType>();
+        item->Unknown.v2 = stream.Read<int>();
+        item->Unknown.v3 = stream.Read<float>();
+        item->Unknown.v4 = stream.Read<unsigned int>();
 
-        m_logger << "0x" << std::hex << v1 << std::dec << ", " << v2 << ", " << v3 << ", " << v4 << std::endl;
+        auto& name = item->GetName();
+        m_logger << "ID: 0x" << std::hex << item->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
+        m_logger << "Unknown:" << std::endl;
+        m_logger << Log::indent;
+        m_logger << item->Unknown.v2 << ", " << item->Unknown.v3 << ", " << item->Unknown.v4 << std::endl;
 
         if (m_unknown1 >= 0x2b6) {
-            auto v5 = stream.Read<int>();
-            auto v6 = stream.Read<unsigned int>();
-            auto v7 = stream.Read<int>();
+            item->Unknown.v5 = stream.Read<int>();
+            item->Unknown.v6 = stream.Read<unsigned int>();
+            item->Unknown.v7 = stream.Read<int>();
 
-            m_logger << v5 << ", " << v6 << ", " << v7 << std::endl;
+            m_logger << item->Unknown.v5 << ", " << item->Unknown.v6 << ", " << item->Unknown.v7 << std::endl;
         }
 
-        m_logger << Log::outdent;
+        m_logger << Log::outdent << Log::outdent;
         m_logger << "" << std::endl;
     }
 

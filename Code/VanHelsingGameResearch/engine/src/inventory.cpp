@@ -1,32 +1,26 @@
 #include <vanhelsing/engine/inventory.h>
+#include <vanhelsing/engine/GameData.h>
 
 namespace vanhelsing { namespace engine { namespace inventory {
 
-void Manager::Add(Artifact* artifact)
+void Manager::Add(Artifact* item)
 {
-
+    m_artifacts.push_back(std::unique_ptr<Artifact>(item));
 }
 
-
-unsigned int Artifact::GetIdFromName(const std::string& name)
+void Manager::Add(Enchantment* item)
 {
-    unsigned int id = 0;
-    for (auto ch : name) {
-        id *= 0x01003f;
-        id += ch;
-    }
-
-    return id;
-}
-
-std::string Artifact::GetNameFromId(IdType id)
-{
-    return std::string();
+    m_enchantments.push_back(std::unique_ptr<Enchantment>(item));
 }
 
 std::string Artifact::GetName() const
 {
-    return GetNameFromId(Id);
+    return GameData::Get().GetArtifactNameFromId(Id);
+}
+
+std::string Enchantment::GetName() const
+{
+    return GameData::Get().GetEnchantmentNameFromId(Id);
 }
 
 }}} // namespace
