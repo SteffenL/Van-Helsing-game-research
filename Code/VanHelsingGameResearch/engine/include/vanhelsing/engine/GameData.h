@@ -13,6 +13,7 @@ public:
 
 private:
     static void loadArtifacts();
+    static void loadEnchantments();
 
 private:
     static std::string m_gameDir;

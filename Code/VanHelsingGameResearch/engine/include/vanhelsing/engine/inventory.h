@@ -16,7 +16,7 @@ struct EquipSlot
     };
 };
 
-class Item
+class Artifact
 {
 public:
     struct Rarity { enum type : unsigned int { Normal, Magic, Rare, Epic, Set, Random }; };
@@ -32,25 +32,25 @@ public:
     unsigned int SlotNumber;
 
     IdType Id;
-    int Attribute1;
-    int Attribute2;
+    int Stat1;
+    int Stat2;
     int Quantity;
-    Item::Quality::type Quality;
-    Item::Rarity::type Rarity;
+    Artifact::Quality::type Quality;
+    Artifact::Rarity::type Rarity;
     bool IsIdentified;
 };
 
 
-// Item attributes:
+// Artifact stats:
 // Armor: Defense, Essence capacity
 
 class Manager
 {
 public:
-    void Add(Item* item);
+    void Add(Artifact* artifact);
 
 private:
-    std::vector<std::unique_ptr<Item>> m_items;
+    std::vector<std::unique_ptr<Artifact>> m_artifacts;
 };
 
 }}} // namespace

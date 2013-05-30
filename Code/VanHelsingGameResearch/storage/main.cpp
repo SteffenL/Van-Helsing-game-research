@@ -54,6 +54,9 @@ int main(int argc, char* argv[])
     }
     catch (std::runtime_error& ex) {
         Log(LogLevel::Fatal) << "Exception: " << ex.what() << std::endl;
+#ifdef _DEBUG
+        throw;
+#endif
     }
 
     return 0;

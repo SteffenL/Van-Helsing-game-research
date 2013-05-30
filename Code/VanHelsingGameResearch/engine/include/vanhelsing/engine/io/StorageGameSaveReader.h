@@ -17,10 +17,10 @@ public:
     virtual ~StorageGameSaveReader();
 
 private:
-    void readItems(StreamHelper& stream);
-    void readItem(StreamHelper& stream);
-    void readItemStats1(StreamHelper& stream);
-    void readItemStats2(StreamHelper& stream);
+    void readArtifacts(StreamHelper& stream);
+    void readArtifact(StreamHelper& stream);
+    void readEnchantments(StreamHelper& stream);
+    void readUnknownMaybeEnchantments(StreamHelper& stream);
 
     Log m_logger;
 };

@@ -2,13 +2,13 @@
 
 namespace vanhelsing { namespace engine { namespace inventory {
 
-void Manager::Add(Item* item)
+void Manager::Add(Artifact* artifact)
 {
 
 }
 
 
-unsigned int Item::GetIdFromName(const std::string& name)
+unsigned int Artifact::GetIdFromName(const std::string& name)
 {
     unsigned int id = 0;
     for (auto ch : name) {
@@ -19,12 +19,12 @@ unsigned int Item::GetIdFromName(const std::string& name)
     return id;
 }
 
-std::string Item::GetNameFromId(IdType id)
+std::string Artifact::GetNameFromId(IdType id)
 {
     return std::string();
 }
 
-std::string Item::GetName() const
+std::string Artifact::GetName() const
 {
     return GetNameFromId(Id);
 }
