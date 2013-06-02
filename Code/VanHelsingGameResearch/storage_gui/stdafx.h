@@ -24,9 +24,10 @@
 
 extern CAppModule _Module;
 
-#	define _ATL_NO_AUTOMATIC_NAMESPACE
-#	define _WTL_NO_AUTOMATIC_NAMESPACE
-#	define _ATL_USE_DDX_FLOAT
+#define _ATL_NO_AUTOMATIC_NAMESPACE
+#define _WTL_NO_AUTOMATIC_NAMESPACE
+#define _ATL_USE_DDX_FLOAT
+#define _ATL_USE_CSTRING_FLOAT
 
 #include <atlwin.h>
 //#include <atlautosizedlg.h>

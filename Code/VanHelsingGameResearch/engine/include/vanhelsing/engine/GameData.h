@@ -8,20 +8,31 @@
 
 namespace vanhelsing { namespace engine {
 
+namespace io { namespace n2pk { class N2pkFile; } }
+
 class TextManager
 {
     typedef std::map<std::string, std::string> TextMap;
 
 public:
     bool Load(const std::string& filePath);
-    const std::string GetRarityText(inventory::Artifact::Rarity::type rarity) const;
-    const std::string GetQualityText(inventory::Artifact::Quality::type quality) const;
-    const std::string GetArtifactText(const std::string& name) const;
+    const std::string GetRarityText(inventory::Item::Rarity::type rarity) const;
+    const std::string GetQualityText(inventory::Item::Quality::type quality) const;
+    const std::string GetItemText(const std::string& name) const;
+    const std::string GetSetNameText(const std::string& name) const;
+    /*const std::string GetTypeText(type) const;
+    const std::string GetSubTypesText(subType) const;*/
 
 private:
+    bool loadArtifactText(const io::n2pk::N2pkFile& package);
+    bool loadSkillText(const io::n2pk::N2pkFile& package);
+
+private:
+    TextMap m_skillProperties;
     TextMap m_rarity;
     TextMap m_quality;
-    TextMap m_artifacts;
+    TextMap m_items;
+    TextMap m_enchantments;
     TextMap m_setName;
     TextMap m_types;
     TextMap m_subTypes;
@@ -30,10 +41,10 @@ private:
 class GameData
 {
 public:
-    class ArtifactData
+    class ItemData
     {
     public:
-        inventory::Artifact::Item::IdType Id;
+        inventory::Item::IdType Id;
         std::string Name;
         std::string Icon;
     };
@@ -41,7 +52,7 @@ public:
     class EnchantmentData
     {
     public:
-        inventory::Enchantment::Item::IdType Id;
+        inventory::Enchantment::IdType Id;
         std::string Name;
     };
 
@@ -49,12 +60,12 @@ public:
     static GameData& Get();
     void Load(const std::string& gameDir);
     // Inventory items
-    bool GetItemData(inventory::Artifact::IdType id, ArtifactData& data) const;
-    bool GetItemData(inventory::Enchantment::IdType id, EnchantmentData& data) const;
-    inventory::Item::IdType GetItemIdFromName(const std::string& name) const;
+    bool GetArtifactData(inventory::Item::IdType id, ItemData& data) const;
+    bool GetArtifactData(inventory::Enchantment::IdType id, EnchantmentData& data) const;
+    inventory::Artifact::IdType GetArtifactIdFromName(const std::string& name) const;
     const TextManager& GetTextManager() const;
-    std::string GetArtifactNameFromId(inventory::Item::IdType id) const;
-    std::string GetEnchantmentNameFromId(inventory::Item::IdType id) const;
+    std::string GetItemNameFromId(inventory::Item::IdType id) const;
+    std::string GetEnchantmentNameFromId(inventory::Artifact::IdType id) const;
 
 private:
     void loadTexts();

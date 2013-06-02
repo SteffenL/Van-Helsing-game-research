@@ -3,12 +3,12 @@
 
 namespace vanhelsing { namespace engine { namespace inventory {
 
-std::string Artifact::GetName() const
+std::string Item::GetName() const
 {
-    return GameData::Get().GetArtifactNameFromId(Id);
+    return GameData::Get().GetItemNameFromId(Id);
 }
 
-Enchantment::List& Artifact::GetEnchantments()
+Enchantment::List& Item::GetEnchantments()
 {
     return m_enchantments;
 }
@@ -19,7 +19,7 @@ std::string Enchantment::GetName() const
 }
 
 
-void Artifact::List::FindByBagNumber(int bagNumber, std::vector<Artifact*>& items)
+void Item::List::FindByBagNumber(int bagNumber, std::vector<Item*>& items)
 {
     for (auto& item : m_items) {
         if (item->BagNumber == bagNumber) {

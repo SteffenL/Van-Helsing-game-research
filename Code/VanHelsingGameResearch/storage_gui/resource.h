@@ -11,6 +11,10 @@
 #define IDC_STORAGE_TABS                1001
 #define IDC_STORAGE_ITEMS               1002
 #define IDC_ITEM_LIST                   1002
+#define IDC_ENCHANTMENT_LIST            1005
+#define IDC_ARTIFACT_HEADING            1007
+#define IDC_ENCHANTMENT_HEADING         1008
+#define IDC_ARTIFACT_LIST               1009
 #define ID_HELP_ABOUTSTORAGEEDITOR      32775
 #define ID_HELP_SUPPORT                 32776
 #define ID_FILE_OPEN32777               32777
@@ -25,7 +29,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        204
 #define _APS_NEXT_COMMAND_VALUE         32784
-#define _APS_NEXT_CONTROL_VALUE         1004
+#define _APS_NEXT_CONTROL_VALUE         1010
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

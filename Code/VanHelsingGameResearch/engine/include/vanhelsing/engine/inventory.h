@@ -16,7 +16,7 @@ struct EquipSlot
     };
 };
 
-class Item
+class Artifact
 {
 public:
     typedef unsigned int IdType;
@@ -35,14 +35,19 @@ class ItemList
 public:
     void Add(ItemType* item)
     {
-        m_items.push_back(std::unique_ptr<ItemType>(item));
+        m_items.push_back(std::shared_ptr<ItemType>(item));
+    }
+
+    std::vector<std::shared_ptr<ItemType>>& GetItems()
+    {
+        return m_items;
     }
 
 protected:
-    std::vector<std::unique_ptr<ItemType>> m_items;
+    std::vector<std::shared_ptr<ItemType>> m_items;
 };
 
-class Enchantment : public Item
+class Enchantment : public Artifact
 {
 public:
     class List : public ItemList<Enchantment>
@@ -65,13 +70,13 @@ public:
     } Unknown;
 };
 
-class Artifact : public Item
+class Item : public Artifact
 {
 public:
-    class List : public ItemList<Artifact>
+    class List : public ItemList<Item>
     {
     public:
-        void FindByBagNumber(int bagNumber, std::vector<Artifact*>& items);
+        void FindByBagNumber(int bagNumber, std::vector<Item*>& items);
     };
 
     struct Rarity { enum type : unsigned int { Normal, Magic, Rare, Epic, Set, Random }; };
@@ -85,8 +90,8 @@ public:
     int Attribute1;
     int Attribute2;
     int Quantity;
-    Artifact::Quality::type Quality;
-    Artifact::Rarity::type Rarity;
+    Item::Quality::type Quality;
+    Item::Rarity::type Rarity;
     bool IsIdentified;
     struct
     {

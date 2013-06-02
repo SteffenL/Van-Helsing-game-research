@@ -6,6 +6,8 @@
 #include <vanhelsing/engine/log.h>
 #include <iostream>
 
+namespace vanhelsing { namespace engine { namespace inventory { class Item; } } }
+
 namespace vanhelsing { namespace engine { namespace io {
 
 class StreamHelper;
@@ -18,8 +20,8 @@ public:
 
 private:
     void readArtifacts(StreamHelper& stream);
-    inventory::Artifact* readArtifact(StreamHelper& stream);
-    void readEnchantments(StreamHelper& stream);
+    inventory::Item* readItem(StreamHelper& stream);
+    void readEnchantments(StreamHelper& stream, inventory::Item& item);
     void readUnknownMaybeEnchantments(StreamHelper& stream);
 
     Log m_logger;

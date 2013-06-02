@@ -25,7 +25,7 @@ void StorageGameSaveReader::readArtifacts(StreamHelper& stream)
         m_logger << "Bag #: " << bagNumber << std::endl;
         m_logger << "Slot #: " << slotNumber << std::endl;
         m_logger << "" << std::endl;
-        auto item = readArtifact(stream);
+        auto item = readItem(stream);
         if (item) {
             item->BagNumber = bagNumber;
             item->SlotNumber = slotNumber;
@@ -43,12 +43,12 @@ void StorageGameSaveReader::readArtifacts(StreamHelper& stream)
     m_logger << Log::outdent;
 }
 
-inventory::Artifact* StorageGameSaveReader::readArtifact(StreamHelper& stream)
+inventory::Item* StorageGameSaveReader::readItem(StreamHelper& stream)
 {
-    using inventory::Artifact;
-    std::unique_ptr<Artifact> item(new Artifact);
+    using inventory::Item;
+    std::unique_ptr<Item> item(new Item);
 
-    item->Id = stream.Read<Artifact::IdType>();
+    item->Id = stream.Read<Item::IdType>();
     item->Attribute1 = stream.Read<int>();
     item->Attribute2 = stream.Read<int>();
     item->Quantity = stream.Read<int>();
@@ -70,12 +70,12 @@ inventory::Artifact* StorageGameSaveReader::readArtifact(StreamHelper& stream)
 
     m_logger << Log::outdent;
 
-    item->Quality = stream.Read<Artifact::Quality::type>();
-    item->Rarity = stream.Read<Artifact::Rarity::type>();
+    item->Quality = stream.Read<Item::Quality::type>();
+    item->Rarity = stream.Read<Item::Rarity::type>();
     m_logger << "Quality: " << item->Quality << std::endl;
     m_logger << "Rarity: " << item->Rarity << std::endl;
 
-    readEnchantments(stream);
+    readEnchantments(stream, *item);
     readUnknownMaybeEnchantments(stream);
 
     item->IsIdentified = stream.Read<bool>();
@@ -91,36 +91,41 @@ inventory::Artifact* StorageGameSaveReader::readArtifact(StreamHelper& stream)
     return itemPtr;
 }
 
-void StorageGameSaveReader::readEnchantments(StreamHelper& stream)
+void StorageGameSaveReader::readEnchantments(StreamHelper& stream, inventory::Item& item)
 {
+    auto& enchantments = item.GetEnchantments();
+
     auto count = stream.Read<unsigned int>();
     m_logger << "Enchantments (" << count << "):" << std::endl;
     m_logger << Log::indent;
     for (unsigned int i = 0; i < count; ++i) {
         using inventory::Enchantment;
-        std::unique_ptr<Enchantment> item(new Enchantment);
+        std::unique_ptr<Enchantment> enchantment(new Enchantment);
 
         m_logger << "#" << i << ":" << std::endl;
         m_logger << Log::indent;
 
-        item->Id = stream.Read<Enchantment::IdType>();
-        item->Unknown.v2 = stream.Read<int>();
-        item->Unknown.v3 = stream.Read<float>();
-        item->Unknown.v4 = stream.Read<unsigned int>();
+        enchantment->Id = stream.Read<Enchantment::IdType>();
+        enchantment->Unknown.v2 = stream.Read<int>();
+        enchantment->Multiplier = stream.Read<float>();
+        enchantment->Unknown.v4 = stream.Read<unsigned int>();
 
-        auto& name = item->GetName();
-        m_logger << "ID: 0x" << std::hex << item->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
+        auto& name = enchantment->GetName();
+        m_logger << "ID: 0x" << std::hex << enchantment->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
         m_logger << "Unknown:" << std::endl;
         m_logger << Log::indent;
-        m_logger << item->Unknown.v2 << ", " << item->Unknown.v3 << ", " << item->Unknown.v4 << std::endl;
+        m_logger << enchantment->Unknown.v2 << ", " << enchantment->Unknown.v3 << ", " << enchantment->Unknown.v4 << std::endl;
 
         if (m_unknown1 >= 0x2b6) {
-            item->Unknown.v5 = stream.Read<int>();
-            item->Unknown.v6 = stream.Read<unsigned int>();
-            item->Unknown.v7 = stream.Read<int>();
+            enchantment->Unknown.v5 = stream.Read<int>();
+            enchantment->Unknown.v6 = stream.Read<unsigned int>();
+            enchantment->Unknown.v7 = stream.Read<int>();
 
-            m_logger << item->Unknown.v5 << ", " << item->Unknown.v6 << ", " << item->Unknown.v7 << std::endl;
+            m_logger << enchantment->Unknown.v5 << ", " << enchantment->Unknown.v6 << ", " << enchantment->Unknown.v7 << std::endl;
         }
+
+        enchantments.Add(enchantment.get());
+        enchantment.release();
 
         m_logger << Log::outdent << Log::outdent;
         m_logger << "" << std::endl;

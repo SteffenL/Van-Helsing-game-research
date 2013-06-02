@@ -42,6 +42,10 @@ public:
     END_DLGRESIZE_MAP()
 
     BEGIN_MSG_MAP(CMainDlg)
+        if (uMsg == WM_FORWARDMSG) {
+            if (PreTranslateMessage((LPMSG)lParam)) return TRUE;
+        }
+
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		COMMAND_ID_HANDLER(ID_HELP_ABOUT, OnAppAbout)
@@ -49,13 +53,10 @@ public:
         COMMAND_ID_HANDLER(ID_FILE_SAVE_AS, OnFileSaveAs)
         COMMAND_ID_HANDLER(ID_FILE_OPEN, OnFileOpen)
         COMMAND_ID_HANDLER(IDCANCEL, OnFileExit)
-		COMMAND_ID_HANDLER(ID_FILE_EXIT, OnFileExit)
+        COMMAND_ID_HANDLER(ID_FILE_EXIT, OnFileExit)
 
         //CHAIN_MSG_MAP(CAutoSizeWindow<CMainDlg>)
         CHAIN_MSG_MAP(CDialogResize<CMainDlg>)
-
-        if(uMsg == WM_FORWARDMSG)
-            if(PreTranslateMessage((LPMSG)lParam)) return TRUE;
 
         REFLECT_NOTIFICATIONS()
 	END_MSG_MAP()
@@ -71,7 +72,7 @@ public:
     LRESULT OnFileSave(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnFileSaveAs(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnFileOpen(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnFileExit(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    LRESULT OnFileExit(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
 	void CloseDialog(int nVal);
 

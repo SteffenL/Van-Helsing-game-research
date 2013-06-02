@@ -8,13 +8,13 @@ namespace vanhelsing { namespace engine {
 class StorageGameSave
 {
 public:
-    inventory::Artifact::List& GetItems() { return m_items; }
+    inventory::Item::List& GetItems() { return m_items; }
     virtual ~StorageGameSave();
 
 protected:
 
 private:
-    inventory::Artifact::List m_items;
+    inventory::Item::List m_items;
 };
 
 }} // namespace

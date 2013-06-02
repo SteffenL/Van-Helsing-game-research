@@ -25,14 +25,14 @@ class GameData::Impl
     friend class GameData;
 
 public:
-    typedef GameData::ArtifactData ArtifactData;
-    struct ArtifactDataContainer
+    typedef GameData::ItemData ItemData;
+    struct ItemDataContainer
     {
         typedef bmi::multi_index_container<
-            ArtifactData,
+            ItemData,
             bmi::indexed_by<
-                bmi::ordered_unique<bmi::member<ArtifactData, inventory::Artifact::IdType, &ArtifactData::Id>>,
-                bmi::ordered_unique<bmi::member<ArtifactData, std::string, &ArtifactData::Name>>
+                bmi::ordered_unique<bmi::member<ItemData, inventory::Item::IdType, &ItemData::Id>>,
+                bmi::ordered_unique<bmi::member<ItemData, std::string, &ItemData::Name>>
             >
         > type;
     };
@@ -49,19 +49,19 @@ public:
         > type;
     };
 
-    bool GetItemData(inventory::Artifact::IdType id, ArtifactData& data);
+    bool GetItemData(inventory::Item::IdType id, ItemData& data);
     bool GetItemData(inventory::Enchantment::IdType id, EnchantmentData& data);
 
 private:
-    ArtifactDataContainer::type m_artifactData;
+    ItemDataContainer::type m_itemData;
     EnchantmentDataContainer::type m_enchantmentData;
 };
 
-bool GameData::Impl::GetItemData(inventory::Artifact::IdType id, ArtifactData& data)
+bool GameData::Impl::GetItemData(inventory::Item::IdType id, ItemData& data)
 {
-    auto& view = m_artifactData.get<0>();
+    auto& view = m_itemData.get<0>();
     auto it = view.find(id);
-    if (it == m_artifactData.end()) {
+    if (it == m_itemData.end()) {
         return false;
     }
 
@@ -135,11 +135,11 @@ void GameData::loadArtifacts()
     Log(LogLevel::Trace) << "Loading artifacts..." << std::endl;
     for (auto& group : parser.GetGroups()) {
         using namespace inventory;
-        ArtifactData data;
+        ItemData data;
         data.Name = group.at("Name");
-        data.Id = GetItemIdFromName(data.Name);
+        data.Id = GetArtifactIdFromName(data.Name);
         data.Icon = group.at("Icon");
-        m_impl->m_artifactData.insert(data);
+        m_impl->m_itemData.insert(data);
         //logger << "0x" << std::setfill('0') << std::setw(8) << std::hex << id << std::dec << "  " << name << std::endl;
 
     }
@@ -179,7 +179,8 @@ void GameData::loadEnchantments()
         using namespace inventory;
         EnchantmentData data;
         data.Name = group.at("Name");
-        data.Id = GetItemIdFromName(data.Name);
+        data.Id = GetArtifactIdFromName(data.Name);
+        //data.
         m_impl->m_enchantmentData.insert(data);
         //logger << "0x" << std::setfill('0') << std::setw(8) << std::hex << id << std::dec << "  " << name << std::endl;
     }
@@ -196,19 +197,19 @@ GameData& GameData::Get()
     return *m_instance;
 }
 
-bool GameData::GetItemData(inventory::Artifact::IdType id, ArtifactData& data) const
+bool GameData::GetArtifactData(inventory::Item::IdType id, ItemData& data) const
 {
     return m_impl->GetItemData(id, data);
 }
 
-bool GameData::GetItemData(inventory::Enchantment::IdType id, EnchantmentData& data) const
+bool GameData::GetArtifactData(inventory::Enchantment::IdType id, EnchantmentData& data) const
 {
     return m_impl->GetItemData(id, data);
 }
 
-inventory::Item::IdType GameData::GetItemIdFromName(const std::string& name) const
+inventory::Artifact::IdType GameData::GetArtifactIdFromName(const std::string& name) const
 {
-    inventory::Item::IdType id = 0;
+    inventory::Artifact::IdType id = 0;
     for (auto ch : name) {
         id *= 0x01003f;
         id += ch;
@@ -217,10 +218,10 @@ inventory::Item::IdType GameData::GetItemIdFromName(const std::string& name) con
     return id;
 }
 
-std::string GameData::GetArtifactNameFromId(inventory::Artifact::IdType id) const
+std::string GameData::GetItemNameFromId(inventory::Item::IdType id) const
 {
-    ArtifactData data;
-    if (!GetItemData(id, data)) {
+    ItemData data;
+    if (!GetArtifactData(id, data)) {
         return std::string();
     }
 
@@ -230,7 +231,7 @@ std::string GameData::GetArtifactNameFromId(inventory::Artifact::IdType id) cons
 std::string GameData::GetEnchantmentNameFromId(inventory::Enchantment::IdType id) const
 {
     EnchantmentData data;
-    if (!GetItemData(id, data)) {
+    if (!GetArtifactData(id, data)) {
         return std::string();
     }
 
@@ -260,6 +261,108 @@ void GameData::loadTexts()
 bool TextManager::Load(const std::string& filePath)
 {
     io::n2pk::N2pkFile package(filePath);
+
+    loadArtifactText(package);
+    loadSkillText(package);
+
+    return true;
+}
+
+const std::string TextManager::GetRarityText(inventory::Item::Rarity::type rarity) const
+{
+    const char* textName = nullptr;
+    switch (rarity)
+    {
+    case vanhelsing::engine::inventory::Item::Rarity::Normal:
+        textName = "Normal";
+        break;
+
+    case vanhelsing::engine::inventory::Item::Rarity::Magic:
+        textName = "Magic";
+        break;
+
+    case vanhelsing::engine::inventory::Item::Rarity::Rare:
+        textName = "Rare";
+        break;
+
+    case vanhelsing::engine::inventory::Item::Rarity::Epic:
+        textName = "Epic";
+        break;
+
+    case vanhelsing::engine::inventory::Item::Rarity::Set:
+        textName = "Set";
+        break;
+
+    case vanhelsing::engine::inventory::Item::Rarity::Random:
+        return "Random?";
+        break;
+
+    default:
+        return "(invalid)";
+    }
+
+    try {
+        return m_rarity.at(textName);
+    }
+    catch (std::out_of_range&) {
+        return "(invalid)";
+    }
+}
+
+const std::string TextManager::GetQualityText(inventory::Item::Quality::type quality) const
+{
+    const char* textName = nullptr;
+    switch (quality)
+    {
+    case vanhelsing::engine::inventory::Item::Quality::Normal:
+        return "";
+
+    case vanhelsing::engine::inventory::Item::Quality::Cracked:
+        textName = "Cracked";
+        break;
+
+    case vanhelsing::engine::inventory::Item::Quality::Masterwork:
+        textName = "Masterwork";
+        break;
+
+    default:
+        return "(invalid)";
+    }
+
+    try {
+        return m_quality.at(textName);
+    }
+    catch (std::out_of_range&) {
+        return "(invalid)";
+    }
+}
+
+const std::string TextManager::GetItemText(const std::string& name) const
+{
+    try {
+        return m_items.at(name);
+    }
+    catch (std::out_of_range&) {
+        std::string text(name);
+        text += " (no name)";
+        return text;
+    }
+}
+
+const std::string TextManager::GetSetNameText(const std::string& name) const
+{
+    try {
+        return m_setName.at(name);
+    }
+    catch (std::out_of_range&) {
+        std::string text(name);
+        text += " (no name)";
+        return text;
+    }
+}
+
+bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
+{
     auto file = package.GetFile("lang_artifacts.xml");
     if (!file) {
         return false;
@@ -281,7 +384,7 @@ bool TextManager::Load(const std::string& filePath)
         throw std::runtime_error("Error while parsing language XML file.");
     }
 
-    // Artifacts
+    // Items
     {
         auto items = doc.select_nodes("/Root/Artifacts/Items/*");
         for (pugi::xpath_node_set::const_iterator it = items.begin(), end = items.end(); it != end; ++it)
@@ -289,7 +392,19 @@ bool TextManager::Load(const std::string& filePath)
             auto& node = it->node();
             std::string name = node.name();
             std::string text = node.child("Name").first_child().child_value();
-            m_artifacts[name] = text;
+            m_items[name] = text;
+        }
+    }
+
+    // Enchantments
+    {
+        auto items = doc.select_nodes("/Root/Artifacts/Enchantment/*");
+        for (pugi::xpath_node_set::const_iterator it = items.begin(), end = items.end(); it != end; ++it)
+        {
+            auto& node = it->node();
+            std::string name = node.name();
+            std::string text = node.child("desc").first_child().child_value();
+            m_enchantments[name] = text;
         }
     }
 
@@ -356,85 +471,42 @@ bool TextManager::Load(const std::string& filePath)
     return true;
 }
 
-const std::string TextManager::GetRarityText(inventory::Artifact::Rarity::type rarity) const
+bool TextManager::loadSkillText(const io::n2pk::N2pkFile& package)
 {
-    const char* textName = nullptr;
-    switch (rarity)
+    auto file = package.GetFile("lang_skills.xml");
+    if (!file) {
+        return false;
+    }
+
+    auto& fileEntry = package.GetFileEntry("lang_skills.xml");
+
+    pugi::xml_document doc;
+    std::vector<char> buf;
+    // Disable warnings about conversion and possible loss of data
+#pragma warning(push)
+#pragma warning(disable: 4244)
+    buf.resize(fileEntry.GetSize());
+    file->read(&buf[0], fileEntry.GetSize());
+    pugi::xml_parse_result result = doc.load_buffer_inplace(&buf[0], fileEntry.GetSize());
+#pragma warning(pop)
+
+    if (!result) {
+        throw std::runtime_error("Error while parsing language XML file.");
+    }
+
+    // Properties
     {
-    case vanhelsing::engine::inventory::Artifact::Rarity::Normal:
-        textName = "Normal";
-        break;
-
-    case vanhelsing::engine::inventory::Artifact::Rarity::Magic:
-        textName = "Magic";
-        break;
-
-    case vanhelsing::engine::inventory::Artifact::Rarity::Rare:
-        textName = "Rare";
-        break;
-
-    case vanhelsing::engine::inventory::Artifact::Rarity::Epic:
-        textName = "Epic";
-        break;
-
-    case vanhelsing::engine::inventory::Artifact::Rarity::Set:
-        textName = "Set";
-        break;
-
-    case vanhelsing::engine::inventory::Artifact::Rarity::Random:
-        return "Random?";
-        break;
-
-    default:
-        return "(invalid)";
+        auto items = doc.select_nodes("/Root/Property/*");
+        for (pugi::xpath_node_set::const_iterator it = items.begin(), end = items.end(); it != end; ++it)
+        {
+            auto& node = it->node();
+            std::string name = node.name();
+            std::string text = node.child("desc").first_child().child_value();
+            m_skillProperties[name] = text;
+        }
     }
 
-    try {
-        return m_rarity.at(textName);
-    }
-    catch (std::out_of_range&) {
-        return "(invalid)";
-    }
-}
-
-const std::string TextManager::GetQualityText(inventory::Artifact::Quality::type quality) const
-{
-    const char* textName = nullptr;
-    switch (quality)
-    {
-    case vanhelsing::engine::inventory::Artifact::Quality::Normal:
-        return "";
-
-    case vanhelsing::engine::inventory::Artifact::Quality::Cracked:
-        textName = "Cracked";
-        break;
-
-    case vanhelsing::engine::inventory::Artifact::Quality::Masterwork:
-        textName = "Masterwork";
-        break;
-
-    default:
-        return "(invalid)";
-    }
-
-    try {
-        return m_quality.at(textName);
-    }
-    catch (std::out_of_range&) {
-        return "(invalid)";
-    }
-}
-
-const std::string TextManager::GetArtifactText(const std::string& name) const
-{
-    try {
-        return m_artifacts.at(name);
-    }
-    catch (std::out_of_range&) {
-        std::string text(name);
-        text += " (no name)";
-        return text;
-    }
+    return true;
 }
 
 }} // namespace
