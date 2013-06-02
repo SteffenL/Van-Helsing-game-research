@@ -88,8 +88,14 @@ void GameData::Load(const std::string& gameDir)
         return;
     }
 
-    loadArtifacts();
-    loadEnchantments();
+    try {
+        loadArtifacts();
+        loadEnchantments();
+    }
+    catch (std::runtime_error& ex) {
+        Log(LogLevel::Error) << "Exception while loading game data: " << ex.what() << std::endl;
+        return;
+    }
 }
 
 void GameData::loadArtifacts()
@@ -100,13 +106,13 @@ void GameData::loadArtifacts()
 
     if (!fs::exists(filePath)) {
         Log(LogLevel::Error) << "Game data file doesn't exist: " << filePath.string() << std::endl;
-        throw;
+        return;
     }
 
     nowide::ifstream file(filePath.string().c_str());
     if (!file.is_open()) {
         Log(LogLevel::Error) << "Couldn't open file: " << filePath.string() << std::endl;
-        throw;
+        return;
     }
 
     char buf[8 * 1024];
@@ -117,7 +123,7 @@ void GameData::loadArtifacts()
     }
     catch (std::runtime_error&) {
         Log(LogLevel::Error) << "Failed to parse file: " << filePath.string() << std::endl;
-        throw;
+        return;
     }
 
     auto& logger = Log(LogLevel::Trace);
@@ -142,13 +148,13 @@ void GameData::loadEnchantments()
 
     if (!fs::exists(filePath)) {
         Log(LogLevel::Error) << "Game data file doesn't exist: " << filePath.string() << std::endl;
-        throw;
+        return;
     }
 
     nowide::ifstream file(filePath.string().c_str());
     if (!file.is_open()) {
         Log(LogLevel::Error) << "Couldn't open file: " << filePath.string() << std::endl;
-        throw;
+        return;
     }
 
     char buf[8 * 1024];
@@ -159,7 +165,7 @@ void GameData::loadEnchantments()
     }
     catch (std::runtime_error&) {
         Log(LogLevel::Error) << "Failed to parse file: " << filePath.string() << std::endl;
-        throw;
+        return;
     }
 
     auto& logger = Log(LogLevel::Trace);
