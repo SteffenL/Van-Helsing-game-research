@@ -15,6 +15,12 @@
 
 BOOL CMainDlg::PreTranslateMessage(MSG* pMsg)
 {
+    if (m_hAccelerator) {
+        if (::TranslateAccelerator(m_hWnd, m_hAccelerator, pMsg)) {
+            return TRUE;
+        }
+    }
+
     return m_storageTabs.PreTranslateMessage(pMsg);
 	//return CWindow::IsDialogMessage(pMsg);
 }
@@ -49,6 +55,8 @@ LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 	SetIcon(hIcon, TRUE);
 	HICON hIconSmall = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON));
 	SetIcon(hIconSmall, FALSE);
+
+    m_hAccelerator = AtlLoadAccelerators(IDR_MAINFRAME);
 
 	// register object for message filtering and idle updates
 	CMessageLoop* pLoop = _Module.GetMessageLoop();
@@ -130,11 +138,14 @@ LRESULT CMainDlg::OnFileOpen(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, B
     return 0;
 }
 
-LRESULT CMainDlg::OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CMainDlg::OnFileSave(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	// TODO: Add validation code 
-	CloseDialog(wID);
-	return 0;
+    return 0;
+}
+
+LRESULT CMainDlg::OnFileSaveAs(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+    return 0;
 }
 
 LRESULT CMainDlg::OnFileExit(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)

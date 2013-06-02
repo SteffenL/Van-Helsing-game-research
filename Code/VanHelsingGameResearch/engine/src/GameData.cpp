@@ -244,7 +244,7 @@ const char* GameData::GetRarityText(inventory::Artifact::Rarity::type rarity) co
         return text.at(rarity);
     }
     catch (std::out_of_range&) {
-        return "(unknown)";
+        return "(invalid)";
     }
 }
 
@@ -258,7 +258,7 @@ const char* GameData::GetQualityText(inventory::Artifact::Quality::type quality)
         return text.at(quality);
     }
     catch (std::out_of_range&) {
-        return "(unknown)";
+        return "(invalid)";
     }
 }
 

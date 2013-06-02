@@ -45,7 +45,8 @@ public:
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		COMMAND_ID_HANDLER(ID_HELP_ABOUT, OnAppAbout)
-        COMMAND_ID_HANDLER(IDOK, OnOK)
+        COMMAND_ID_HANDLER(ID_FILE_SAVE, OnFileSave)
+        COMMAND_ID_HANDLER(ID_FILE_SAVE_AS, OnFileSaveAs)
         COMMAND_ID_HANDLER(ID_FILE_OPEN, OnFileOpen)
         COMMAND_ID_HANDLER(IDCANCEL, OnFileExit)
 		COMMAND_ID_HANDLER(ID_FILE_EXIT, OnFileExit)
@@ -67,13 +68,15 @@ public:
 	LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    LRESULT OnFileSave(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    LRESULT OnFileSaveAs(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnFileOpen(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnFileExit(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
 	void CloseDialog(int nVal);
 
 private:
+    HACCEL m_hAccelerator;
     CHalTabCtrl m_storageTabs;
     std::map<int, StorageItemsTabPage> m_storageItemsTabPage;
     CMenu m_mainMenu;
