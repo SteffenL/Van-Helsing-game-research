@@ -14,7 +14,11 @@ A few links for search engines:
 
 ## Current programs
 - Unpacker for N2PK packages (*Files.N2PK*). These files contain textures, models, etc.
-- Storage viewer (*storage.sav*). Displays all of the items you have in your storage.
+- Storage viewer (command line) (*storage.sav*). Displays all of the items you have in your storage.
+- Storage editor (GUI). Very early stage; only basic viewing at this time.
+
+## Early preview
+![Storage Editor](https://raw.github.com/wiki/SteffenL/Van-Helsing-game-research/images/mainwindow.png)
 
 ## Pages
 
