@@ -2,7 +2,9 @@
 #include <vanhelsing/engine/log.h>
 #include <vanhelsing/engine/CfgParser.h>
 #include <vanhelsing/engine/inventory.h>
+#include <vanhelsing/engine/io/n2pk/N2pkFile.h>
 
+#include <pugixml.hpp>
 #include <boost/filesystem.hpp>
 #include <nowide/fstream.hpp>
 #include <iomanip>
@@ -91,6 +93,7 @@ void GameData::Load(const std::string& gameDir)
     }
 
     try {
+        loadTexts();
         loadArtifacts();
         loadEnchantments();
     }
@@ -234,31 +237,203 @@ std::string GameData::GetEnchantmentNameFromId(inventory::Enchantment::IdType id
     return data.Name;
 }
 
-const char* GameData::GetRarityText(inventory::Artifact::Rarity::type rarity) const
+const TextManager& GameData::GetTextManager() const
 {
-    static std::array<const char*, 6> text = {
-        "Normal", "Magic", "Rare", "Epic", "Set", "Random"
-    };
+    return m_texts;
+}
+
+void GameData::loadTexts()
+{
+    namespace fs = boost::filesystem;
+    fs::path filePath(m_gameDir);
+    filePath /= "Strings/Files.N2PK";
+
+    if (!fs::exists(filePath)) {
+        Log(LogLevel::Error) << "In-game text file doesn't exist: " << filePath.string() << std::endl;
+        return;
+    }
+
+    m_texts.Load(filePath.string());
+}
+
+
+bool TextManager::Load(const std::string& filePath)
+{
+    io::n2pk::N2pkFile package(filePath);
+    auto file = package.GetFile("lang_artifacts.xml");
+    if (!file) {
+        return false;
+    }
+
+    auto& fileEntry = package.GetFileEntry("lang_artifacts.xml");
+
+    pugi::xml_document doc;
+    std::vector<char> buf;
+    // Disable warnings about conversion and possible loss of data
+#pragma warning(push)
+#pragma warning(disable: 4244)
+    buf.resize(fileEntry.GetSize());
+    file->read(&buf[0], fileEntry.GetSize());
+    pugi::xml_parse_result result = doc.load_buffer_inplace(&buf[0], fileEntry.GetSize());
+#pragma warning(pop)
+
+    if (!result) {
+        throw std::runtime_error("Error while parsing language XML file.");
+    }
+
+    // Artifacts
+    {
+        auto items = doc.select_nodes("/Root/Artifacts/Items/*");
+        for (pugi::xpath_node_set::const_iterator it = items.begin(), end = items.end(); it != end; ++it)
+        {
+            auto& node = it->node();
+            std::string name = node.name();
+            std::string text = node.child("Name").first_child().child_value();
+            m_artifacts[name] = text;
+        }
+    }
+
+    // Quality
+    {
+        auto items = doc.select_nodes("/Root/Artifacts/Quality/*");
+        for (pugi::xpath_node_set::const_iterator it = items.begin(), end = items.end(); it != end; ++it)
+        {
+            auto& node = it->node();
+            std::string name = node.name();
+            std::string text = node.first_child().child_value();
+            m_quality[name] = text;
+        }
+    }
+
+    // Rarity
+    {
+        auto items = doc.select_nodes("/Root/Artifacts/Rarity/*");
+        for (pugi::xpath_node_set::const_iterator it = items.begin(), end = items.end(); it != end; ++it)
+        {
+            auto& node = it->node();
+            std::string name = node.name();
+            std::string text = node.first_child().child_value();
+            m_rarity[name] = text;
+        }
+    }
+
+    // Set name
+    {
+        auto items = doc.select_nodes("/Root/Artifacts/SetName/*");
+        for (pugi::xpath_node_set::const_iterator it = items.begin(), end = items.end(); it != end; ++it)
+        {
+            auto& node = it->node();
+            std::string name = node.name();
+            std::string text = node.first_child().child_value();
+            m_setName[name] = text;
+        }
+    }
+
+    // Types
+    {
+        auto items = doc.select_nodes("/Root/Artifacts/Types/*");
+        for (pugi::xpath_node_set::const_iterator it = items.begin(), end = items.end(); it != end; ++it)
+        {
+            auto& node = it->node();
+            std::string name = node.name();
+            std::string text = node.first_child().child_value();
+            m_types[name] = text;
+        }
+    }
+
+    // SubTypes
+    {
+        auto items = doc.select_nodes("/Root/Artifacts/SubTypes/*");
+        for (pugi::xpath_node_set::const_iterator it = items.begin(), end = items.end(); it != end; ++it)
+        {
+            auto& node = it->node();
+            std::string name = node.name();
+            std::string text = node.first_child().child_value();
+            m_subTypes[name] = text;
+        }
+    }
+
+    return true;
+}
+
+const std::string TextManager::GetRarityText(inventory::Artifact::Rarity::type rarity) const
+{
+    const char* textName = nullptr;
+    switch (rarity)
+    {
+    case vanhelsing::engine::inventory::Artifact::Rarity::Normal:
+        textName = "Normal";
+        break;
+
+    case vanhelsing::engine::inventory::Artifact::Rarity::Magic:
+        textName = "Magic";
+        break;
+
+    case vanhelsing::engine::inventory::Artifact::Rarity::Rare:
+        textName = "Rare";
+        break;
+
+    case vanhelsing::engine::inventory::Artifact::Rarity::Epic:
+        textName = "Epic";
+        break;
+
+    case vanhelsing::engine::inventory::Artifact::Rarity::Set:
+        textName = "Set";
+        break;
+
+    case vanhelsing::engine::inventory::Artifact::Rarity::Random:
+        return "Random?";
+        break;
+
+    default:
+        return "(invalid)";
+    }
 
     try {
-        return text.at(rarity);
+        return m_rarity.at(textName);
     }
     catch (std::out_of_range&) {
         return "(invalid)";
     }
 }
 
-const char* GameData::GetQualityText(inventory::Artifact::Quality::type quality) const
+const std::string TextManager::GetQualityText(inventory::Artifact::Quality::type quality) const
 {
-    static std::array<const char*, 3> text = {
-        "Normal", "Cracked", "Masterwork"
-    };
+    const char* textName = nullptr;
+    switch (quality)
+    {
+    case vanhelsing::engine::inventory::Artifact::Quality::Normal:
+        return "";
+
+    case vanhelsing::engine::inventory::Artifact::Quality::Cracked:
+        textName = "Cracked";
+        break;
+
+    case vanhelsing::engine::inventory::Artifact::Quality::Masterwork:
+        textName = "Masterwork";
+        break;
+
+    default:
+        return "(invalid)";
+    }
 
     try {
-        return text.at(quality);
+        return m_quality.at(textName);
     }
     catch (std::out_of_range&) {
         return "(invalid)";
+    }
+}
+
+const std::string TextManager::GetArtifactText(const std::string& name) const
+{
+    try {
+        return m_artifacts.at(name);
+    }
+    catch (std::out_of_range&) {
+        std::string text(name);
+        text += " (no name)";
+        return text;
     }
 }
 

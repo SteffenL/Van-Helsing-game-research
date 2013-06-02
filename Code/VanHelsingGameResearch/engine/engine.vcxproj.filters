@@ -51,6 +51,9 @@
     <ClCompile Include="src\io\GameSaveContainerReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\3rd_party\pugixml-1.2\src\pugixml.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveReader.h">

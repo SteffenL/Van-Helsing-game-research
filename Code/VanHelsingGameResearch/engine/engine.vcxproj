@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\3rd_party\pugixml-1.2\src\pugixml.cpp" />
     <ClCompile Include="src\CfgParser.cpp" />
     <ClCompile Include="src\GameData.cpp" />
     <ClCompile Include="src\GameSave.cpp" />
@@ -75,7 +76,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BOOST_ALL_DYN_LINK;_USING_V110_SDK71_;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);$(SolutionDir)3rd_party\misc;$(SolutionDir)3rd_party\jsoncpp-src-0.5.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rd_party\pugixml-1.2\src;$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);$(SolutionDir)3rd_party\misc;$(SolutionDir)3rd_party\jsoncpp-src-0.5.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -91,7 +92,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_USING_V110_SDK71_;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);$(SolutionDir)3rd_party\misc;$(SolutionDir)3rd_party\jsoncpp-src-0.5.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rd_party\pugixml-1.2\src;$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);$(SolutionDir)3rd_party\misc;$(SolutionDir)3rd_party\jsoncpp-src-0.5.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>

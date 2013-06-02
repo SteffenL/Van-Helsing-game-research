@@ -8,6 +8,25 @@
 
 namespace vanhelsing { namespace engine {
 
+class TextManager
+{
+    typedef std::map<std::string, std::string> TextMap;
+
+public:
+    bool Load(const std::string& filePath);
+    const std::string GetRarityText(inventory::Artifact::Rarity::type rarity) const;
+    const std::string GetQualityText(inventory::Artifact::Quality::type quality) const;
+    const std::string GetArtifactText(const std::string& name) const;
+
+private:
+    TextMap m_rarity;
+    TextMap m_quality;
+    TextMap m_artifacts;
+    TextMap m_setName;
+    TextMap m_types;
+    TextMap m_subTypes;
+};
+
 class GameData
 {
 public:
@@ -33,12 +52,12 @@ public:
     bool GetItemData(inventory::Artifact::IdType id, ArtifactData& data) const;
     bool GetItemData(inventory::Enchantment::IdType id, EnchantmentData& data) const;
     inventory::Item::IdType GetItemIdFromName(const std::string& name) const;
+    const TextManager& GetTextManager() const;
     std::string GetArtifactNameFromId(inventory::Item::IdType id) const;
     std::string GetEnchantmentNameFromId(inventory::Item::IdType id) const;
-    const char* GetRarityText(inventory::Artifact::Rarity::type rarity) const;
-    const char* GetQualityText(inventory::Artifact::Quality::type quality) const;
 
 private:
+    void loadTexts();
     void loadArtifacts();
     void loadEnchantments();
 
@@ -47,6 +66,7 @@ private:
     std::string m_gameDir;
     class Impl;
     std::unique_ptr<Impl> m_impl;
+    TextManager m_texts;
 };
 
 }} // namespace
