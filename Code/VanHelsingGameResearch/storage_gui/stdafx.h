@@ -6,9 +6,9 @@
 #pragma once
 
 // Change these values to use different versions
-#define WINVER		0x0501
-#define _WIN32_WINNT	0x0501
-#define _WIN32_IE	0x0501
+#define WINVER		0x0600
+#define _WIN32_WINNT	0x0600
+#define _WIN32_IE	0x0700
 #define _RICHEDIT_VER	0x0200
 
 
@@ -41,13 +41,12 @@ extern CAppModule _Module;
 #include <atlctrlw.h>
 #include <atltheme.h>
 #include <DdxEx.hpp>
+#include <CSSFileDialog.hpp>
 
 #include <vector>
 #include <cassert>
 #include <string>
 #include <map>
-
-//#include <boost/numeric_cast.hpp>
 
 #include "resource.h"
 

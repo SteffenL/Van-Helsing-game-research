@@ -2,6 +2,6 @@
 
 namespace vanhelsing { namespace engine {
 
-
+StorageGameSave::~StorageGameSave() {}
 
 }} // namespace

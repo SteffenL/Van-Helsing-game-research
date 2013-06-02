@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
         std::string gameDir(gameDir_c);
         GameData::Get().Load(gameDir);
 
-        GameSave gameSave;
+        StorageGameSave gameSave;
         nowide::ifstream inStream(filePath.c_str(), std::ios::binary);
         if (!inStream.is_open()) {
             Log(LogLevel::Error) << "Couldn't open file: " << filePath << std::endl;

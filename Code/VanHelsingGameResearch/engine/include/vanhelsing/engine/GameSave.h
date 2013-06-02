@@ -8,13 +8,13 @@ namespace vanhelsing { namespace engine {
 class GameSave
 {
 public:
-    inventory::Manager& GetInventoryManager();
+    //inventory::Manager<inventory::Artifact>& GetEquippedItems() { return m_equippedItems; }
     virtual ~GameSave();
 
 protected:
 
 private:
-    inventory::Manager m_inventoryManager;
+    //inventory::Manager<inventory::Artifact> m_equippedItems;
 };
 
 }} // namespace

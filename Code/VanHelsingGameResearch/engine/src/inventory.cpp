@@ -3,24 +3,29 @@
 
 namespace vanhelsing { namespace engine { namespace inventory {
 
-void Manager::Add(Artifact* item)
-{
-    m_artifacts.push_back(std::unique_ptr<Artifact>(item));
-}
-
-void Manager::Add(Enchantment* item)
-{
-    m_enchantments.push_back(std::unique_ptr<Enchantment>(item));
-}
-
 std::string Artifact::GetName() const
 {
     return GameData::Get().GetArtifactNameFromId(Id);
 }
 
+Enchantment::List& Artifact::GetEnchantments()
+{
+    return m_enchantments;
+}
+
 std::string Enchantment::GetName() const
 {
     return GameData::Get().GetEnchantmentNameFromId(Id);
+}
+
+
+void Artifact::List::FindByBagNumber(int bagNumber, std::vector<Artifact*>& items)
+{
+    for (auto& item : m_items) {
+        if (item->BagNumber == bagNumber) {
+            items.push_back(item.get());
+        }
+    }
 }
 
 }}} // namespace

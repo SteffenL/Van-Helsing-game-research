@@ -8,9 +8,15 @@
 #include "aboutdlg.h"
 #include "MainDlg.h"
 
+#include <vanhelsing/engine/StorageGameSave.h>
+#include <vanhelsing/engine/io/StorageGameSaveReader.h>
+#include <vanhelsing/engine/GameData.h>
+#include <nowide/fstream.hpp>
+
 BOOL CMainDlg::PreTranslateMessage(MSG* pMsg)
 {
-	return CWindow::IsDialogMessage(pMsg);
+    return m_storageTabs.PreTranslateMessage(pMsg);
+	//return CWindow::IsDialogMessage(pMsg);
 }
 
 BOOL CMainDlg::OnIdle()
@@ -20,16 +26,6 @@ BOOL CMainDlg::OnIdle()
 
 LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    /*CPropertySheet sheet;
-    CPropertyPage<IDD_PROPPAGE_SMALL> propPage;
-
-    //sheet.m_psh.dwFlags = sheet.m_psh.dwFlags & ~PSH_NOAPPLYNOW;
-
-    sheet.AddPage ( propPage );
-    sheet.AddPage ( propPage );
-    sheet.AddPage ( propPage );
-    sheet.Create(*this);*/
-
     DlgResize_Init(false, false, WS_CLIPCHILDREN);
     DoDataExchange(false);
 
@@ -37,13 +33,14 @@ LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
     m_storageItemsTabPage[0].Create(m_storageTabs);
     m_storageItemsTabPage[1].Create(m_storageTabs);
     m_storageItemsTabPage[2].Create(m_storageTabs);
-    m_storageTabs.AddPage(m_storageItemsTabPage[0], L"Page 1");
-    m_storageTabs.AddPage(m_storageItemsTabPage[1], L"Page 2");
-    m_storageTabs.AddPage(m_storageItemsTabPage[2], L"Page 3");
+    m_storageItemsTabPage[0].SetBagNumber(0);
+    m_storageItemsTabPage[1].SetBagNumber(1);
+    m_storageItemsTabPage[2].SetBagNumber(2);
+    m_storageTabs.AddPage(m_storageItemsTabPage[0], _T("Page 1"));
+    m_storageTabs.AddPage(m_storageItemsTabPage[1], _T("Page 2"));
+    m_storageTabs.AddPage(m_storageItemsTabPage[2], _T("Page 3"));
     m_storageTabs.SetCurrentPage(0);
 
-
-    //m_storageTabs.SubclassWindow(GetDlgItem(IDC_STORAGE_TABS));
 	// center the dialog on the screen
 	CenterWindow();
 
@@ -64,18 +61,10 @@ LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
     m_mainMenu.Attach(::LoadMenu(_Module.GetModuleInstance(), MAKEINTRESOURCE(IDR_MAIN_MENU)));
     SetMenu(m_mainMenu);
 
-    //m_storageTabs.Attach(GetDlgItem(IDC_STORAGE_TABS));
-
-    /*RECT rect;
-    GetClientRect(&rect);
-    rect.left += 5;
-    rect.top += 5;
-    rect.right -= 5;
-    rect.bottom -= 5;
-    m_storageTabs.Create(m_hWnd, rect);
-    m_storageTabs.AddPage(GetDlgItem(IDC_STORAGE_TABS), _T("Page 1"));
-    m_storageTabs.AddPage(GetDlgItem(IDC_STORAGE_TABS), _T("Page 2"));
-    m_storageTabs.AddPage(GetDlgItem(IDC_STORAGE_TABS), _T("Page 3"));*/
+    auto gameDir = std::getenv("VH_GAME_DIR");
+    if (gameDir) {
+        vanhelsing::engine::GameData::Get().Load(gameDir);
+    }
 
 	return TRUE;
 }
@@ -98,6 +87,49 @@ LRESULT CMainDlg::OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*
 	return 0;
 }
 
+static UINT_PTR CALLBACK file(HWND hdlg, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    return 0;
+}
+
+LRESULT CMainDlg::OnFileOpen(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+   /* Kerr::FileOpenDialog dialog;
+    if (FAILED(dialog.Load())) {
+        return 0;
+    }
+
+    COMDLG_FILTERSPEC filter[] = { L"storage.sav", L"storage.sav" };
+    dialog->SetFileTypes(1, filter);
+
+    if (FAILED(dialog.DoModal())) {
+        return 0;
+    }
+
+    CComPtr<IShellItem> selection;
+    dialog->GetResult(&selection);*/
+
+    CSSFileDialog dialog(TRUE, NULL, NULL,
+        OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_ENABLESIZING,
+        _T("storage.sav|storage.sav|"));
+
+    if (dialog.DoModal(*this) != IDOK) {
+        return 0;
+    }
+
+    auto& filePath(nowide::narrow(dialog.m_szFileName));
+    nowide::ifstream file(filePath.c_str(), std::ios::binary);
+
+    m_gameSave.reset(new vanhelsing::engine::StorageGameSave);
+    vanhelsing::engine::io::StorageGameSaveReader reader(*m_gameSave, file);
+
+    m_storageItemsTabPage[0].OnOpenGameSave(m_gameSave.get());
+    m_storageItemsTabPage[1].OnOpenGameSave(m_gameSave.get());
+    m_storageItemsTabPage[2].OnOpenGameSave(m_gameSave.get());
+
+    return 0;
+}
+
 LRESULT CMainDlg::OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	// TODO: Add validation code 
@@ -116,3 +148,7 @@ void CMainDlg::CloseDialog(int nVal)
 	DestroyWindow();
 	::PostQuitMessage(nVal);
 }
+
+CMainDlg::CMainDlg() {}
+
+CMainDlg::~CMainDlg() {}

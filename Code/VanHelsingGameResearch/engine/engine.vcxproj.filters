@@ -48,6 +48,9 @@
     <ClCompile Include="src\CfgParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\io\GameSaveContainerReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveReader.h">
@@ -81,6 +84,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\vanhelsing\engine\CfgParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

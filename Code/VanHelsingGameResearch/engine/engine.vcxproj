@@ -15,6 +15,7 @@
     <ClCompile Include="src\GameData.cpp" />
     <ClCompile Include="src\GameSave.cpp" />
     <ClCompile Include="src\inventory.cpp" />
+    <ClCompile Include="src\io\GameSaveContainerReader.cpp" />
     <ClCompile Include="src\io\GameSaveReader.cpp" />
     <ClCompile Include="src\io\GameSaveWriter.cpp" />
     <ClCompile Include="src\io\n2pk\N2pkFile.cpp" />
@@ -28,6 +29,7 @@
     <ClInclude Include="include\vanhelsing\engine\GameData.h" />
     <ClInclude Include="include\vanhelsing\engine\GameSave.h" />
     <ClInclude Include="include\vanhelsing\engine\inventory.h" />
+    <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerReader.h" />
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveReader.h" />
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveWriter.h" />
     <ClInclude Include="include\vanhelsing\engine\io\n2pk\N2pkFile.h" />
@@ -93,6 +95,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -10,6 +10,7 @@
 #define IDC_TAB1                        1000
 #define IDC_STORAGE_TABS                1001
 #define IDC_STORAGE_ITEMS               1002
+#define IDC_ITEM_LIST                   1002
 #define ID_HELP_ABOUTSTORAGEEDITOR      32775
 #define ID_HELP_SUPPORT                 32776
 #define ID_FILE_OPEN32777               32777

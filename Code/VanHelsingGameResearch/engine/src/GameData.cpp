@@ -12,6 +12,8 @@
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/random_access_index.hpp>
 
+#include <array>
+
 namespace bmi = boost::multi_index;
 
 namespace vanhelsing { namespace engine {
@@ -230,6 +232,34 @@ std::string GameData::GetEnchantmentNameFromId(inventory::Enchantment::IdType id
     }
 
     return data.Name;
+}
+
+const char* GameData::GetRarityText(inventory::Artifact::Rarity::type rarity) const
+{
+    static std::array<const char*, 6> text = {
+        "Normal", "Magic", "Rare", "Epic", "Set", "Random"
+    };
+
+    try {
+        return text.at(rarity);
+    }
+    catch (std::out_of_range&) {
+        return "(unknown)";
+    }
+}
+
+const char* GameData::GetQualityText(inventory::Artifact::Quality::type quality) const
+{
+    static std::array<const char*, 3> text = {
+        "Normal", "Cracked", "Masterwork"
+    };
+
+    try {
+        return text.at(quality);
+    }
+    catch (std::out_of_range&) {
+        return "(unknown)";
+    }
 }
 
 }} // namespace

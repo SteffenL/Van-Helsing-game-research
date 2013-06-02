@@ -5,8 +5,8 @@
 
 namespace vanhelsing { namespace engine { namespace io {
 
-StorageGameSaveReader::StorageGameSaveReader(GameSave& gameSave, std::istream& inStream)
-    : GameSaveReader(gameSave, inStream), m_logger(LogLevel::Trace)
+StorageGameSaveReader::StorageGameSaveReader(StorageGameSave& gameSave, std::istream& inStream)
+    : GameSaveContainerReader(inStream), m_gameSave(gameSave), m_logger(LogLevel::Trace)
 {
     StreamHelper stream(getStream());
     readArtifacts(stream);
@@ -25,7 +25,12 @@ void StorageGameSaveReader::readArtifacts(StreamHelper& stream)
         m_logger << "Bag #: " << bagNumber << std::endl;
         m_logger << "Slot #: " << slotNumber << std::endl;
         m_logger << "" << std::endl;
-        readArtifact(stream);
+        auto item = readArtifact(stream);
+        if (item) {
+            item->BagNumber = bagNumber;
+            item->SlotNumber = slotNumber;
+        }
+
         m_logger << Log::outdent;
         m_logger << "" << std::endl;
     }
@@ -38,7 +43,7 @@ void StorageGameSaveReader::readArtifacts(StreamHelper& stream)
     m_logger << Log::outdent;
 }
 
-void StorageGameSaveReader::readArtifact(StreamHelper& stream)
+inventory::Artifact* StorageGameSaveReader::readArtifact(StreamHelper& stream)
 {
     using inventory::Artifact;
     std::unique_ptr<Artifact> item(new Artifact);
@@ -78,10 +83,12 @@ void StorageGameSaveReader::readArtifact(StreamHelper& stream)
     auto v1 = stream.Read<bool>();
     m_logger << "Unknown: " << v1 << std::endl;
 
-    auto& manager = getGameSave().GetInventoryManager();
-    manager.Add(item.get());
+    auto& manager = m_gameSave.GetItems();
+    auto itemPtr = item.get();
+    manager.Add(itemPtr);
     // Manager owns it now
     item.release();
+    return itemPtr;
 }
 
 void StorageGameSaveReader::readEnchantments(StreamHelper& stream)

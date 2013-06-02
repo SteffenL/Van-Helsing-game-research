@@ -26,32 +26,31 @@ public:
     IdType Id;
 };
 
-class Artifact : public Item
+// Artifact attributes:
+// Armor: Defense, Essence capacity
+
+template<typename ItemType>
+class ItemList
 {
 public:
-    struct Rarity { enum type : unsigned int { Normal, Magic, Rare, Epic, Set, Random }; };
-    struct Quality { enum type : unsigned int { Normal, Cracked, Masterwork }; };
-    
-    virtual std::string GetName() const;
-
-    unsigned int BagNumber;
-    unsigned int SlotNumber;
-
-    int Attribute1;
-    int Attribute2;
-    int Quantity;
-    Artifact::Quality::type Quality;
-    Artifact::Rarity::type Rarity;
-    bool IsIdentified;
-    struct
+    void Add(ItemType* item)
     {
-        
-    } Unknown;
+        m_items.push_back(std::unique_ptr<ItemType>(item));
+    }
+
+protected:
+    std::vector<std::unique_ptr<ItemType>> m_items;
 };
 
 class Enchantment : public Item
 {
 public:
+    class List : public ItemList<Enchantment>
+    {
+    public:
+
+    };
+
     virtual std::string GetName() const;
 
     float Multiplier;
@@ -66,18 +65,38 @@ public:
     } Unknown;
 };
 
-// Artifact attributes:
-// Armor: Defense, Essence capacity
-
-class Manager
+class Artifact : public Item
 {
 public:
-    void Add(Artifact* item);
-    void Add(Enchantment* item);
+    class List : public ItemList<Artifact>
+    {
+    public:
+        void FindByBagNumber(int bagNumber, std::vector<Artifact*>& items);
+    };
 
-private:
-    std::vector<std::unique_ptr<Artifact>> m_artifacts;
-    std::vector<std::unique_ptr<Enchantment>> m_enchantments;
+    struct Rarity { enum type : unsigned int { Normal, Magic, Rare, Epic, Set, Random }; };
+    struct Quality { enum type : unsigned int { Normal, Cracked, Masterwork }; };
+
+    virtual std::string GetName() const;
+
+    unsigned int BagNumber;
+    unsigned int SlotNumber;
+
+    int Attribute1;
+    int Attribute2;
+    int Quantity;
+    Artifact::Quality::type Quality;
+    Artifact::Rarity::type Rarity;
+    bool IsIdentified;
+    struct
+    {
+
+    } Unknown;
+
+    Enchantment::List& GetEnchantments();
+
+protected:
+    Enchantment::List m_enchantments;
 };
 
 }}} // namespace

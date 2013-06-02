@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "HaliteTabPage.hpp"
+#include <vanhelsing/engine/StorageGameSave.h>
 
 class StorageItemsTabPage :
     public CHalTabPageImpl<StorageItemsTabPage>,
@@ -16,7 +17,9 @@ protected:
 public:
     enum { IDD = IDD_STORAGE_TAB_PAGE };
 
-    StorageItemsTabPage() {}
+    StorageItemsTabPage();
+    void OnOpenGameSave(vanhelsing::engine::StorageGameSave* gameSave);
+    void SetBagNumber(int bagNumber);
 
     BOOL PreTranslateMessage(MSG* pMsg)
     {
@@ -25,7 +28,6 @@ public:
 
     BEGIN_MSG_MAP_EX(this_class_t)
         MSG_WM_INITDIALOG(onInitDialog)
-        MSG_WM_CLOSE(onClose)
 
         if (uMsg == WM_FORWARDMSG)
             if (PreTranslateMessage((LPMSG)lParam)) return TRUE;
@@ -38,10 +40,13 @@ public:
     BOOL DoDataExchange(BOOL bSaveAndValidate = FALSE, UINT nCtlID = (UINT)-1);
 
     BEGIN_DLGRESIZE_MAP(this_class_t)
-        DLGRESIZE_CONTROL(IDC_STORAGE_ITEMS, DLSZ_SIZE_X | DLSZ_SIZE_Y)
+        DLGRESIZE_CONTROL(IDC_ITEM_LIST, DLSZ_SIZE_X | DLSZ_SIZE_Y)
     END_DLGRESIZE_MAP()
 
     LRESULT onInitDialog(HWND, LPARAM);
 
 protected:
+    CListViewCtrl m_itemList;
+    vanhelsing::engine::StorageGameSave* m_gameSave;
+    int m_bagNumber;
 };

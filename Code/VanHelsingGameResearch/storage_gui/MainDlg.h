@@ -2,6 +2,10 @@
 
 #include "HaliteTabCtrl.hpp"
 #include "StorageItemsTabPage.h"
+#include <memory>
+#include <vanhelsing/engine/StorageGameSave.h>
+
+//namespace vanhelsing { namespace engine { class StorageGameSave; } }
 
 class CMainDlg
     : public CDialogImpl<CMainDlg>,
@@ -15,6 +19,8 @@ class CMainDlg
 public:
 	enum { IDD = IDD_MAINDLG };
 
+    CMainDlg();
+    virtual ~CMainDlg();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual BOOL OnIdle();
 
@@ -36,14 +42,21 @@ public:
     END_DLGRESIZE_MAP()
 
     BEGIN_MSG_MAP(CMainDlg)
-        //CHAIN_MSG_MAP(CAutoSizeWindow<CMainDlg>)
-        CHAIN_MSG_MAP(CDialogResize<CMainDlg>)
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		COMMAND_ID_HANDLER(ID_HELP_ABOUT, OnAppAbout)
         COMMAND_ID_HANDLER(IDOK, OnOK)
+        COMMAND_ID_HANDLER(ID_FILE_OPEN, OnFileOpen)
         COMMAND_ID_HANDLER(IDCANCEL, OnFileExit)
 		COMMAND_ID_HANDLER(ID_FILE_EXIT, OnFileExit)
+
+        //CHAIN_MSG_MAP(CAutoSizeWindow<CMainDlg>)
+        CHAIN_MSG_MAP(CDialogResize<CMainDlg>)
+
+        if(uMsg == WM_FORWARDMSG)
+            if(PreTranslateMessage((LPMSG)lParam)) return TRUE;
+
+        REFLECT_NOTIFICATIONS()
 	END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):
@@ -55,6 +68,7 @@ public:
 	LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnFileOpen(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnFileExit(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
 	void CloseDialog(int nVal);
@@ -63,4 +77,5 @@ private:
     CHalTabCtrl m_storageTabs;
     std::map<int, StorageItemsTabPage> m_storageItemsTabPage;
     CMenu m_mainMenu;
+    std::unique_ptr<vanhelsing::engine::StorageGameSave> m_gameSave;
 };
