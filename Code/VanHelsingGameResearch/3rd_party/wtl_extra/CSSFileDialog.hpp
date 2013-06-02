@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 /**
@@ -7,6 +7,10 @@
  * @author Simon Steele <s.steele (at) pnotepad . org>
  *
  * This code is released into the public domain.
+ *
+ * Jun 2 2013:
+ * Use Vista/7 style. Previously showed the old style because of the hook.
+ * - Steffen André Langnes
  */
 
 #include <atldlgs.h>
@@ -145,8 +149,11 @@ public:
 
 	INT_PTR DoModal(HWND hWndParent = ::GetActiveWindow())
 	{
-		ATLASSERT(m_ofn.Flags & OFN_ENABLEHOOK);
-		ATLASSERT(m_ofn.lpfnHook != NULL);	// can still be a user hook
+// 		ATLASSERT(m_ofn.Flags & OFN_ENABLEHOOK);
+// 		ATLASSERT(m_ofn.lpfnHook != NULL);	// can still be a user hook
+
+        m_ofn.Flags &= ~OFN_ENABLEHOOK;
+        m_ofn.lpfnHook = NULL;
 
 		ATLASSERT(m_ofn.Flags & OFN_EXPLORER);
 
