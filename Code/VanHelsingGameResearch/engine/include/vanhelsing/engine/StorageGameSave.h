@@ -1,5 +1,5 @@
-#ifndef __vanhelsing_engine_StorageGameSave__
-#define __vanhelsing_engine_StorageGameSave__
+#ifndef vanhelsing_engine_StorageGameSave_
+#define vanhelsing_engine_StorageGameSave_
 
 #include <vanhelsing/engine/GameSave.h>
 

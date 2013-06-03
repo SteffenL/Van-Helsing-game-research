@@ -1,5 +1,5 @@
-#ifndef __vanhelsing_engine_io_GameSaveReader__
-#define __vanhelsing_engine_io_GameSaveReader__
+#ifndef vanhelsing_engine_io_GameSaveReader_
+#define vanhelsing_engine_io_GameSaveReader_
 
 #include "../GameSave.h"
 #include <iostream>

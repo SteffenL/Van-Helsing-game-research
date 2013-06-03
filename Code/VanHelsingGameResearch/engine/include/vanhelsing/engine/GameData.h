@@ -1,5 +1,5 @@
-#ifndef __vanhelsing_engine_GameData__
-#define __vanhelsing_engine_GameData__
+#ifndef vanhelsing_engine_GameData_
+#define vanhelsing_engine_GameData_
 
 #include <vanhelsing/engine/inventory.h>
 #include <string>

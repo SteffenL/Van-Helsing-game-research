@@ -1,5 +1,5 @@
-#ifndef __vanhelsing_engine_io_StorageGameSaveReader__
-#define __vanhelsing_engine_io_StorageGameSaveReader__
+#ifndef vanhelsing_engine_io_StorageGameSaveReader_
+#define vanhelsing_engine_io_StorageGameSaveReader_
 
 #include <vanhelsing/engine/StorageGameSave.h>
 #include <vanhelsing/engine/io/GameSaveContainerReader.h>

@@ -1,5 +1,5 @@
-#ifndef __vanhelsing_engine_inventory__
-#define __vanhelsing_engine_inventory__
+#ifndef vanhelsing_engine_inventory_
+#define vanhelsing_engine_inventory_
 
 #include <vector>
 #include <array>

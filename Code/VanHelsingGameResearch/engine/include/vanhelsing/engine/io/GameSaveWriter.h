@@ -1,5 +1,5 @@
-#ifndef __vanhelsing_engine_io_GameSaveWriter__
-#define __vanhelsing_engine_io_GameSaveWriter__
+#ifndef vanhelsing_engine_io_GameSaveWriter_
+#define vanhelsing_engine_io_GameSaveWriter_
 
 #include "../GameSave.h"
 

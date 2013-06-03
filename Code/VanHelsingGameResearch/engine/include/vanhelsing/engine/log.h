@@ -1,5 +1,5 @@
-#ifndef __vanhelsing_engine_log__
-#define __vanhelsing_engine_log__
+#ifndef vanhelsing_engine_log_
+#define vanhelsing_engine_log_
 
 #include <iostream>
 #include <sstream>
