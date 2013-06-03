@@ -12,6 +12,12 @@ A few links for search engines:
 - [Dead Island Save Editor (DISE)](http://deadislandsaveeditor.steffenl.com/) - My main project, a game-save editor.
 - ["Private" blog](http://blog.steffenl.com/)
 
+## Coding environment
+- Operating system: Windows 8.
+- IDE/Compiler: Visual Studio/C++ 2012.
+- Code is written to be cross-platform, but the GUI is coded with WTL (Windows Template Library), specifically for Windows.
+- 3rd party libraries are included (except Boost).
+
 ## Current programs
 - Unpacker for N2PK packages (*Files.N2PK*). These files contain textures, models, etc.
 - Storage viewer (command line) (*storage.sav*). Displays all of the items you have in your storage.
@@ -25,6 +31,8 @@ A few links for search engines:
 - [Keep the game running in the background](https://github.com/SteffenL/Van-Helsing-game-research/wiki/Keep-the-game-running-in-the-background)
 - [Skip logos on startup](https://github.com/SteffenL/Van-Helsing-game-research/wiki/Skip-logos-on-startup)
 - [Use the 32 bit version of the game on 64 bit systems](https://github.com/SteffenL/Van-Helsing-game-research/wiki/Use-the-32-bit-version-of-the-game-on-64-bit-systems)
+- [List of items and IDs](https://github.com/SteffenL/Van-Helsing-game-research/wiki/List-of-items-and-IDs)
+- [List of enchantments and IDs](https://github.com/SteffenL/Van-Helsing-game-research/wiki/List-of-enchantments-and-IDs)
 
 ## Game-save location (PC)
 `Documents\NeocoreGames\Van Helsing\SaveGame\21801362`
@@ -33,13 +41,13 @@ A few links for search engines:
 
 - *.sav - Game-save/Character.
 - timestamp.hts
-- backup\*.sav - Backup of old saves.
-- common\storage.sav - Storage/Chest?
+- backup\*.sav - Backup of previous saves.
+- common\storage.sav - Your own storage/chest.
 - achievements.sav
 
 ## Saves (and such) inside repo (for research)
 
-Very incomplete, but these files are the files I'm workong with *at the moment*.
+Very incomplete, but these files are the files I'm working with *at the moment*.
 
 - bookmarks.hbk - Bookmarks for Hex Workshop. Use with `TestCrve_orig.sav` to locate interesting values.
 - TestCrve_orig.sav - The original (well, almost original) save. Revert `TestCrve.sav` to this one when needed.
