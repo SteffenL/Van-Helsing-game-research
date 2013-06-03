@@ -8,6 +8,7 @@
 #include <boost/filesystem.hpp>
 #include <nowide/fstream.hpp>
 #include <iomanip>
+#include <algorithm>
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/member.hpp>
@@ -270,7 +271,7 @@ bool TextManager::Load(const std::string& filePath)
 
 const std::string TextManager::GetRarityText(inventory::Item::Rarity::type rarity) const
 {
-    const char* textName = nullptr;
+    std::string textName;
     switch (rarity)
     {
     case vanhelsing::engine::inventory::Item::Rarity::Normal:
@@ -301,6 +302,7 @@ const std::string TextManager::GetRarityText(inventory::Item::Rarity::type rarit
         return "(invalid)";
     }
 
+    std::transform(textName.begin(), textName.end(), textName.begin(), ::tolower);
     try {
         return m_rarity.at(textName);
     }
@@ -311,7 +313,7 @@ const std::string TextManager::GetRarityText(inventory::Item::Rarity::type rarit
 
 const std::string TextManager::GetQualityText(inventory::Item::Quality::type quality) const
 {
-    const char* textName = nullptr;
+    std::string textName;
     switch (quality)
     {
     case vanhelsing::engine::inventory::Item::Quality::Normal:
@@ -329,6 +331,7 @@ const std::string TextManager::GetQualityText(inventory::Item::Quality::type qua
         return "(invalid)";
     }
 
+    std::transform(textName.begin(), textName.end(), textName.begin(), ::tolower);
     try {
         return m_quality.at(textName);
     }
@@ -339,8 +342,10 @@ const std::string TextManager::GetQualityText(inventory::Item::Quality::type qua
 
 const std::string TextManager::GetItemText(const std::string& name) const
 {
+    std::string nameLc(name);
+    std::transform(nameLc.begin(), nameLc.end(), nameLc.begin(), ::tolower);
     try {
-        return m_items.at(name);
+        return m_items.at(nameLc);
     }
     catch (std::out_of_range&) {
         std::string text(name);
@@ -351,8 +356,10 @@ const std::string TextManager::GetItemText(const std::string& name) const
 
 const std::string TextManager::GetSetNameText(const std::string& name) const
 {
+    std::string nameLc(name);
+    std::transform(nameLc.begin(), nameLc.end(), nameLc.begin(), ::tolower);
     try {
-        return m_setName.at(name);
+        return m_setName.at(nameLc);
     }
     catch (std::out_of_range&) {
         std::string text(name);
@@ -391,6 +398,7 @@ bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
         {
             auto& node = it->node();
             std::string name = node.name();
+            std::transform(name.begin(), name.end(), name.begin(), ::tolower);
             std::string text = node.child("Name").first_child().child_value();
             m_items[name] = text;
         }
@@ -403,6 +411,7 @@ bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
         {
             auto& node = it->node();
             std::string name = node.name();
+            std::transform(name.begin(), name.end(), name.begin(), ::tolower);
             std::string text = node.child("desc").first_child().child_value();
             m_enchantments[name] = text;
         }
@@ -415,6 +424,7 @@ bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
         {
             auto& node = it->node();
             std::string name = node.name();
+            std::transform(name.begin(), name.end(), name.begin(), ::tolower);
             std::string text = node.first_child().child_value();
             m_quality[name] = text;
         }
@@ -427,6 +437,7 @@ bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
         {
             auto& node = it->node();
             std::string name = node.name();
+            std::transform(name.begin(), name.end(), name.begin(), ::tolower);
             std::string text = node.first_child().child_value();
             m_rarity[name] = text;
         }
@@ -439,6 +450,7 @@ bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
         {
             auto& node = it->node();
             std::string name = node.name();
+            std::transform(name.begin(), name.end(), name.begin(), ::tolower);
             std::string text = node.first_child().child_value();
             m_setName[name] = text;
         }
@@ -451,6 +463,7 @@ bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
         {
             auto& node = it->node();
             std::string name = node.name();
+            std::transform(name.begin(), name.end(), name.begin(), ::tolower);
             std::string text = node.first_child().child_value();
             m_types[name] = text;
         }
@@ -463,6 +476,7 @@ bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
         {
             auto& node = it->node();
             std::string name = node.name();
+            std::transform(name.begin(), name.end(), name.begin(), ::tolower);
             std::string text = node.first_child().child_value();
             m_subTypes[name] = text;
         }
@@ -501,6 +515,7 @@ bool TextManager::loadSkillText(const io::n2pk::N2pkFile& package)
         {
             auto& node = it->node();
             std::string name = node.name();
+            std::transform(name.begin(), name.end(), name.begin(), ::tolower);
             std::string text = node.child("desc").first_child().child_value();
             m_skillProperties[name] = text;
         }
