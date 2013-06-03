@@ -33,6 +33,9 @@
     <ClCompile Include="..\3rd_party\nowide\src\iostream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="my_console_output_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StorageItemsTabPage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="my_console_output_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,10 +5,27 @@
 #include "aboutdlg.h"
 #include "MainDlg.h"
 
+#include "my_console_output_buffer.h"
+#include <vanhelsing/engine/log.h>
+
 CAppModule _Module;
 
 int Run(LPTSTR /*lpstrCmdLine*/ = NULL, int nCmdShow = SW_SHOWDEFAULT)
 {
+    // For logging; redirects output so that it works with the allocated console
+    if (::AllocConsole()) {
+        ::freopen("CONOUT$", "w", stdout);
+        auto h = ::GetStdHandle(STD_OUTPUT_HANDLE);
+        // For nowide; output is not displayed otherwise
+        nowide::cout.set_rdbuf(new nowide::details::my_console_output_buffer(h));
+    }
+
+    bool shouldBeVerbose = true;
+    if (shouldBeVerbose) {
+        using namespace vanhelsing::engine;
+        Log::SetLogLevelFilter(LogLevel::Trace);
+    }
+
 	CMessageLoop theLoop;
 	_Module.AddMessageLoop(&theLoop);
 

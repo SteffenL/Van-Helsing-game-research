@@ -1,6 +1,7 @@
 #include <vanhelsing/engine/io/n2pk/N2pkFile.h>
 #include <vanhelsing/engine/io/StreamHelper.h>
 #include <nowide/fstream.hpp>
+#include <iomanip>
 #include <misc/substreambuf.hpp>
 
 #include <boost/multi_index_container.hpp>
@@ -88,6 +89,8 @@ vanhelsing::engine::io::n2pk::FileEntry N2pkFile::GetFileEntry(const std::string
 
 N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(new Impl), m_logger(LogLevel::Trace)
 {
+    m_logger << "Opening Neocore Package: " << filePath << std::endl;
+
     auto fileStream = new nowide::ifstream(filePath.c_str(), std::ios::binary);
     if (!fileStream->is_open()) {
         throw std::runtime_error("Couldn't open file");
@@ -115,6 +118,7 @@ N2pkFile::~N2pkFile() {}
 
 void N2pkFile::readFileTable(StreamHelper& stream)
 {
+    m_logger << "Reading file table..." << std::endl;
     stream.Seek(m_entryTableOffset, std::ios::beg);
     m_impl->Files.clear();
     auto fileCount = stream.Read<unsigned int>();
@@ -128,16 +132,7 @@ void N2pkFile::readFileTable(StreamHelper& stream)
         auto size = stream.Read<unsigned int>();
         auto v4 = stream.Read<int>();
 
-        m_logger << name << std::endl;
-        m_logger << Log::indent;
-        m_logger << "Unknown:" << std::endl;
-        m_logger << Log::indent;
-        m_logger << "v1: " << v1 << std::endl;
-        m_logger << "v2: " << v2 << std::endl;
-        m_logger << "v3: " << v3 << std::endl;
-        m_logger << "v4: " << v4 << std::endl;
-        m_logger << Log::outdent;
-        m_logger << Log::outdent;
+        m_logger << std::left << std::setw(40) << std::setfill(' ') << name << "Unknown: " << v1 << ", " << v2 << ", " << v3 << ", " << v4 << std::endl;
 
         FileEntry fileEntry(m_dataffset + dataOffset, size, name);
         m_impl->Files.push_back(fileEntry);
