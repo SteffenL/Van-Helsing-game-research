@@ -55,7 +55,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_USING_V110_SDK71_;WIN32;_WINDOWS;STRICT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_ALL_DYN_LINK;_CRT_SECURE_NO_WARNINGS;_USING_V110_SDK71_;WIN32;_WINDOWS;STRICT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(BOOSTDIR);$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -121,6 +121,7 @@
     </ClCompile>
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="MainDlg.cpp" />
+    <ClCompile Include="MyEdit.cpp" />
     <ClCompile Include="my_console_output_buffer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -134,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="MyEdit.hpp" />
     <ClInclude Include="my_console_output_buffer.h" />
     <ClInclude Include="MainDlg.h" />
     <ClInclude Include="resource.h" />
