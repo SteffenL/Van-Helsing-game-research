@@ -32,8 +32,14 @@ BOOL CMainDlg::OnIdle()
 
 LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    DlgResize_Init(false, false, WS_CLIPCHILDREN);
     DoDataExchange(false);
+    DlgResize_Init(false, false, WS_CLIPCHILDREN);
+
+    // Load game data before anything attempts to use it
+    auto gameDir = std::getenv("VH_GAME_DIR");
+    if (gameDir) {
+        vanhelsing::engine::GameData::Get().Load(gameDir);
+    }
 
     m_storageTabs.SubclassWindow(GetDlgItem(IDC_STORAGE_TABS));
     m_storageItemsTabPage[0].Create(m_storageTabs);
@@ -68,11 +74,6 @@ LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 
     m_mainMenu.Attach(::LoadMenu(_Module.GetModuleInstance(), MAKEINTRESOURCE(IDR_MAIN_MENU)));
     SetMenu(m_mainMenu);
-
-    auto gameDir = std::getenv("VH_GAME_DIR");
-    if (gameDir) {
-        vanhelsing::engine::GameData::Get().Load(gameDir);
-    }
 
 	return TRUE;
 }

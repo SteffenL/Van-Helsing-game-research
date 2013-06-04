@@ -38,7 +38,12 @@ public:
         m_items.push_back(std::shared_ptr<ItemType>(item));
     }
 
-    std::vector<std::shared_ptr<ItemType>>& GetItems()
+    const std::vector<std::shared_ptr<ItemType>>& GetItems() const
+    {
+        return m_items;
+    }
+
+    std::vector<std::shared_ptr<ItemType>>& GetItemsWritable()
     {
         return m_items;
     }
@@ -62,7 +67,6 @@ public:
     struct
     {
         int v2;
-        float v3;
         unsigned int v4;
         int v5;
         unsigned int v6;
@@ -98,7 +102,8 @@ public:
 
     } Unknown;
 
-    Enchantment::List& GetEnchantments();
+    const Enchantment::List& GetEnchantments() const;
+    Enchantment::List& GetEnchantmentsWritable();
 
 protected:
     Enchantment::List m_enchantments;

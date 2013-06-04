@@ -16,10 +16,10 @@ class TextManager
 
 public:
     bool Load(const std::string& filePath);
-    const std::string GetRarityText(inventory::Item::Rarity::type rarity) const;
-    const std::string GetQualityText(inventory::Item::Quality::type quality) const;
-    const std::string GetItemText(const std::string& name) const;
-    const std::string GetSetNameText(const std::string& name) const;
+    std::string GetRarityText(inventory::Item::Rarity::type rarity) const;
+    std::string GetQualityText(inventory::Item::Quality::type quality) const;
+    std::string GetItemText(const std::string& name) const;
+    std::string GetSetNameText(const std::string& name) const;
     /*const std::string GetTypeText(type) const;
     const std::string GetSubTypesText(subType) const;*/
 
@@ -66,6 +66,8 @@ public:
     const TextManager& GetTextManager() const;
     std::string GetItemNameFromId(inventory::Item::IdType id) const;
     std::string GetEnchantmentNameFromId(inventory::Artifact::IdType id) const;
+    const std::vector<inventory::Item::Quality::type> GetQualityDataList() const;
+    const std::vector<inventory::Item::Rarity::type> GetRarityDataList() const;
 
 private:
     void loadTexts();

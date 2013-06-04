@@ -258,6 +258,28 @@ void GameData::loadTexts()
     m_texts.Load(filePath.string());
 }
 
+const std::vector<vanhelsing::engine::inventory::Item::Quality::type> GameData::GetQualityDataList() const
+{
+    using vanhelsing::engine::inventory::Item;
+    std::vector<Item::Quality::type> list;
+    list.push_back(Item::Quality::Normal);
+    list.push_back(Item::Quality::Cracked);
+    list.push_back(Item::Quality::Masterwork);
+    return list;
+}
+
+const std::vector<vanhelsing::engine::inventory::Item::Rarity::type> GameData::GetRarityDataList() const
+{
+    using vanhelsing::engine::inventory::Item;
+    std::vector<Item::Rarity::type> list;
+    list.push_back(Item::Rarity::Normal);
+    list.push_back(Item::Rarity::Magic);
+    list.push_back(Item::Rarity::Rare);
+    list.push_back(Item::Rarity::Epic);
+    list.push_back(Item::Rarity::Set);
+    list.push_back(Item::Rarity::Random);
+    return list;
+}
 
 bool TextManager::Load(const std::string& filePath)
 {
@@ -269,7 +291,7 @@ bool TextManager::Load(const std::string& filePath)
     return true;
 }
 
-const std::string TextManager::GetRarityText(inventory::Item::Rarity::type rarity) const
+std::string TextManager::GetRarityText(inventory::Item::Rarity::type rarity) const
 {
     std::string textName;
     switch (rarity)
@@ -311,7 +333,7 @@ const std::string TextManager::GetRarityText(inventory::Item::Rarity::type rarit
     }
 }
 
-const std::string TextManager::GetQualityText(inventory::Item::Quality::type quality) const
+std::string TextManager::GetQualityText(inventory::Item::Quality::type quality) const
 {
     std::string textName;
     switch (quality)
@@ -340,7 +362,7 @@ const std::string TextManager::GetQualityText(inventory::Item::Quality::type qua
     }
 }
 
-const std::string TextManager::GetItemText(const std::string& name) const
+std::string TextManager::GetItemText(const std::string& name) const
 {
     std::string nameLc(name);
     std::transform(nameLc.begin(), nameLc.end(), nameLc.begin(), ::tolower);
@@ -354,7 +376,7 @@ const std::string TextManager::GetItemText(const std::string& name) const
     }
 }
 
-const std::string TextManager::GetSetNameText(const std::string& name) const
+std::string TextManager::GetSetNameText(const std::string& name) const
 {
     std::string nameLc(name);
     std::transform(nameLc.begin(), nameLc.end(), nameLc.begin(), ::tolower);

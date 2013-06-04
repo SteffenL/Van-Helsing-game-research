@@ -43,6 +43,7 @@ extern CAppModule _Module;
 #include <atltheme.h>
 #include <DdxEx.hpp>
 #include <CSSFileDialog.hpp>
+#include "MyEdit.hpp"
 
 #include <vector>
 #include <cassert>

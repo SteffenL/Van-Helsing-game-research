@@ -93,7 +93,7 @@ inventory::Item* StorageGameSaveReader::readItem(StreamHelper& stream)
 
 void StorageGameSaveReader::readEnchantments(StreamHelper& stream, inventory::Item& item)
 {
-    auto& enchantments = item.GetEnchantments();
+    auto& enchantments = item.GetEnchantmentsWritable();
 
     auto count = stream.Read<unsigned int>();
     m_logger << "Enchantments (" << count << "):" << std::endl;
@@ -114,7 +114,7 @@ void StorageGameSaveReader::readEnchantments(StreamHelper& stream, inventory::It
         m_logger << "ID: 0x" << std::hex << enchantment->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
         m_logger << "Unknown:" << std::endl;
         m_logger << Log::indent;
-        m_logger << enchantment->Unknown.v2 << ", " << enchantment->Unknown.v3 << ", " << enchantment->Unknown.v4 << std::endl;
+        m_logger << enchantment->Unknown.v2 << ", " << enchantment->Multiplier << ", " << enchantment->Unknown.v4 << std::endl;
 
         if (m_unknown1 >= 0x2b6) {
             enchantment->Unknown.v5 = stream.Read<int>();

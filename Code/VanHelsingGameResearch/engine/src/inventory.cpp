@@ -8,7 +8,12 @@ std::string Item::GetName() const
     return GameData::Get().GetItemNameFromId(Id);
 }
 
-Enchantment::List& Item::GetEnchantments()
+const Enchantment::List& Item::GetEnchantments() const
+{
+    return m_enchantments;
+}
+
+Enchantment::List& Item::GetEnchantmentsWritable()
 {
     return m_enchantments;
 }
