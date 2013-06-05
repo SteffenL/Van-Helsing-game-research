@@ -78,6 +78,7 @@
       <PreprocessorDefinitions>BOOST_ALL_DYN_LINK;_USING_V110_SDK71_;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)3rd_party\pugixml-1.2\src;$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);$(SolutionDir)3rd_party\misc;$(SolutionDir)3rd_party\jsoncpp-src-0.5.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -97,6 +98,7 @@
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
