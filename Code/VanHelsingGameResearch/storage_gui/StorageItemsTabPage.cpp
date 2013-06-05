@@ -7,12 +7,14 @@
 #include <boost/bind.hpp>
 
 StorageItemsTabPage::StorageItemsTabPage()
-    : m_itemListSkipChangeNotification(false) {}
+    : m_itemListSkipChangeNotification(false),
+    m_enchantmentListSkipChangeNotification(false) {}
 
 LRESULT StorageItemsTabPage::onInitDialog(HWND, LPARAM)
 {
     // List-view selection change notification
-    WM_LVSELCHANGE = ::RegisterWindowMessage(_T("WM_LVSELCHANGE"));
+    WM_ITEM_LVSELCHANGE = ::RegisterWindowMessage(_T("WM_ITEM_LVSELCHANGE"));
+    WM_ENCHANTMENT_LVSELCHANGE = ::RegisterWindowMessage(_T("WM_ENCHANTMENT_LVSELCHANGE"));
 
     // Subclass controls before DoDataExchange
     // Items
@@ -70,21 +72,7 @@ LRESULT StorageItemsTabPage::onInitDialog(HWND, LPARAM)
 void StorageItemsTabPage::OnOpenGameSave(vanhelsing::engine::StorageGameSave* gameSave)
 {
     m_gameSave = gameSave;
-    using namespace vanhelsing::engine;
-    using namespace vanhelsing::engine::inventory;
-
-    std::vector<Item*> items;
-    m_gameSave->GetItems().FindByBagNumber(m_bagNumber, items);
-    auto& textManager = GameData::Get().GetTextManager();
-
-    m_itemList.DeleteAllItems();
-    int i = 0;
-    for (auto item : items) {
-        m_itemList.AddItem(i, 0, nullptr);
-        m_itemList.SetItemData(i, reinterpret_cast<DWORD_PTR>(item));
-        updateItemListItem(i);
-        ++i;
-    }
+    updateItemSection();
 }
 
 LRESULT StorageItemsTabPage::OnClick(int, LPNMHDR pnmh, BOOL&)
@@ -100,8 +88,37 @@ LRESULT StorageItemsTabPage::OnItemChanged(LPNMHDR lpHdr)
         return 0;
     }
 
-    m_itemListSkipChangeNotification = true;
-    ::PostMessage(*this, WM_LVSELCHANGE, 0, 0);
+    // Make sure selection changed
+    if ((pia->uChanged != 0) && (pia->uChanged & LVIF_STATE)) {
+        if ((pia->uOldState & LVIS_SELECTED) || (pia->uNewState & LVIS_SELECTED)) {
+            // Selection has changed
+            m_itemListSkipChangeNotification = true;
+            ::PostMessage(*this, WM_ITEM_LVSELCHANGE, 0, 0);
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
+LRESULT StorageItemsTabPage::OnEnchantmentChanged(LPNMHDR lpHdr)
+{
+    auto pia = reinterpret_cast<LPNMITEMACTIVATE>(lpHdr);
+
+    if (m_enchantmentListSkipChangeNotification) {
+        return 0;
+    }
+
+    // Make sure selection changed
+    if ((pia->uChanged != 0) && (pia->uChanged & LVIF_STATE)) {
+        if ((pia->uOldState & LVIS_SELECTED) || (pia->uNewState & LVIS_SELECTED)) {
+            // Selection has changed
+            m_enchantmentListSkipChangeNotification = true;
+            ::PostMessage(*this, WM_ENCHANTMENT_LVSELCHANGE, 0, 0);
+            return 0;
+        }
+    }
+
     return 0;
 }
 
@@ -112,8 +129,9 @@ LRESULT StorageItemsTabPage::OnItemSelectionChange(UINT uMsg, WPARAM wParam, LPA
     return 0;
 }
 
-LRESULT StorageItemsTabPage::OnEnchantmentItemChanged(LPNMHDR lpHdr)
+LRESULT StorageItemsTabPage::OnEnchantmentSelectionChange(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    m_enchantmentListSkipChangeNotification = false;
     syncEnchantmentList();
     return 0;
 }
@@ -171,16 +189,30 @@ void StorageItemsTabPage::syncItemList()
 void StorageItemsTabPage::syncEnchantmentList()
 {
     m_enchantmentListSelectedItems.clear();
-    int firstSelection = m_enchantmentList.GetSelectionMark();
-    if (firstSelection == -1) {
+    if (m_enchantmentList.GetSelectionMark() == -1) {
         return;
     }
 
-    for (int i = 0, count = m_enchantmentList.GetSelectedCount(); i < count; ++i) {
+    // Find selected items
+    for (int i = 0, count = m_enchantmentList.GetItemCount(); i < count; ++i) {
         if (m_enchantmentList.GetItemState(i, LVIS_SELECTED) & LVIS_SELECTED) {
             m_enchantmentListSelectedItems.push_back(i);
         }
     }
+
+    // Not a single selection?
+    if (m_enchantmentListSelectedItems.size() != 1) {
+        return;
+    }
+
+    // Single selection
+
+    using namespace vanhelsing::engine;
+    using namespace vanhelsing::engine::inventory;
+    auto firstSelection = m_enchantmentListSelectedItems[0];
+    auto& textManager = GameData::Get().GetTextManager();
+    auto item = reinterpret_cast<Enchantment*>(m_enchantmentList.GetItemData(firstSelection));
+    updateModifyEnchantmentSection(textManager, item);
 }
 
 LRESULT StorageItemsTabPage::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -248,14 +280,12 @@ void StorageItemsTabPage::updateModifyItemSection(
         std::wstringstream ss;
         ss << item->Attribute1;
         m_itemAttribute1.SetValue(ss.str().c_str());
-        //::SetDlgItemText(*this, IDC_ITEM_ATTRIBUTE1_EDIT, ss.str().c_str());
     }
     // Attribute 2
     {
         std::wstringstream ss;
         ss << item->Attribute2;
         m_itemAttribute2.SetValue(ss.str().c_str());
-        //::SetDlgItemText(*this, IDC_ITEM_ATTRIBUTE2_EDIT, ss.str().c_str());
     }
     // Rarity
     m_itemRarity.SetCurSel(item->Rarity);
@@ -268,7 +298,6 @@ void StorageItemsTabPage::updateModifyItemSection(
         std::wstringstream ss;
         ss << item->Quantity;
         m_itemQuantity.SetValue(ss.str().c_str());
-        //::SetDlgItemText(*this, IDC_ITEM_QUANTITY_EDIT, ss.str().c_str());
     }
 }
 
@@ -282,13 +311,9 @@ void StorageItemsTabPage::updateEnchantmentSection(
     m_enchantmentList.DeleteAllItems();
     int i = 0;
     for (auto enchantment : enchantments.GetItems()) {
-        auto& name = nowide::widen(enchantment->GetName());
-        CString multiplier;
-        multiplier.Format(_T("%.2f"), enchantment->Multiplier);
-
-        m_enchantmentList.AddItem(i, 0, name.c_str());
+        m_enchantmentList.AddItem(i, 0, nullptr);
         m_enchantmentList.SetItemData(i, reinterpret_cast<DWORD_PTR>(enchantment.get()));
-        m_enchantmentList.SetItemText(i, 1, static_cast<LPCTSTR>(multiplier));
+        updateEnchantmentListItem(i);
         ++i;
     }
 }
@@ -307,6 +332,9 @@ void StorageItemsTabPage::editOnApply(CMyEdit::ApplyEventArg& e)
         applyItemQuantity();
     }
     // Enchantments
+    else if (obj == &m_enchantmentMultiplier) {
+        applyEnchantmentMultiplier();
+    }
 }
 
 void StorageItemsTabPage::applyItemAttribute1()
@@ -404,7 +432,68 @@ void StorageItemsTabPage::buttonOnClicked(UINT uNotifyCode, int nID, CWindow wnd
 
     default:
         ATLASSERT(!"Shouldn't happen");
-        break;
+        throw std::logic_error("Shouldn't happen");
     }
 }
 
+void StorageItemsTabPage::updateEnchantmentListItem(int i)
+{
+    using namespace vanhelsing::engine;
+    using namespace vanhelsing::engine::inventory;
+
+    auto enchantment = reinterpret_cast<Enchantment*>(m_enchantmentList.GetItemData(i));
+
+    auto& name = nowide::widen(enchantment->GetName());
+    CString multiplier;
+    multiplier.Format(_T("%.2f"), enchantment->Multiplier);
+
+    m_enchantmentList.SetItemText(i, 0, name.c_str());
+    m_enchantmentList.SetItemText(i, 1, static_cast<LPCTSTR>(multiplier));
+}
+
+void StorageItemsTabPage::applyEnchantmentMultiplier()
+{
+    using vanhelsing::engine::inventory::Enchantment;
+    TCHAR text[100];
+    for (auto& i : m_enchantmentListSelectedItems) {
+        auto enchantment = reinterpret_cast<Enchantment*>(m_enchantmentList.GetItemData(i));
+        ::GetDlgItemText(*this, IDC_ENCHANTMENT_MULTIPLIER_EDIT, text, _countof(text));
+        std::wstringstream ss(text);
+        ss >> enchantment->Multiplier;
+        updateEnchantmentListItem(i);
+    }
+}
+
+void StorageItemsTabPage::updateModifyEnchantmentSection(
+    const vanhelsing::engine::TextManager& textManager,
+    const vanhelsing::engine::inventory::Enchantment* item)
+{
+    using namespace vanhelsing::engine;
+    using namespace vanhelsing::engine::inventory;
+
+    // Multiplier
+    {
+        std::wstringstream ss;
+        ss << item->Multiplier;
+        m_enchantmentMultiplier.SetValue(ss.str().c_str());
+    }
+}
+
+void StorageItemsTabPage::updateItemSection()
+{
+    using namespace vanhelsing::engine;
+    using namespace vanhelsing::engine::inventory;
+
+    std::vector<Item*> items;
+    m_gameSave->GetItems().FindByBagNumber(m_bagNumber, items);
+    auto& textManager = GameData::Get().GetTextManager();
+
+    m_itemList.DeleteAllItems();
+    int i = 0;
+    for (auto item : items) {
+        m_itemList.AddItem(i, 0, nullptr);
+        m_itemList.SetItemData(i, reinterpret_cast<DWORD_PTR>(item));
+        updateItemListItem(i);
+        ++i;
+    }
+}

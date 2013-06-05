@@ -5,9 +5,6 @@ void CMyEdit::discardChanges()
 {
     if (GetModify()) {
         SetValue(m_oldValue);
-        // Move caret to the end
-        auto pos = GetValue().GetLength();
-        SetSel(pos, pos, TRUE);
         SetModify(FALSE);
     }
 }

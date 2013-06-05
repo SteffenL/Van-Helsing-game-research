@@ -54,11 +54,13 @@ public:
 
         // Items
         NOTIFY_HANDLER_EX(IDC_ITEM_LIST, LVN_ITEMCHANGED, OnItemChanged)
-        MESSAGE_HANDLER_EX(WM_LVSELCHANGE, OnItemSelectionChange)
+        MESSAGE_HANDLER_EX(WM_ITEM_LVSELCHANGE, OnItemSelectionChange)
         COMMAND_HANDLER_EX(IDC_ITEM_RARITY_COMBO, CBN_SELCHANGE, comboOnSelectionChange)
         COMMAND_HANDLER_EX(IDC_ITEM_QUALITY_COMBO, CBN_SELCHANGE, comboOnSelectionChange)
         COMMAND_HANDLER_EX(IDC_ITEM_IDENTIFIED_CHECK, BN_CLICKED, buttonOnClicked)
         // Enchantments
+        NOTIFY_HANDLER_EX(IDC_ENCHANTMENT_LIST, LVN_ITEMCHANGED, OnEnchantmentChanged)
+        MESSAGE_HANDLER_EX(WM_ENCHANTMENT_LVSELCHANGE, OnEnchantmentSelectionChange)
 
         DEFAULT_REFLECTION_HANDLER()
     END_MSG_MAP()
@@ -90,7 +92,8 @@ public:
     LRESULT OnClick(int, LPNMHDR pnmh, BOOL&);
     LRESULT OnItemChanged(LPNMHDR lpHdr);
     LRESULT OnItemSelectionChange(UINT uMsg, WPARAM wParam, LPARAM lParam);
-    LRESULT OnEnchantmentItemChanged(LPNMHDR lpHdr);
+    LRESULT OnEnchantmentChanged(LPNMHDR lpHdr);
+    LRESULT OnEnchantmentSelectionChange(UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT OnRClick(int i, LPNMHDR pnmh, BOOL&);
     LRESULT OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam);
     void comboOnSelectionChange(UINT uNotifyCode, int nID, CWindow wndCtl);
@@ -99,13 +102,11 @@ public:
     void editOnApply(CMyEdit::ApplyEventArg& e);
 
 private:
+    // Items
     void syncItemList();
     void updateItemListItem(int i);
-    void syncEnchantmentList();
+    void updateItemSection();
     void updateModifyItemSection(
-        const vanhelsing::engine::TextManager& textManager,
-        const vanhelsing::engine::inventory::Item* item);
-    void updateEnchantmentSection(
         const vanhelsing::engine::TextManager& textManager,
         const vanhelsing::engine::inventory::Item* item);
     void applyItemAttribute1();
@@ -114,9 +115,21 @@ private:
     void applyItemQuality();
     void applyItemIsIdentified();
     void applyItemQuantity();
+    // Enchantments
+    void syncEnchantmentList();
+    void updateEnchantmentListItem(int i);
+    void updateEnchantmentSection(
+        const vanhelsing::engine::TextManager& textManager,
+        const vanhelsing::engine::inventory::Item* item);
+    void updateModifyEnchantmentSection(
+        const vanhelsing::engine::TextManager& textManager,
+        const vanhelsing::engine::inventory::Enchantment* item);
+    void applyEnchantmentMultiplier();
 protected:
-    int WM_LVSELCHANGE;
+    int WM_ITEM_LVSELCHANGE;
+    int WM_ENCHANTMENT_LVSELCHANGE;
     bool m_itemListSkipChangeNotification;
+    bool m_enchantmentListSkipChangeNotification;
     
     vanhelsing::engine::StorageGameSave* m_gameSave;
     int m_bagNumber;
