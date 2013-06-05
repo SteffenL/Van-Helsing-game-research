@@ -11,38 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\3rd_party\pugixml-1.2\src\pugixml.cpp" />
-    <ClCompile Include="src\CfgParser.cpp" />
-    <ClCompile Include="src\GameData.cpp" />
-    <ClCompile Include="src\GamePaths.cpp" />
-    <ClCompile Include="src\GameSave.cpp" />
-    <ClCompile Include="src\inventory.cpp" />
-    <ClCompile Include="src\io\GameSaveContainerReader.cpp" />
-    <ClCompile Include="src\io\GameSaveReader.cpp" />
-    <ClCompile Include="src\io\GameSaveWriter.cpp" />
-    <ClCompile Include="src\io\n2pk\N2pkFile.cpp" />
-    <ClCompile Include="src\io\StorageGameSaveReader.cpp" />
-    <ClCompile Include="src\io\StreamHelper.cpp" />
-    <ClCompile Include="src\log.cpp" />
-    <ClCompile Include="src\StorageGameSave.cpp" />
+    <ClInclude Include="include\steffenl\common\Registry.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\vanhelsing\engine\CfgParser.h" />
-    <ClInclude Include="include\vanhelsing\engine\GameData.h" />
-    <ClInclude Include="include\vanhelsing\engine\GamePaths.h" />
-    <ClInclude Include="include\vanhelsing\engine\GameSave.h" />
-    <ClInclude Include="include\vanhelsing\engine\inventory.h" />
-    <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerReader.h" />
-    <ClInclude Include="include\vanhelsing\engine\io\GameSaveReader.h" />
-    <ClInclude Include="include\vanhelsing\engine\io\GameSaveWriter.h" />
-    <ClInclude Include="include\vanhelsing\engine\io\n2pk\N2pkFile.h" />
-    <ClInclude Include="include\vanhelsing\engine\io\StorageGameSaveReader.h" />
-    <ClInclude Include="include\vanhelsing\engine\io\StreamHelper.h" />
-    <ClInclude Include="include\vanhelsing\engine\log.h" />
-    <ClInclude Include="include\vanhelsing\engine\StorageGameSave.h" />
+    <ClCompile Include="src\Registry.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5D6B5D96-121B-4DE6-8EF6-DC88C1697FB9}</ProjectGuid>
+    <ProjectGuid>{A8FAC840-25F0-4EA7-B9DD-66EB9F4328E6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>engine</RootNamespace>
   </PropertyGroup>
@@ -78,7 +53,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BOOST_ALL_DYN_LINK;_USING_V110_SDK71_;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rd_party\pugixml-1.2\src;$(SolutionDir)common\include;$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);$(SolutionDir)3rd_party\misc;$(SolutionDir)3rd_party\jsoncpp-src-0.5.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -95,7 +70,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_USING_V110_SDK71_;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rd_party\pugixml-1.2\src;$(SolutionDir)common\include;$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);$(SolutionDir)3rd_party\misc;$(SolutionDir)3rd_party\jsoncpp-src-0.5.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>

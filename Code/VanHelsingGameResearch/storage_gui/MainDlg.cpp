@@ -11,6 +11,7 @@
 #include <vanhelsing/engine/StorageGameSave.h>
 #include <vanhelsing/engine/io/StorageGameSaveReader.h>
 #include <vanhelsing/engine/GameData.h>
+#include <vanhelsing/engine/GamePaths.h>
 #include <nowide/fstream.hpp>
 
 BOOL CMainDlg::PreTranslateMessage(MSG* pMsg)
@@ -32,13 +33,22 @@ BOOL CMainDlg::OnIdle()
 
 LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+    using namespace vanhelsing::engine;
     DoDataExchange(false);
     DlgResize_Init(false, false, WS_CLIPCHILDREN);
 
     // Load game data before anything attempts to use it
-    auto gameDir = std::getenv("VH_GAME_DIR");
-    if (gameDir) {
-        vanhelsing::engine::GameData::Get().Load(gameDir);
+    std::string gameDir;
+    auto gameDir_c = std::getenv("VH_GAME_DIR");
+    if (gameDir_c) {
+        gameDir = gameDir_c;
+    }
+    else {
+        gameDir = GamePaths::GetInstallPath();
+    }
+
+    if (!gameDir.empty()) {
+        GameData::Get().Load(gameDir);
     }
 
     m_storageTabs.SubclassWindow(GetDlgItem(IDC_STORAGE_TABS));

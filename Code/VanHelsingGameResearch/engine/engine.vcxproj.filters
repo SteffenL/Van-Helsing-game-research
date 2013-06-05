@@ -54,6 +54,9 @@
     <ClCompile Include="..\3rd_party\pugixml-1.2\src\pugixml.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\GamePaths.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveReader.h">
@@ -90,6 +93,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vanhelsing\engine\GamePaths.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
