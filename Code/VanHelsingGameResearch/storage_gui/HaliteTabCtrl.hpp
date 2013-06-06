@@ -4,7 +4,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-// Jun 6 2013: Added OnSelChangeEvent
+// Jun 6 2013: Added OnSelChangeEvent.
+//             Reduced flicker when switching tab.
 // - Steffen A. Langnes
 
 #pragma once
@@ -71,8 +72,7 @@ public:
 
 	void SetCurrentPage(unsigned index)
 	{
-		if (currentPage_)
-			::ShowWindow(currentPage_, SW_HIDE);
+		HWND oldPage = currentPage_;
 
 		if (!pages_.empty())
 		{
@@ -86,6 +86,9 @@ public:
 			::SetWindowPos(currentPage_, HWND_TOP, 
 				rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top, 0);
 		}
+
+		if (oldPage && (oldPage != currentPage_))
+			::ShowWindow(oldPage, SW_HIDE);
 	}
 
 	LRESULT OnSelChange(LPNMHDR lpHdr)
