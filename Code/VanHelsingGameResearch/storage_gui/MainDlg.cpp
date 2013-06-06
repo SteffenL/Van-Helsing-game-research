@@ -158,6 +158,8 @@ LRESULT CMainDlg::OnFileSave(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, B
         return 0;
     }
 
+    // Remove focus from children so that any pending changes are applied
+    SetFocus();
     saveStorageGameSave(m_openedFiles.StorageFilePath);
 
     return 0;
@@ -169,6 +171,9 @@ LRESULT CMainDlg::OnFileSaveAs(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
         return 0;
     }
 
+    // Remove focus from children so that any pending changes are applied
+    SetFocus();
+    // Ask user to choose path
     auto& StorageFilePathW = nowide::widen(m_openedFiles.StorageFilePath);
     CSSFileDialog dialog(FALSE, _T("sav"), StorageFilePathW.c_str(),
         OFN_ENABLESIZING,
