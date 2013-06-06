@@ -4,10 +4,15 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
+// Jun 6 2013: Added OnSelChangeEvent
+// - Steffen A. Langnes
+
 #pragma once
 
 #include "stdafx.h"
 #include "HaliteTabPage.hpp"
+#include <boost/signal.hpp>
+#include <boost/shared_ptr.hpp>
 
 class CHalTabCtrl : 
 	public ATL::CWindowImpl<CHalTabCtrl, WTL::CTabCtrl>,
@@ -31,8 +36,11 @@ class CHalTabCtrl :
 	};
 
 public:
+	boost::shared_ptr<boost::signal<void ()>> OnSelChangeEvent;
+
 	CHalTabCtrl() :
-		currentPage_(0)
+		currentPage_(0),
+        OnSelChangeEvent(new boost::signal<void ()>)
 	{}
 
 	BEGIN_MSG_MAP_EX(CHalTabCtrl)
@@ -83,6 +91,7 @@ public:
 	LRESULT OnSelChange(LPNMHDR lpHdr)
 	{
 		SetCurrentPage(GetCurSel());
+		(*OnSelChangeEvent)();
 
 		return 0;
 	}

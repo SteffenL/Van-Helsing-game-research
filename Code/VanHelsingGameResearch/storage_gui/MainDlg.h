@@ -76,13 +76,15 @@ public:
 
 	void CloseDialog(int nVal);
 
+    void onStorageBagsSelChange();
+
 private:
     void saveStorageGameSave(const std::string& filePath);
 
 private:
     HACCEL m_hAccelerator;
     CHalTabCtrl m_storageTabs;
-    std::map<int, StorageItemsTabPage> m_storageItemsTabPage;
+    StorageItemsTabPage m_storageItemsTabPage;
     CMenu m_mainMenu;
     struct
     {

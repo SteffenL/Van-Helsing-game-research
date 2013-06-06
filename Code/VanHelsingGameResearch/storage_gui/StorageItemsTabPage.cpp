@@ -497,3 +497,12 @@ void StorageItemsTabPage::updateItemSection()
         ++i;
     }
 }
+
+void StorageItemsTabPage::FullUpdate()
+{
+    m_enchantmentList.DeleteAllItems();
+    m_enchantmentListSelectedItems.clear();
+    m_itemList.DeleteAllItems();
+    m_itemListSelectedItems.clear();
+    updateItemSection();
+}

@@ -101,6 +101,8 @@ public:
     
     void editOnApply(CMyEdit::ApplyEventArg& e);
 
+    void FullUpdate();
+
 private:
     // Items
     void syncItemList();

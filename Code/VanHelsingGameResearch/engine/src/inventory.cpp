@@ -23,7 +23,6 @@ std::string Enchantment::GetName() const
     return GameData::Get().GetEnchantmentNameFromId(Id);
 }
 
-
 void Item::List::FindByBagNumber(int bagNumber, std::vector<Item*>& items)
 {
     for (auto& item : m_items) {
@@ -33,12 +32,10 @@ void Item::List::FindByBagNumber(int bagNumber, std::vector<Item*>& items)
     }
 }
 
-
 bool Item::Rarity::IsValid(type v)
 {
     return ((v >= FIRST) && (v < LAST_PLUS_ONE));
 }
-
 
 bool Item::Quality::IsValid(type v)
 {

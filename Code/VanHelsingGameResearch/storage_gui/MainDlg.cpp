@@ -15,6 +15,7 @@
 #include <vanhelsing/engine/GamePaths.h>
 #include <steffenl/common/backup.h>
 #include <nowide/fstream.hpp>
+#include <boost/bind.hpp>
 
 BOOL CMainDlg::PreTranslateMessage(MSG* pMsg)
 {
@@ -54,16 +55,13 @@ LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
     }
 
     m_storageTabs.SubclassWindow(GetDlgItem(IDC_STORAGE_TABS));
-    m_storageItemsTabPage[0].Create(m_storageTabs);
-    m_storageItemsTabPage[1].Create(m_storageTabs);
-    m_storageItemsTabPage[2].Create(m_storageTabs);
-    m_storageItemsTabPage[0].SetBagNumber(0);
-    m_storageItemsTabPage[1].SetBagNumber(1);
-    m_storageItemsTabPage[2].SetBagNumber(2);
-    m_storageTabs.AddPage(m_storageItemsTabPage[0], _T("Page 1"));
-    m_storageTabs.AddPage(m_storageItemsTabPage[1], _T("Page 2"));
-    m_storageTabs.AddPage(m_storageItemsTabPage[2], _T("Page 3"));
+    m_storageItemsTabPage.Create(m_storageTabs);
+    m_storageTabs.OnSelChangeEvent->connect(boost::bind(&CMainDlg::onStorageBagsSelChange, this));
+    m_storageTabs.AddPage(m_storageItemsTabPage, _T("Page 1"));
+    m_storageTabs.AddPage(m_storageItemsTabPage, _T("Page 2"));
+    m_storageTabs.AddPage(m_storageItemsTabPage, _T("Page 3"));
     m_storageTabs.SetCurrentPage(0);
+    m_storageItemsTabPage.SetBagNumber(m_storageTabs.GetCurSel());
 
 	// center the dialog on the screen
 	CenterWindow();
@@ -145,9 +143,7 @@ LRESULT CMainDlg::OnFileOpen(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, B
 
     m_openedFiles.StorageFilePath = filePath;
 
-    m_storageItemsTabPage[0].OnOpenGameSave(m_openedFiles.StorageGameSave.get());
-    m_storageItemsTabPage[1].OnOpenGameSave(m_openedFiles.StorageGameSave.get());
-    m_storageItemsTabPage[2].OnOpenGameSave(m_openedFiles.StorageGameSave.get());
+    m_storageItemsTabPage.OnOpenGameSave(m_openedFiles.StorageGameSave.get());
 
     return 0;
 }
@@ -217,4 +213,15 @@ void CMainDlg::saveStorageGameSave(const std::string& filePath)
     }
 
     vanhelsing::engine::io::StorageGameSaveWriter writer(*m_openedFiles.StorageGameSave, file);
+}
+
+void CMainDlg::onStorageBagsSelChange()
+{
+    m_storageItemsTabPage.SetBagNumber(m_storageTabs.GetCurSel());
+    // Update if there's a save loaded
+    if (m_openedFiles.StorageFilePath.empty()) {
+        return;
+    }
+
+    m_storageItemsTabPage.FullUpdate();
 }
