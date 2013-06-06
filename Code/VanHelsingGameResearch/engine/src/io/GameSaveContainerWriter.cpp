@@ -3,22 +3,17 @@
 
 namespace vanhelsing { namespace engine { namespace io {
 
-GameSaveContainerWriter::GameSaveContainerWriter(std::istream& inStream, std::ostream& outStream)
-    : m_inStream(inStream), m_outStream(outStream)
+GameSaveContainerWriter::GameSaveContainerWriter(const ContainerInfoType& containerInfo, std::ostream& outStream)
+    : m_containerInfo(containerInfo), m_outStream(outStream)
 {
-    StreamHelper stream(getInStream(), getOutStream());
-    stream.WriteString(stream.ReadString(5), 5);
-    stream.Write<unsigned int>(stream.Read<unsigned int>());
-    stream.Write<int>(stream.Read<int>());
-    stream.Write<char>(stream.Read<char>());
+    StreamHelper stream(getOutStream());
+    stream.WriteString(m_containerInfo.Signature, 5);
+    stream.Write<unsigned int>(m_containerInfo.Version);
+    stream.Write<int>(m_containerInfo.Unknown.v1);
+    stream.Write<char>(m_containerInfo.Unknown.v2);
 }
 
 GameSaveContainerWriter::~GameSaveContainerWriter() {}
-
-std::istream& GameSaveContainerWriter::getInStream() const
-{
-    return m_inStream;
-}
 
 std::ostream& GameSaveContainerWriter::getOutStream()
 {

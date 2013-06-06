@@ -15,14 +15,14 @@ class StreamHelper;
 class StorageGameSaveWriter : public GameSaveContainerWriter
 {
 public:
-    StorageGameSaveWriter(StorageGameSave& gameSave, std::istream& inStream);
+    StorageGameSaveWriter(StorageGameSave& gameSave, std::ostream& outStream);
     virtual ~StorageGameSaveWriter();
 
 private:
     void writeArtifacts(StreamHelper& stream);
-    inventory::Item* writeItem(StreamHelper& stream);
-    void writeEnchantments(StreamHelper& stream, inventory::Item& item);
-    void writeUnknownMaybeEnchantments(StreamHelper& stream);
+    void writeItem(StreamHelper& stream, const inventory::Item* item);
+    void writeEnchantments(StreamHelper& stream, const inventory::Item& item);
+    void writeUnknownMaybeEnchantments(StreamHelper& stream, const inventory::Item& item);
 
     Log m_logger;
     StorageGameSave& m_gameSave;

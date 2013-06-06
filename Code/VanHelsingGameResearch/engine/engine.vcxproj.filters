@@ -122,5 +122,8 @@
     <ClInclude Include="include\vanhelsing\engine\io\StreamHelperWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

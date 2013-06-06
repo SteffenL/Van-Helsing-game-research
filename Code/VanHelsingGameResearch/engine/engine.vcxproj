@@ -36,6 +36,7 @@
     <ClInclude Include="include\vanhelsing\engine\GamePaths.h" />
     <ClInclude Include="include\vanhelsing\engine\GameSave.h" />
     <ClInclude Include="include\vanhelsing\engine\inventory.h" />
+    <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerBase.h" />
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerReader.h" />
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerWriter.h" />
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveReader.h" />

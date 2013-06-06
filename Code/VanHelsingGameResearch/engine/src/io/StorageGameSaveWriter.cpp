@@ -1,176 +1,99 @@
-#include <vanhelsing/engine/io/StorageGameSaveReader.h>
+#include <vanhelsing/engine/io/StorageGameSaveWriter.h>
 #include <vanhelsing/engine/io/StreamHelper.h>
 #include <nowide/iostream.hpp>
 #include <iomanip>
 
 namespace vanhelsing { namespace engine { namespace io {
 
-StorageGameSaveReader::StorageGameSaveReader(StorageGameSave& gameSave, std::istream& inStream)
-    : GameSaveContainerReader(inStream), m_gameSave(gameSave), m_logger(LogLevel::Trace)
+StorageGameSaveWriter::StorageGameSaveWriter(StorageGameSave& gameSave, std::ostream& outStream)
+    : GameSaveContainerWriter(gameSave.ContainerInfo, outStream), m_gameSave(gameSave), m_logger(LogLevel::Trace)
 {
-    StreamHelper stream(getStream());
-    readArtifacts(stream);
+    StreamHelper stream(getOutStream());
+    writeArtifacts(stream);
 }
 
-void StorageGameSaveReader::readArtifacts(StreamHelper& stream)
+void StorageGameSaveWriter::writeArtifacts(StreamHelper& stream)
 {
-    auto count = stream.Read<int>();
-    m_logger << "Artifacts (" << count << "):" << std::endl;
-    m_logger << Log::indent;
-    for (int i = 0; i < count; ++i) {
-        m_logger << "#" << i << ":" << std::endl;
-        m_logger << Log::indent;
-        auto bagNumber = stream.Read<int>();
-        auto slotNumber = stream.Read<int>();
-        m_logger << "Bag #: " << bagNumber << std::endl;
-        m_logger << "Slot #: " << slotNumber << std::endl;
-        m_logger << "" << std::endl;
-        auto item = readItem(stream);
-        if (item) {
-            item->BagNumber = bagNumber;
-            item->SlotNumber = slotNumber;
-        }
-
-        m_logger << Log::outdent;
-        m_logger << "" << std::endl;
+    auto& manager = m_gameSave.GetItems();
+    auto& items = manager.GetItems();
+    stream.Write<int>(items.size());
+    for (auto item : items) {
+        stream.Write<int>(item->BagNumber);
+        stream.Write<int>(item->SlotNumber);
+        writeItem(stream, item.get());
     }
 
-    if (stream.Read<int>() > 0) {
-        // TODO: Need to test with more files because there are more reads here
-        throw std::runtime_error("This file must be investigated");
-    }
-
-    m_logger << Log::outdent;
+    stream.Write<int>(stream.Read<int>());
 }
 
-inventory::Item* StorageGameSaveReader::readItem(StreamHelper& stream)
+void StorageGameSaveWriter::writeItem(StreamHelper& stream, const inventory::Item* item)
 {
     using inventory::Item;
-    std::unique_ptr<Item> item(new Item);
 
-    item->Id = stream.Read<Item::IdType>();
-    item->Attribute1 = stream.Read<int>();
-    item->Attribute2 = stream.Read<int>();
-    item->Quantity = stream.Read<int>();
+    stream.Write<Item::IdType>(item->Id);
+    stream.Write<int>(item->Attribute1);
+    stream.Write<int>(item->Attribute2);
+    stream.Write<int>(item->Quantity);
 
-    auto& name = item->GetName();
-    m_logger << "ID: 0x" << std::hex << item->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
-    m_logger << "Attribute 1: " << item->Attribute1 << std::endl;
-    m_logger << "Attribute 2: " << item->Attribute2 << std::endl;
-    m_logger << "Quantity: " << item->Quantity << std::endl;
-    
     auto count = stream.Read<int>();
-    m_logger << "Unknown (" << count << "):" << std::endl;
-    m_logger << Log::indent;
-    for (int i = 0; i < count; ++i) {
-        auto v1 = stream.Read<unsigned int>();
-        auto v2 = stream.Read<int>();
-        m_logger << v1 << ", " << v2 << std::endl;
+    stream.Write<int>(count);
+    for (auto& i : item->Unknown.List1) {
+        stream.Write<unsigned int>(i.v1);
+        stream.Write<int>(i.v2);
     }
 
-    m_logger << Log::outdent;
+    stream.Write<Item::Quality::type>(item->Quality);
+    stream.Write<Item::Rarity::type>(item->Rarity);
 
-    item->Quality = stream.Read<Item::Quality::type>();
-    item->Rarity = stream.Read<Item::Rarity::type>();
-    m_logger << "Quality: " << item->Quality << std::endl;
-    m_logger << "Rarity: " << item->Rarity << std::endl;
+    writeEnchantments(stream, *item);
+    writeUnknownMaybeEnchantments(stream, *item);
 
-    readEnchantments(stream, *item);
-    readUnknownMaybeEnchantments(stream);
-
-    item->IsIdentified = stream.Read<bool>();
-    m_logger << "Is identified: " << item->IsIdentified << std::endl;
-    auto v1 = stream.Read<bool>();
-    m_logger << "Unknown: " << v1 << std::endl;
-
-    auto& manager = m_gameSave.GetItems();
-    auto itemPtr = item.get();
-    manager.Add(itemPtr);
-    // Manager owns it now
-    item.release();
-    return itemPtr;
+    stream.Write<bool>(item->IsIdentified);
+    stream.Write<bool>(item->Unknown.v1);
 }
 
-void StorageGameSaveReader::readEnchantments(StreamHelper& stream, inventory::Item& item)
+void StorageGameSaveWriter::writeEnchantments(StreamHelper& stream, const inventory::Item& item)
 {
-    auto& enchantments = item.GetEnchantmentsWritable();
+    auto& enchantments = item.GetEnchantments().GetItems();
 
-    auto count = stream.Read<unsigned int>();
-    m_logger << "Enchantments (" << count << "):" << std::endl;
-    m_logger << Log::indent;
-    for (unsigned int i = 0; i < count; ++i) {
+    stream.Write<unsigned int>(enchantments.size());
+    for (auto enchantment : enchantments) {
         using inventory::Enchantment;
-        std::unique_ptr<Enchantment> enchantment(new Enchantment);
 
-        m_logger << "#" << i << ":" << std::endl;
-        m_logger << Log::indent;
+        stream.Write<Enchantment::IdType>(enchantment->Id);
+        stream.Write<int>(enchantment->Unknown.v2);
+        stream.Write<float>(enchantment->Multiplier);
+        stream.Write<unsigned int>(enchantment->Unknown.v4);
 
-        enchantment->Id = stream.Read<Enchantment::IdType>();
-        enchantment->Unknown.v2 = stream.Read<int>();
-        enchantment->Multiplier = stream.Read<float>();
-        enchantment->Unknown.v4 = stream.Read<unsigned int>();
-
-        auto& name = enchantment->GetName();
-        m_logger << "ID: 0x" << std::hex << enchantment->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
-        m_logger << "Unknown:" << std::endl;
-        m_logger << Log::indent;
-        m_logger << enchantment->Unknown.v2 << ", " << enchantment->Multiplier << ", " << enchantment->Unknown.v4 << std::endl;
-
-        if (m_unknown1 >= 0x2b6) {
-            enchantment->Unknown.v5 = stream.Read<int>();
-            enchantment->Unknown.v6 = stream.Read<unsigned int>();
-            enchantment->Unknown.v7 = stream.Read<int>();
-
-            m_logger << enchantment->Unknown.v5 << ", " << enchantment->Unknown.v6 << ", " << enchantment->Unknown.v7 << std::endl;
+        if (m_containerInfo.Version >= 0x2b6) {
+            stream.Write<int>(enchantment->Unknown.v5);
+            stream.Write<unsigned int>(enchantment->Unknown.v6);
+            stream.Write<int>(enchantment->Unknown.v7);
         }
-
-        enchantments.Add(enchantment.get());
-        enchantment.release();
-
-        m_logger << Log::outdent << Log::outdent;
-        m_logger << "" << std::endl;
     }
-
-    m_logger << Log::outdent;
 }
 
-void StorageGameSaveReader::readUnknownMaybeEnchantments(StreamHelper& stream)
+void StorageGameSaveWriter::writeUnknownMaybeEnchantments(StreamHelper& stream, const inventory::Item& item)
 {
-    auto count = stream.Read<unsigned int>();
-    m_logger << "Unknown (" << count << "):" << std::endl;
-    m_logger << Log::indent;
-    for (unsigned int i = 0; i < count; ++i) {
-        m_logger << "#" << i << ":" << std::endl;
-        m_logger << Log::indent;
+    auto& enchantments = item.Unknown.MaybeEnchantments.GetItems();
 
-        auto v1 = stream.Read<unsigned int>();
-        auto v2 = stream.Read<int>();
-        auto v3 = stream.Read<float>();
-        auto v4 = stream.Read<unsigned int>();
+    stream.Write<unsigned int>(enchantments.size());
+    for (auto enchantment : enchantments) {
+        using inventory::Enchantment;
 
-        m_logger << "0x" << std::hex << v1 << std::dec << std::endl;
-        m_logger << v2 << std::endl;
-        m_logger << v3 << std::endl;
-        m_logger << v4 << std::endl;
-        m_logger << "" << std::endl;
+        stream.Write<Enchantment::IdType>(enchantment->Id);
+        stream.Write<int>(enchantment->Unknown.v2);
+        stream.Write<float>(enchantment->Multiplier);
+        stream.Write<unsigned int>(enchantment->Unknown.v4);
 
-        if (m_unknown1 >= 0x2b6) {
-            auto v5 = stream.Read<int>();
-            auto v6 = stream.Read<unsigned int>();
-            auto v7 = stream.Read<int>();
-
-            m_logger << v5 << std::endl;
-            m_logger << v6 << std::endl;
-            m_logger << v7 << std::endl;
+        if (m_containerInfo.Version >= 0x2b6) {
+            stream.Write<int>(enchantment->Unknown.v5);
+            stream.Write<unsigned int>(enchantment->Unknown.v6);
+            stream.Write<int>(enchantment->Unknown.v7);
         }
-
-        m_logger << Log::outdent;
-        m_logger << "" << std::endl;
     }
-
-    m_logger << Log::outdent;
 }
 
-StorageGameSaveReader::~StorageGameSaveReader() {}
+StorageGameSaveWriter::~StorageGameSaveWriter() {}
 
 }}} // namespace

@@ -22,7 +22,7 @@ private:
     void readArtifacts(StreamHelper& stream);
     inventory::Item* readItem(StreamHelper& stream);
     void readEnchantments(StreamHelper& stream, inventory::Item& item);
-    void readUnknownMaybeEnchantments(StreamHelper& stream);
+    void readUnknownMaybeEnchantments(StreamHelper& stream, inventory::Item& item);
 
     Log m_logger;
     StorageGameSave& m_gameSave;

@@ -86,6 +86,14 @@ public:
     struct Rarity { enum type : unsigned int { Normal, Magic, Rare, Epic, Set, Random }; };
     struct Quality { enum type : unsigned int { Normal, Cracked, Masterwork }; };
 
+    struct UnknownList1Item
+    {
+        unsigned int v1;
+        int v2;
+
+        UnknownList1Item(unsigned int v1_, int v2_) : v1(v1_), v2(v2_) {}
+    };
+
     virtual std::string GetName() const;
 
     unsigned int BagNumber;
@@ -99,7 +107,9 @@ public:
     bool IsIdentified;
     struct
     {
-
+        std::vector<UnknownList1Item> List1;
+        bool v1;
+        Enchantment::List MaybeEnchantments;
     } Unknown;
 
     const Enchantment::List& GetEnchantments() const;

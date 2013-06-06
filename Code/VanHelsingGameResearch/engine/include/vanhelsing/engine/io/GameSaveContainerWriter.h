@@ -1,23 +1,22 @@
 #ifndef vanhelsing_engine_io_GameSaveContainerWriter_
 #define vanhelsing_engine_io_GameSaveContainerWriter_
 
+#include <vanhelsing/engine/io/GameSaveContainerBase.h>
 #include <iostream>
 
 namespace vanhelsing { namespace engine { namespace io {
 
-class GameSaveContainerWriter
+class GameSaveContainerWriter : public GameSaveContainerBase
 {
 public:
-    GameSaveContainerWriter(std::istream& inStream, std::ostream& outStream);
+    GameSaveContainerWriter(const ContainerInfoType& containerInfo, std::ostream& outStream);
     virtual ~GameSaveContainerWriter();
-    std::istream& getInStream() const;
     std::ostream& getOutStream();
 
 protected:
-    unsigned int m_unknown1;
+    const ContainerInfoType& m_containerInfo;
 
 private:
-    std::istream& m_inStream;
     std::ostream& m_outStream;
 };
 

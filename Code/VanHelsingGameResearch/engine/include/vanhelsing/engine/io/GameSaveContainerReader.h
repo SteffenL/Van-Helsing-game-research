@@ -1,19 +1,20 @@
 #ifndef vanhelsing_engine_io_GameSaveContainerReader_
 #define vanhelsing_engine_io_GameSaveContainerReader_
 
+#include <vanhelsing/engine/io/GameSaveContainerBase.h>
 #include <iostream>
 
 namespace vanhelsing { namespace engine { namespace io {
 
-class GameSaveContainerReader
+class GameSaveContainerReader : public GameSaveContainerBase
 {
 public:
-    GameSaveContainerReader(std::istream& inStream);
+    GameSaveContainerReader(ContainerInfoType& containerInfo, std::istream& inStream);
     virtual ~GameSaveContainerReader();
-    std::istream& getStream() const;
+    std::istream& getInStream() const;
 
 protected:
-    unsigned int m_unknown1;
+    ContainerInfoType& m_containerInfo;
 
 private:
     std::istream& m_inStream;
