@@ -4,7 +4,7 @@
   <head>
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Van-helsing-game-research : Just want to fiddle a bit with the game &quot;The Incredible Adventures of Van Helsing&quot;." />
+    <meta name="description" content="Van-helsing-game-research : An effort to reverse engineer parts of the game &quot;The Incredible Adventures of Van Helsing&quot;." />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -19,7 +19,7 @@
           <a id="forkme_banner" href="https://github.com/SteffenL/Van-Helsing-game-research">View on GitHub</a>
 
           <h1 id="project_title">Van-helsing-game-research</h1>
-          <h2 id="project_tagline">Just want to fiddle a bit with the game &quot;The Incredible Adventures of Van Helsing&quot;.</h2>
+          <h2 id="project_tagline">An effort to reverse engineer parts of the game &quot;The Incredible Adventures of Van Helsing&quot;.</h2>
 
             <section id="downloads">
               <a class="zip_download_link" href="https://github.com/SteffenL/Van-Helsing-game-research/zipball/master">Download this project as a .zip file</a>
@@ -40,25 +40,43 @@
 
 <p>Research is currently done by myself, Steffen André Langnes. Please don't just take my work and claim it as your own. :)</p>
 
-<p>A few links for search engines:</p>
+<p>My other project(s):</p>
 
 <ul>
 <li>
 <a href="http://deadislandsaveeditor.steffenl.com/">Dead Island Save Editor (DISE)</a> - My main project, a game-save editor.</li>
 <li><a href="http://blog.steffenl.com/">"Private" blog</a></li>
 </ul><h2>
+<a name="download-binary-windows" class="anchor" href="#download-binary-windows"><span class="octicon octicon-link"></span></a>Download (binary, Windows)</h2>
+
+<p><a href="http://www.mediafire.com/download/u175wdg7ha1b3if/storage_editor_20130606.zip">r20130606</a></p>
+
+<h2>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<ul>
+<li>Operating system: Windows XP or later.</li>
+</ul><h2>
 <a name="current-programs" class="anchor" href="#current-programs"><span class="octicon octicon-link"></span></a>Current programs</h2>
 
 <ul>
-<li>Unpacker for N2PK packages (*Files.N2PK*). These files contain textures, models, etc.</li>
-<li>Storage viewer (*storage.sav*). Displays all of the items you have in your storage.</li>
+<li>Unpacker for N2PK packages (Files.N2PK). These files contain textures, models, etc.</li>
+<li>Storage viewer (command line) (storage.sav). Displays all of the items you have in your storage. (Replaced by GUI app, so this is useless now).</li>
+<li>Storage editor (GUI).</li>
 </ul><h2>
+<a name="screenshot-2013-06-06" class="anchor" href="#screenshot-2013-06-06"><span class="octicon octicon-link"></span></a>Screenshot (2013-06-06)</h2>
+
+<p><img src="https://raw.github.com/wiki/SteffenL/Van-Helsing-game-research/images/mainwindow.png" alt="Storage Editor"></p>
+
+<h2>
 <a name="pages" class="anchor" href="#pages"><span class="octicon octicon-link"></span></a>Pages</h2>
 
 <ul>
 <li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/Keep-the-game-running-in-the-background">Keep the game running in the background</a></li>
 <li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/Skip-logos-on-startup">Skip logos on startup</a></li>
 <li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/Use-the-32-bit-version-of-the-game-on-64-bit-systems">Use the 32 bit version of the game on 64 bit systems</a></li>
+<li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/List-of-items-and-IDs">List of items and IDs</a></li>
+<li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/List-of-enchantments-and-IDs">List of enchantments and IDs</a></li>
 </ul><h2>
 <a name="game-save-location-pc" class="anchor" href="#game-save-location-pc"><span class="octicon octicon-link"></span></a>Game-save location (PC)</h2>
 
@@ -70,18 +88,9 @@
 <ul>
 <li>*.sav - Game-save/Character.</li>
 <li>timestamp.hts</li>
-<li>backup*.sav - Backup of old saves.</li>
-<li>common\storage.sav - Storage/Chest?</li>
+<li>backup*.sav - Backup of previous saves.</li>
+<li>common\storage.sav - Your own storage/chest.</li>
 <li>achievements.sav</li>
-</ul><h2>
-<a name="saves-and-such-inside-repo-for-research" class="anchor" href="#saves-and-such-inside-repo-for-research"><span class="octicon octicon-link"></span></a>Saves (and such) inside repo (for research)</h2>
-
-<p>Very incomplete, but these files are the files I'm workong with <em>at the moment</em>.</p>
-
-<ul>
-<li>bookmarks.hbk - Bookmarks for Hex Workshop. Use with <code>TestCrve_orig.sav</code> to locate interesting values.</li>
-<li>TestCrve_orig.sav - The original (well, almost original) save. Revert <code>TestCrve.sav</code> to this one when needed.</li>
-<li>TestCrve.sav - Modded save or whatever; should not really keep it in the repo.</li>
 </ul>
       </section>
     </div>
