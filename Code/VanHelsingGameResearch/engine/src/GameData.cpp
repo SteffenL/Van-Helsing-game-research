@@ -9,6 +9,7 @@
 #include <nowide/fstream.hpp>
 #include <iomanip>
 #include <algorithm>
+#include <sstream>
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/member.hpp>
@@ -321,7 +322,11 @@ std::string TextManager::GetRarityText(inventory::Item::Rarity::type rarity) con
         break;
 
     default:
-        return "(invalid)";
+        {
+            std::stringstream ss;
+            ss << rarity << " (invalid)";
+            return ss.str();
+        }
     }
 
     std::transform(textName.begin(), textName.end(), textName.begin(), ::tolower);
@@ -329,7 +334,9 @@ std::string TextManager::GetRarityText(inventory::Item::Rarity::type rarity) con
         return m_rarity.at(textName);
     }
     catch (std::out_of_range&) {
-        return "(invalid)";
+        std::stringstream ss;
+        ss << rarity << " (invalid)";
+        return ss.str();
     }
 }
 
@@ -350,7 +357,11 @@ std::string TextManager::GetQualityText(inventory::Item::Quality::type quality) 
         break;
 
     default:
-        return "(invalid)";
+        {
+            std::stringstream ss;
+            ss << quality << " (invalid)";
+            return ss.str();
+        }
     }
 
     std::transform(textName.begin(), textName.end(), textName.begin(), ::tolower);
@@ -358,7 +369,9 @@ std::string TextManager::GetQualityText(inventory::Item::Quality::type quality) 
         return m_quality.at(textName);
     }
     catch (std::out_of_range&) {
-        return "(invalid)";
+        std::stringstream ss;
+        ss << quality << " (invalid)";
+        return ss.str();
     }
 }
 

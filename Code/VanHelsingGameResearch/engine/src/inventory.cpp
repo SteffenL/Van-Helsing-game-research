@@ -33,4 +33,16 @@ void Item::List::FindByBagNumber(int bagNumber, std::vector<Item*>& items)
     }
 }
 
+
+bool Item::Rarity::IsValid(type v)
+{
+    return ((v >= FIRST) && (v < LAST_PLUS_ONE));
+}
+
+
+bool Item::Quality::IsValid(type v)
+{
+    return ((v >= FIRST) && (v < LAST_PLUS_ONE));
+}
+
 }}} // namespace

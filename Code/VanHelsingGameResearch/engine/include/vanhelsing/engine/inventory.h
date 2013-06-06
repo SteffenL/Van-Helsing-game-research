@@ -83,8 +83,17 @@ public:
         void FindByBagNumber(int bagNumber, std::vector<Item*>& items);
     };
 
-    struct Rarity { enum type : unsigned int { Normal, Magic, Rare, Epic, Set, Random }; };
-    struct Quality { enum type : unsigned int { Normal, Cracked, Masterwork }; };
+    struct Rarity
+    {
+        enum type : unsigned int { FIRST, Normal = FIRST, Magic, Rare, Epic, Set, Random, LAST_PLUS_ONE };
+        static bool IsValid(type v);
+    };
+    
+    struct Quality
+    {
+        enum type : unsigned int { FIRST, Normal = FIRST, Cracked, Masterwork, LAST_PLUS_ONE };
+        static bool IsValid(type v);
+    };
 
     struct UnknownList1Item
     {

@@ -288,9 +288,9 @@ void StorageItemsTabPage::updateModifyItemSection(
         m_itemAttribute2.SetValue(ss.str().c_str());
     }
     // Rarity
-    m_itemRarity.SetCurSel(item->Rarity);
+    m_itemRarity.SetCurSel(Item::Rarity::IsValid(item->Rarity) ? item->Rarity : -1);
     // Quality
-    m_itemQuality.SetCurSel(item->Quality);
+    m_itemQuality.SetCurSel(Item::Quality::IsValid(item->Quality) ? item->Quality : -1);
     // Identified
     m_itemIsIdentified.SetCheck(item->IsIdentified ? BST_CHECKED : BST_UNCHECKED);
     // Quantity
