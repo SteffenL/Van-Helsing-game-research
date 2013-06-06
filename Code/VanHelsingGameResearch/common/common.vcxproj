@@ -11,9 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\steffenl\common\Backup.h" />
     <ClInclude Include="include\steffenl\common\Registry.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Backup.cpp" />
     <ClCompile Include="src\Registry.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

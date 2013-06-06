@@ -8,7 +8,7 @@ namespace vanhelsing { namespace engine {
 class StorageGameSave
 {
 public:
-    inventory::Item::List& GetItems() { return m_items; }
+    inventory::Item::List& GetItems();
     virtual ~StorageGameSave();
 
 protected:

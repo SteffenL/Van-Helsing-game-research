@@ -105,7 +105,7 @@ N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(
         throw std::runtime_error("Invalid signature");
     }
 
-    stream.Seek(2); // Null-terminator?
+    stream.SeekI(2); // Null-terminator?
     m_entryTableOffset = stream.Read<unsigned int>();
     stream.Read<int>();
     m_entryTableOffset += m_stream->tellg();
@@ -119,7 +119,7 @@ N2pkFile::~N2pkFile() {}
 void N2pkFile::readFileTable(StreamHelper& stream)
 {
     m_logger << "Reading file table..." << std::endl;
-    stream.Seek(m_entryTableOffset, std::ios::beg);
+    stream.SeekI(m_entryTableOffset, std::ios::beg);
     m_impl->Files.clear();
     auto fileCount = stream.Read<unsigned int>();
     for (unsigned int i = 0; i < fileCount; ++i) {

@@ -12,6 +12,7 @@
 #include <vanhelsing/engine/io/StorageGameSaveReader.h>
 #include <vanhelsing/engine/GameData.h>
 #include <vanhelsing/engine/GamePaths.h>
+#include <steffenl/common/backup.h>
 #include <nowide/fstream.hpp>
 
 BOOL CMainDlg::PreTranslateMessage(MSG* pMsg)
@@ -139,23 +140,32 @@ LRESULT CMainDlg::OnFileOpen(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, B
     auto& filePath(nowide::narrow(dialog.m_szFileName));
     nowide::ifstream file(filePath.c_str(), std::ios::binary);
 
-    m_gameSave.reset(new vanhelsing::engine::StorageGameSave);
-    vanhelsing::engine::io::StorageGameSaveReader reader(*m_gameSave, file);
+    m_openedFiles.StorageGameSave.reset(new vanhelsing::engine::StorageGameSave);
+    vanhelsing::engine::io::StorageGameSaveReader reader(*m_openedFiles.StorageGameSave, file);
+    m_openedFiles.StorageFilePath = filePath;
 
-    m_storageItemsTabPage[0].OnOpenGameSave(m_gameSave.get());
-    m_storageItemsTabPage[1].OnOpenGameSave(m_gameSave.get());
-    m_storageItemsTabPage[2].OnOpenGameSave(m_gameSave.get());
+    m_storageItemsTabPage[0].OnOpenGameSave(m_openedFiles.StorageGameSave.get());
+    m_storageItemsTabPage[1].OnOpenGameSave(m_openedFiles.StorageGameSave.get());
+    m_storageItemsTabPage[2].OnOpenGameSave(m_openedFiles.StorageGameSave.get());
 
     return 0;
 }
 
 LRESULT CMainDlg::OnFileSave(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
+    if (!m_openedFiles.StorageFilePath.empty()) {
+        saveStorageGameSave();
+    }
+
     return 0;
 }
 
 LRESULT CMainDlg::OnFileSaveAs(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
+    if (!m_openedFiles.StorageFilePath.empty()) {
+        //saveStorageGameSaveAs();
+    }
+
     return 0;
 }
 
@@ -174,3 +184,8 @@ void CMainDlg::CloseDialog(int nVal)
 CMainDlg::CMainDlg() {}
 
 CMainDlg::~CMainDlg() {}
+
+void CMainDlg::saveStorageGameSave()
+{
+    steffenl::common::Backup backup("AdvanSE_backup");
+}

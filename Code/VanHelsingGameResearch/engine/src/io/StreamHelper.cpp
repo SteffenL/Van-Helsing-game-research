@@ -2,4 +2,7 @@
 
 namespace vanhelsing { namespace engine { namespace io {
 
+StreamHelper::DummyStreamBuf::DummyStreamBuf() {}
+int StreamHelper::DummyStreamBuf::sync() { return 0; }
+
 }}} // namespace

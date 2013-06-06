@@ -18,11 +18,15 @@
     <ClCompile Include="src\GameSave.cpp" />
     <ClCompile Include="src\inventory.cpp" />
     <ClCompile Include="src\io\GameSaveContainerReader.cpp" />
+    <ClCompile Include="src\io\GameSaveContainerWriter.cpp" />
     <ClCompile Include="src\io\GameSaveReader.cpp" />
     <ClCompile Include="src\io\GameSaveWriter.cpp" />
     <ClCompile Include="src\io\n2pk\N2pkFile.cpp" />
     <ClCompile Include="src\io\StorageGameSaveReader.cpp" />
+    <ClCompile Include="src\io\StorageGameSaveWriter.cpp" />
     <ClCompile Include="src\io\StreamHelper.cpp" />
+    <ClCompile Include="src\io\StreamHelperReader.cpp" />
+    <ClCompile Include="src\io\StreamHelperWriter.cpp" />
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\StorageGameSave.cpp" />
   </ItemGroup>
@@ -33,11 +37,15 @@
     <ClInclude Include="include\vanhelsing\engine\GameSave.h" />
     <ClInclude Include="include\vanhelsing\engine\inventory.h" />
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerReader.h" />
+    <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerWriter.h" />
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveReader.h" />
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveWriter.h" />
     <ClInclude Include="include\vanhelsing\engine\io\n2pk\N2pkFile.h" />
     <ClInclude Include="include\vanhelsing\engine\io\StorageGameSaveReader.h" />
+    <ClInclude Include="include\vanhelsing\engine\io\StorageGameSaveWriter.h" />
     <ClInclude Include="include\vanhelsing\engine\io\StreamHelper.h" />
+    <ClInclude Include="include\vanhelsing\engine\io\StreamHelperReader.h" />
+    <ClInclude Include="include\vanhelsing\engine\io\StreamHelperWriter.h" />
     <ClInclude Include="include\vanhelsing\engine\log.h" />
     <ClInclude Include="include\vanhelsing\engine\StorageGameSave.h" />
   </ItemGroup>

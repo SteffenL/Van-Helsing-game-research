@@ -77,9 +77,16 @@ public:
 	void CloseDialog(int nVal);
 
 private:
+    void saveStorageGameSave();
+
+private:
     HACCEL m_hAccelerator;
     CHalTabCtrl m_storageTabs;
     std::map<int, StorageItemsTabPage> m_storageItemsTabPage;
     CMenu m_mainMenu;
-    std::unique_ptr<vanhelsing::engine::StorageGameSave> m_gameSave;
+    struct
+    {
+        std::string StorageFilePath;
+        std::unique_ptr<vanhelsing::engine::StorageGameSave> StorageGameSave;
+    } m_openedFiles;
 };
