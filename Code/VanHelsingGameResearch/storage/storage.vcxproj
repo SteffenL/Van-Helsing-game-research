@@ -87,6 +87,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\common\common.vcxproj">
+      <Project>{a8fac840-25f0-4ea7-b9dd-66eb9f4328e6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\engine\engine.vcxproj">
       <Project>{5d6b5d96-121b-4de6-8ef6-dc88c1697fb9}</Project>
     </ProjectReference>

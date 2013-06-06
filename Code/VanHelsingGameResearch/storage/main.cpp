@@ -2,6 +2,7 @@
 #include <vanhelsing/engine/io/StorageGameSaveReader.h>
 #include <vanhelsing/engine/log.h>
 #include <vanhelsing/engine/GameData.h>
+#include <vanhelsing/engine/GamePaths.h>
 
 #include <nowide/args.hpp>
 #include <nowide/convert.hpp>
@@ -32,15 +33,19 @@ int main(int argc, char* argv[])
     }
 
     try {
-        // Temp solution for specifying the game dir
+        // Load game data before anything attempts to use it
+        std::string gameDir;
         auto gameDir_c = std::getenv("VH_GAME_DIR");
-        if (!gameDir_c) {
-            Log(LogLevel::Error) << "Environment variable must be set: VH_GAME_DIR" << std::endl;
-            return 1;
+        if (gameDir_c) {
+            gameDir = gameDir_c;
+        }
+        else {
+            gameDir = GamePaths::GetInstallPath();
         }
 
-        std::string gameDir(gameDir_c);
-        GameData::Get().Load(gameDir);
+        if (!gameDir.empty()) {
+            GameData::Get().Load(gameDir);
+        }
 
         StorageGameSave gameSave;
         nowide::ifstream inStream(filePath.c_str(), std::ios::binary);
