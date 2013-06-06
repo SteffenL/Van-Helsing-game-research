@@ -1,5 +1,5 @@
 #include <vanhelsing/engine/io/n2pk/N2pkFile.h>
-#include <vanhelsing/engine/io/StreamHelper.h>
+#include <vanhelsing/engine/io/StreamHelperReader.h>
 #include <nowide/fstream.hpp>
 #include <iomanip>
 #include <misc/substreambuf.hpp>
@@ -99,7 +99,7 @@ N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(
     fileStream->rdbuf()->pubsetbuf(m_buffer, sizeof(m_buffer));
 
     m_stream.reset(fileStream);
-    StreamHelper stream(*m_stream);
+    StreamHelperReader stream(*m_stream);
     if ((stream.Read<int>() != 15) ||
         (nowide::narrow(stream.ReadWString(15)) != "Neocore Package")) {
         throw std::runtime_error("Invalid signature");
@@ -116,7 +116,7 @@ N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(
 
 N2pkFile::~N2pkFile() {}
 
-void N2pkFile::readFileTable(StreamHelper& stream)
+void N2pkFile::readFileTable(StreamHelperReader& stream)
 {
     m_logger << "Reading file table..." << std::endl;
     stream.SeekI(m_entryTableOffset, std::ios::beg);

@@ -1,15 +1,15 @@
 #include <vanhelsing/engine/io/GameSaveContainerReader.h>
 #include <vanhelsing/engine/StorageGameSave.h>
-#include <vanhelsing/engine/io/StreamHelper.h>
+#include <vanhelsing/engine/io/StreamHelperReader.h>
 
 namespace vanhelsing { namespace engine { namespace io {
 
 GameSaveContainerReader::GameSaveContainerReader(ContainerInfoType& containerInfo, std::istream& inStream)
     : m_containerInfo(containerInfo), m_inStream(inStream)
 {
-    StreamHelper stream(getInStream());
-    const std::string& signature = stream.ReadString(5);
-    if (signature != std::string("C2AR\0", 5)) {
+    StreamHelperReader stream(getInStream());
+    auto& signature = stream.ReadString(5);
+    if (signature.compare(std::string("C2AR\0", 5)) != 0) {
         throw std::runtime_error("Invalid signature");
     }
 

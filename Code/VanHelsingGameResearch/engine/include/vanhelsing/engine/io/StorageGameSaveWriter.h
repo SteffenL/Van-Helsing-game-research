@@ -10,7 +10,7 @@ namespace vanhelsing { namespace engine { namespace inventory { class Item; } } 
 
 namespace vanhelsing { namespace engine { namespace io {
 
-class StreamHelper;
+class StreamHelperWriter;
 
 class StorageGameSaveWriter : public GameSaveContainerWriter
 {
@@ -19,10 +19,10 @@ public:
     virtual ~StorageGameSaveWriter();
 
 private:
-    void writeArtifacts(StreamHelper& stream);
-    void writeItem(StreamHelper& stream, const inventory::Item* item);
-    void writeEnchantments(StreamHelper& stream, const inventory::Item& item);
-    void writeUnknownMaybeEnchantments(StreamHelper& stream, const inventory::Item& item);
+    void writeArtifacts(StreamHelperWriter& stream);
+    void writeItem(StreamHelperWriter& stream, const inventory::Item* item);
+    void writeEnchantments(StreamHelperWriter& stream, const inventory::Item& item);
+    void writeUnknownMaybeEnchantments(StreamHelperWriter& stream, const inventory::Item& item);
 
     Log m_logger;
     StorageGameSave& m_gameSave;

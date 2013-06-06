@@ -1,5 +1,5 @@
 #include <vanhelsing/engine/io/StorageGameSaveReader.h>
-#include <vanhelsing/engine/io/StreamHelper.h>
+#include <vanhelsing/engine/io/StreamHelperReader.h>
 #include <nowide/iostream.hpp>
 #include <iomanip>
 
@@ -8,11 +8,11 @@ namespace vanhelsing { namespace engine { namespace io {
 StorageGameSaveReader::StorageGameSaveReader(StorageGameSave& gameSave, std::istream& inStream)
     : GameSaveContainerReader(gameSave.ContainerInfo, inStream), m_gameSave(gameSave), m_logger(LogLevel::Trace)
 {
-    StreamHelper stream(getInStream());
+    StreamHelperReader stream(getInStream());
     readArtifacts(stream);
 }
 
-void StorageGameSaveReader::readArtifacts(StreamHelper& stream)
+void StorageGameSaveReader::readArtifacts(StreamHelperReader& stream)
 {
     auto count = stream.Read<int>();
     m_logger << "Artifacts (" << count << "):" << std::endl;
@@ -35,7 +35,8 @@ void StorageGameSaveReader::readArtifacts(StreamHelper& stream)
         m_logger << "" << std::endl;
     }
 
-    if (stream.Read<int>() > 0) {
+    m_gameSave.Unknown.Artifacts.v1 = stream.Read<int>();
+    if (m_gameSave.Unknown.Artifacts.v1 > 0) {
         // TODO: Need to test with more files because there are more reads here
         throw std::runtime_error("This file must be investigated");
     }
@@ -43,7 +44,7 @@ void StorageGameSaveReader::readArtifacts(StreamHelper& stream)
     m_logger << Log::outdent;
 }
 
-inventory::Item* StorageGameSaveReader::readItem(StreamHelper& stream)
+inventory::Item* StorageGameSaveReader::readItem(StreamHelperReader& stream)
 {
     using inventory::Item;
     std::unique_ptr<Item> item(new Item);
@@ -92,7 +93,7 @@ inventory::Item* StorageGameSaveReader::readItem(StreamHelper& stream)
     return itemPtr;
 }
 
-void StorageGameSaveReader::readEnchantments(StreamHelper& stream, inventory::Item& item)
+void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, inventory::Item& item)
 {
     auto& enchantments = item.GetEnchantmentsWritable();
 
@@ -135,7 +136,7 @@ void StorageGameSaveReader::readEnchantments(StreamHelper& stream, inventory::It
     m_logger << Log::outdent;
 }
 
-void StorageGameSaveReader::readUnknownMaybeEnchantments(StreamHelper& stream, inventory::Item& item)
+void StorageGameSaveReader::readUnknownMaybeEnchantments(StreamHelperReader& stream, inventory::Item& item)
 {
     auto& enchantments = item.Unknown.MaybeEnchantments;
 

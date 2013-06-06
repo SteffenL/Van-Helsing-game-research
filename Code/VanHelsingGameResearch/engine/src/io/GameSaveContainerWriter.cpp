@@ -1,12 +1,12 @@
 #include <vanhelsing/engine/io/GameSaveContainerWriter.h>
-#include <vanhelsing/engine/io/StreamHelper.h>
+#include <vanhelsing/engine/io/StreamHelperWriter.h>
 
 namespace vanhelsing { namespace engine { namespace io {
 
 GameSaveContainerWriter::GameSaveContainerWriter(const ContainerInfoType& containerInfo, std::ostream& outStream)
     : m_containerInfo(containerInfo), m_outStream(outStream)
 {
-    StreamHelper stream(getOutStream());
+    StreamHelperWriter stream(getOutStream());
     stream.WriteString(m_containerInfo.Signature, 5);
     stream.Write<unsigned int>(m_containerInfo.Version);
     stream.Write<int>(m_containerInfo.Unknown.v1);

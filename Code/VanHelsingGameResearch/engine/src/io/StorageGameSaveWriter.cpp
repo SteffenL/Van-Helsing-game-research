@@ -1,5 +1,5 @@
 #include <vanhelsing/engine/io/StorageGameSaveWriter.h>
-#include <vanhelsing/engine/io/StreamHelper.h>
+#include <vanhelsing/engine/io/StreamHelperWriter.h>
 #include <nowide/iostream.hpp>
 #include <iomanip>
 
@@ -8,11 +8,11 @@ namespace vanhelsing { namespace engine { namespace io {
 StorageGameSaveWriter::StorageGameSaveWriter(StorageGameSave& gameSave, std::ostream& outStream)
     : GameSaveContainerWriter(gameSave.ContainerInfo, outStream), m_gameSave(gameSave), m_logger(LogLevel::Trace)
 {
-    StreamHelper stream(getOutStream());
+    StreamHelperWriter stream(getOutStream());
     writeArtifacts(stream);
 }
 
-void StorageGameSaveWriter::writeArtifacts(StreamHelper& stream)
+void StorageGameSaveWriter::writeArtifacts(StreamHelperWriter& stream)
 {
     auto& manager = m_gameSave.GetItems();
     auto& items = manager.GetItems();
@@ -23,10 +23,10 @@ void StorageGameSaveWriter::writeArtifacts(StreamHelper& stream)
         writeItem(stream, item.get());
     }
 
-    stream.Write<int>(stream.Read<int>());
+    stream.Write<int>(m_gameSave.Unknown.Artifacts.v1);
 }
 
-void StorageGameSaveWriter::writeItem(StreamHelper& stream, const inventory::Item* item)
+void StorageGameSaveWriter::writeItem(StreamHelperWriter& stream, const inventory::Item* item)
 {
     using inventory::Item;
 
@@ -35,8 +35,7 @@ void StorageGameSaveWriter::writeItem(StreamHelper& stream, const inventory::Ite
     stream.Write<int>(item->Attribute2);
     stream.Write<int>(item->Quantity);
 
-    auto count = stream.Read<int>();
-    stream.Write<int>(count);
+    stream.Write<int>(item->Unknown.List1.size());
     for (auto& i : item->Unknown.List1) {
         stream.Write<unsigned int>(i.v1);
         stream.Write<int>(i.v2);
@@ -52,7 +51,7 @@ void StorageGameSaveWriter::writeItem(StreamHelper& stream, const inventory::Ite
     stream.Write<bool>(item->Unknown.v1);
 }
 
-void StorageGameSaveWriter::writeEnchantments(StreamHelper& stream, const inventory::Item& item)
+void StorageGameSaveWriter::writeEnchantments(StreamHelperWriter& stream, const inventory::Item& item)
 {
     auto& enchantments = item.GetEnchantments().GetItems();
 
@@ -73,7 +72,7 @@ void StorageGameSaveWriter::writeEnchantments(StreamHelper& stream, const invent
     }
 }
 
-void StorageGameSaveWriter::writeUnknownMaybeEnchantments(StreamHelper& stream, const inventory::Item& item)
+void StorageGameSaveWriter::writeUnknownMaybeEnchantments(StreamHelperWriter& stream, const inventory::Item& item)
 {
     auto& enchantments = item.Unknown.MaybeEnchantments.GetItems();
 

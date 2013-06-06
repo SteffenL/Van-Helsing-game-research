@@ -77,7 +77,7 @@ public:
 	void CloseDialog(int nVal);
 
 private:
-    void saveStorageGameSave();
+    void saveStorageGameSave(const std::string& filePath);
 
 private:
     HACCEL m_hAccelerator;

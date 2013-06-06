@@ -10,7 +10,7 @@ namespace vanhelsing { namespace engine { namespace inventory { class Item; } } 
 
 namespace vanhelsing { namespace engine { namespace io {
 
-class StreamHelper;
+class StreamHelperReader;
 
 class StorageGameSaveReader : public GameSaveContainerReader
 {
@@ -19,10 +19,10 @@ public:
     virtual ~StorageGameSaveReader();
 
 private:
-    void readArtifacts(StreamHelper& stream);
-    inventory::Item* readItem(StreamHelper& stream);
-    void readEnchantments(StreamHelper& stream, inventory::Item& item);
-    void readUnknownMaybeEnchantments(StreamHelper& stream, inventory::Item& item);
+    void readArtifacts(StreamHelperReader& stream);
+    inventory::Item* readItem(StreamHelperReader& stream);
+    void readEnchantments(StreamHelperReader& stream, inventory::Item& item);
+    void readUnknownMaybeEnchantments(StreamHelperReader& stream, inventory::Item& item);
 
     Log m_logger;
     StorageGameSave& m_gameSave;

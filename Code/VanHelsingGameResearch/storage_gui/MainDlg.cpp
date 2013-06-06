@@ -10,6 +10,7 @@
 
 #include <vanhelsing/engine/StorageGameSave.h>
 #include <vanhelsing/engine/io/StorageGameSaveReader.h>
+#include <vanhelsing/engine/io/StorageGameSaveWriter.h>
 #include <vanhelsing/engine/GameData.h>
 #include <vanhelsing/engine/GamePaths.h>
 #include <steffenl/common/backup.h>
@@ -114,34 +115,34 @@ static UINT_PTR CALLBACK file(HWND hdlg, UINT msg, WPARAM wParam, LPARAM lParam)
 
 LRESULT CMainDlg::OnFileOpen(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-   /* Kerr::FileOpenDialog dialog;
-    if (FAILED(dialog.Load())) {
+    CSSFileDialog fileDialog(TRUE, NULL, NULL,
+        OFN_FILEMUSTEXIST | OFN_ENABLESIZING,
+        _T("storage.sav|storage.sav|*.sav|*.sav|"));
+
+    if (fileDialog.DoModal(*this) != IDOK) {
         return 0;
     }
 
-    COMDLG_FILTERSPEC filter[] = { L"storage.sav", L"storage.sav" };
-    dialog->SetFileTypes(1, filter);
-
-    if (FAILED(dialog.DoModal())) {
-        return 0;
-    }
-
-    CComPtr<IShellItem> selection;
-    dialog->GetResult(&selection);*/
-
-    CSSFileDialog dialog(TRUE, NULL, NULL,
-        OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_ENABLESIZING,
-        _T("storage.sav|storage.sav|"));
-
-    if (dialog.DoModal(*this) != IDOK) {
-        return 0;
-    }
-
-    auto& filePath(nowide::narrow(dialog.m_szFileName));
+    auto& filePath(nowide::narrow(fileDialog.m_szFileName));
     nowide::ifstream file(filePath.c_str(), std::ios::binary);
 
     m_openedFiles.StorageGameSave.reset(new vanhelsing::engine::StorageGameSave);
-    vanhelsing::engine::io::StorageGameSaveReader reader(*m_openedFiles.StorageGameSave, file);
+
+    try {
+        vanhelsing::engine::io::StorageGameSaveReader reader(*m_openedFiles.StorageGameSave, file);
+    }
+    catch (std::runtime_error& ex) {
+        CTaskDialog dialog(*this);
+        dialog.SetWindowTitle(L"Exception");
+        dialog.SetMainInstructionText(L"Exception");
+        auto& sw = nowide::widen(ex.what());
+        dialog.SetContentText(sw.c_str());
+        dialog.SetCommonButtons(TDCBF_OK_BUTTON);
+        dialog.SetMainIcon(TD_ERROR_ICON);
+        dialog.DoModal();
+        return 0;
+    }
+
     m_openedFiles.StorageFilePath = filePath;
 
     m_storageItemsTabPage[0].OnOpenGameSave(m_openedFiles.StorageGameSave.get());
@@ -153,18 +154,32 @@ LRESULT CMainDlg::OnFileOpen(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, B
 
 LRESULT CMainDlg::OnFileSave(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-    if (!m_openedFiles.StorageFilePath.empty()) {
-        saveStorageGameSave();
+    if (m_openedFiles.StorageFilePath.empty()) {
+        return 0;
     }
+
+    saveStorageGameSave(m_openedFiles.StorageFilePath);
 
     return 0;
 }
 
 LRESULT CMainDlg::OnFileSaveAs(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-    if (!m_openedFiles.StorageFilePath.empty()) {
-        //saveStorageGameSaveAs();
+    if (m_openedFiles.StorageFilePath.empty()) {
+        return 0;
     }
+
+    auto& StorageFilePathW = nowide::widen(m_openedFiles.StorageFilePath);
+    CSSFileDialog dialog(FALSE, _T("sav"), StorageFilePathW.c_str(),
+        OFN_ENABLESIZING,
+        _T("storage.sav|storage.sav|*.sav|*.sav|"));
+
+    if (dialog.DoModal(*this) != IDOK) {
+        return 0;
+    }
+
+    auto& filePath(nowide::narrow(dialog.m_szFileName));
+    saveStorageGameSave(filePath);
 
     return 0;
 }
@@ -185,7 +200,16 @@ CMainDlg::CMainDlg() {}
 
 CMainDlg::~CMainDlg() {}
 
-void CMainDlg::saveStorageGameSave()
+void CMainDlg::saveStorageGameSave(const std::string& filePath)
 {
-    steffenl::common::Backup backup("AdvanSE_backup");
+    //steffenl::common::Backup backup("AdvanSE_backup");
+
+    nowide::ofstream file(filePath.c_str(), std::ios::binary);
+    if (!file.is_open()) {
+        std::string ex("Couldn't open file: ");
+        ex += filePath;
+        throw std::runtime_error(ex);
+    }
+
+    vanhelsing::engine::io::StorageGameSaveWriter writer(*m_openedFiles.StorageGameSave, file);
 }

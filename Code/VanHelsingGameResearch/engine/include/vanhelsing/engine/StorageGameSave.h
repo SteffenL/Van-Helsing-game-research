@@ -14,6 +14,14 @@ public:
 
     io::GameSaveContainerBase::ContainerInfoType ContainerInfo;
 
+    struct 
+    {
+        struct
+        {
+            int v1;
+        } Artifacts;
+    } Unknown;
+
 private:
     inventory::Item::List m_items;
 };

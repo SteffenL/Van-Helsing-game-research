@@ -7,7 +7,7 @@
 #include <streambuf>
 #include <string>
 
-namespace vanhelsing { namespace engine { namespace io { class StreamHelper; }}}
+namespace vanhelsing { namespace engine { namespace io { class StreamHelperReader; }}}
 
 namespace vanhelsing { namespace engine { namespace io { namespace n2pk {
 
@@ -54,7 +54,7 @@ private:
     Log m_logger;
     char m_buffer[32 * 1024];
 
-    void readFileTable(StreamHelper& stream);
+    void readFileTable(StreamHelperReader& stream);
 };
 
 }}}} // namespace
