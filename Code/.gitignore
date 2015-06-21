@@ -2,7 +2,5 @@
 *.sdf
 *.suo
 *.opensdf
-/Debug
-/Release
-/*/Debug
-/*/Release
+/bin
+/obj
