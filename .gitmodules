@@ -1,0 +1,3 @@
+[submodule "Doc/Developers/IDA/Game binaries"]
+	path = Doc/Developers/IDA/Game binaries
+	url = https://github.com/SteffenL/Van-Helsing-game-binaries.git
