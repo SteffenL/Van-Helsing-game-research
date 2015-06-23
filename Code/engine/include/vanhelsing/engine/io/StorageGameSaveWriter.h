@@ -19,11 +19,15 @@ public:
     virtual ~StorageGameSaveWriter();
 
 private:
-    void writeArtifacts(StreamHelperWriter& stream);
-    void writeItem(StreamHelperWriter& stream, const inventory::Item* item);
+    void writeAllStoredItems(StreamHelperWriter& stream);
+    void writeArtifact(StreamHelperWriter& stream, const inventory::Item* item);
     void writeEnchantments(StreamHelperWriter& stream, const inventory::Item& item);
     void writeUnknownMaybeEnchantments(StreamHelperWriter& stream, const inventory::Item& item);
-
+    void writeArtifactList(StreamHelperWriter& stream, inventory::Item::List& list);
+    void writeUnknownStruct1(StreamHelperWriter& stream, const inventory::Item::UnknownStruct1& us1);
+    void writeUnknown1List(StreamHelperWriter& stream, const std::vector<inventory::Item::UnknownList3Item>& list);
+    void writeUnknown1ListItem(StreamHelperWriter& stream, const inventory::Item::UnknownList3Item& item);
+    void writeUnknown2List(StreamHelperWriter& stream, const std::vector<inventory::Item::UnknownList4Item>& list);
     Log m_logger;
     StorageGameSave& m_gameSave;
 };

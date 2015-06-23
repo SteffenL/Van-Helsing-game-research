@@ -1,0 +1,28 @@
+# Memory addresses
+
+## Health
+Value type: float
+
+Access:
+7F6E0711EF0 - F3 0F10 81 6C040000  - movsd xmm0,[rcx+0000046C]
+7F6E071BE39 - F3 0F10 BE 6C040000  - movsd xmm7,[rsi+0000046C]
+7F6E0719B7C - F3 0F10 B6 6C040000  - movsd xmm6,[rsi+0000046C]
+7F6E0719BE4 - F3 0F5C 86 6C040000  - subss xmm0,[rsi+0000046C]
+7F6E0719C16 - F3 0F58 86 6C040000  - addss xmm0,[rsi+0000046C]
+7F6E0719C22 - F3 0F11 86 6C040000  - movss [rsi+0000046C],xmm0 ; write
+7F6E0719C4D - 44 0F2F 86 6C040000  - comiss xmm8,[rsi+0000046C]
+7F6E0719D0D - 44 0F2E 86 6C040000  - ucomiss xmm8,[rsi+0000046C]
+
+Immortality (everyone) patch:
+7F6E0719C22 - F3 0F11 8E 6C040000     - movss [rsi+0000046C],xmm1
+
+## Rage
+Value type: int32
+
+Access:
+7F6E06F7D50 - 8B 81 B8080000  - mov eax,[rcx+000008B8]
+7F6E06FFA15 - 3B 8B B8080000  - cmp ecx,[rbx+000008B8]
+
+Write:
+7F6E06FC18E - 4C 8B D8                - mov r11,rax
+

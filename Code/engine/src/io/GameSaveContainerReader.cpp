@@ -2,6 +2,8 @@
 #include <vanhelsing/engine/StorageGameSave.h>
 #include <vanhelsing/engine/io/StreamHelperReader.h>
 
+#include <string>
+
 namespace vanhelsing { namespace engine { namespace io {
 
 GameSaveContainerReader::GameSaveContainerReader(ContainerInfoType& containerInfo, std::istream& inStream)
@@ -15,6 +17,9 @@ GameSaveContainerReader::GameSaveContainerReader(ContainerInfoType& containerInf
 
     m_containerInfo.Signature = signature;
     m_containerInfo.Version = stream.Read<unsigned int>();
+
+    checkVersion();
+
     m_containerInfo.Unknown.v1 = stream.Read<int>();
     
     m_containerInfo.Unknown.v2 = stream.Read<char>();
@@ -30,4 +35,19 @@ std::istream& GameSaveContainerReader::getInStream() const
     return m_inStream;
 }
 
-}}} // namespace
+void GameSaveContainerReader::checkVersion()
+{
+    if (m_containerInfo.Version >= MinimumSupportedVersion) {
+        return;
+    }
+
+    std::string msg(
+        "This file is unsupported because it's version (" + std::to_string(m_containerInfo.Version) + ") "
+        "is older than the minimum supported version (" + std::to_string(MinimumSupportedVersion) + ")."
+    );
+    throw std::runtime_error(msg);
+}
+
+}
+}
+} // namespace

@@ -19,11 +19,15 @@ public:
     virtual ~StorageGameSaveReader();
 
 private:
-    void readArtifacts(StreamHelperReader& stream);
-    inventory::Item* readItem(StreamHelperReader& stream);
+    void readAllStoredItems(StreamHelperReader& stream);
+    inventory::Item* readArtifact(StreamHelperReader& stream, inventory::Item::List& itemList);
     void readEnchantments(StreamHelperReader& stream, inventory::Item& item);
     void readUnknownMaybeEnchantments(StreamHelperReader& stream, inventory::Item& item);
-
+    void readUnknownStruct1(StreamHelperReader& stream, inventory::Item::UnknownStruct1& us1);
+    void readUnknown1List(StreamHelperReader& stream, std::vector<inventory::Item::UnknownList3Item>& list);
+    void readUnknown1ListItem(StreamHelperReader& stream, inventory::Item::UnknownList3Item& item);
+    void readArtifactList(StreamHelperReader& stream, inventory::Item::List& list);
+    void readUnknown2List(StreamHelperReader& stream, std::vector<inventory::Item::UnknownList4Item>& list);
     Log m_logger;
     StorageGameSave& m_gameSave;
 };
