@@ -17,8 +17,8 @@ void StorageGameSaveWriter::writeAllStoredItems(StreamHelperWriter& stream)
     writeArtifactList(stream, m_gameSave.GetArtifacts1());
     writeArtifactList(stream, m_gameSave.GetArtifacts2());
 
-    stream.Write<int>(m_gameSave.Unknown.Artifacts.v1);
-    stream.Write<int>(m_gameSave.Unknown.Artifacts.v2);
+    stream.Write(m_gameSave.Unknown.Artifacts.v1);
+    stream.Write(m_gameSave.Unknown.Artifacts.v2);
 
     // TODO: When arg_0 is equal to 1, more writes follow; but I don't know where this value comes from. Applies to only reads or also writes?
 }
@@ -27,51 +27,51 @@ void StorageGameSaveWriter::writeArtifact(StreamHelperWriter& stream, const inve
 {
     using inventory::Item;
 
-    stream.Write<Item::IdType>(item->Id);
-    stream.Write<int>(item->Attribute1);
-    stream.Write<int>(item->Attribute2);
-    stream.Write<int>(item->Quantity);
+    stream.Write(item->Id);
+    stream.Write(item->Attribute1);
+    stream.Write(item->Attribute2);
+    stream.Write(item->Quantity);
 
     stream.Write<int>(item->Unknown.List1.size());
     for (auto& i : item->Unknown.List1) {
-        stream.Write<unsigned int>(i.v1);
-        stream.Write<int>(i.v2);
+        stream.Write(i.v1);
+        stream.Write(i.v2);
     }
 
-    stream.Write<Item::Quality::type>(item->Quality);
-    stream.Write<Item::Rarity::type>(item->Rarity);
+    stream.Write(item->Quality);
+    stream.Write(item->Rarity);
 
     writeEnchantments(stream, *item);
     writeUnknownMaybeEnchantments(stream, *item);
 
-    stream.Write<bool>(item->IsIdentified);
-    stream.Write<bool>(item->Unknown.v1);
+    stream.Write(item->IsIdentified);
+    stream.Write(item->Unknown.v1);
 
-    stream.Write<unsigned int>(item->Unknown.v2);
+    stream.Write(item->Unknown.v2);
     {
         // TODO: Move code in this block into a function
         // IDA hint: my_storage_WriteArtifact_UnknownFunc001
 
         stream.Write<int>(item->Unknown.List2.size());
         for (const auto& item : item->Unknown.List2) {
-            stream.Write<unsigned int>(item.v1);
-            stream.Write<int>(item.v2);
+            stream.Write(item.v1);
+            stream.Write(item.v2);
         }
     }
 
-    stream.Write<bool>(item->Unknown.v3);
+    stream.Write(item->Unknown.v3);
     writeUnknownStruct1(stream, item->Unknown.UnknownStruct1_1);
     writeUnknownStruct1(stream, item->Unknown.UnknownStruct1_2);
     writeUnknown1List(stream, item->Unknown.List3);
     writeUnknown2List(stream, item->Unknown.List4);
     writeUnknown1List(stream, item->Unknown.List5);
     writeUnknownStruct1(stream, item->Unknown.UnknownStruct1_3);
-    stream.Write<int>(item->Unknown.v4);
+    stream.Write(item->Unknown.v4);
     writeUnknownStruct1(stream, item->Unknown.UnknownStruct1_4);
-    stream.Write<int>(item->Unknown.v5);
-    stream.Write<int>(item->Unknown.v6);
-    stream.Write<float>(item->Unknown.v7);
-    stream.Write<float>(item->Unknown.v8);
+    stream.Write(item->Unknown.v5);
+    stream.Write(item->Unknown.v6);
+    stream.Write(item->Unknown.v7);
+    stream.Write(item->Unknown.v8);
 }
 
 void StorageGameSaveWriter::writeEnchantments(StreamHelperWriter& stream, const inventory::Item& item)
@@ -82,15 +82,15 @@ void StorageGameSaveWriter::writeEnchantments(StreamHelperWriter& stream, const 
     for (auto enchantment : enchantments) {
         using inventory::Enchantment;
 
-        stream.Write<Enchantment::IdType>(enchantment->Id);
-        stream.Write<int>(enchantment->Unknown.v2);
-        stream.Write<float>(enchantment->Multiplier);
-        stream.Write<unsigned int>(enchantment->Unknown.v4);
+        stream.Write(enchantment->Id);
+        stream.Write(enchantment->Unknown.v2);
+        stream.Write(enchantment->Multiplier);
+        stream.Write(enchantment->Unknown.v4);
 
         if (m_containerInfo.Version >= 0x2b6) {
-            stream.Write<int>(enchantment->Unknown.v5);
-            stream.Write<unsigned int>(enchantment->Unknown.v6);
-            stream.Write<int>(enchantment->Unknown.v7);
+            stream.Write(enchantment->Unknown.v5);
+            stream.Write(enchantment->Unknown.v6);
+            stream.Write(enchantment->Unknown.v7);
         }
     }
 }
@@ -103,15 +103,15 @@ void StorageGameSaveWriter::writeUnknownMaybeEnchantments(StreamHelperWriter& st
     for (auto enchantment : enchantments) {
         using inventory::Enchantment;
 
-        stream.Write<Enchantment::IdType>(enchantment->Id);
-        stream.Write<int>(enchantment->Unknown.v2);
-        stream.Write<float>(enchantment->Multiplier);
-        stream.Write<unsigned int>(enchantment->Unknown.v4);
+        stream.Write(enchantment->Id);
+        stream.Write(enchantment->Unknown.v2);
+        stream.Write(enchantment->Multiplier);
+        stream.Write(enchantment->Unknown.v4);
 
         if (m_containerInfo.Version >= 0x2b6) {
-            stream.Write<int>(enchantment->Unknown.v5);
-            stream.Write<unsigned int>(enchantment->Unknown.v6);
-            stream.Write<int>(enchantment->Unknown.v7);
+            stream.Write(enchantment->Unknown.v5);
+            stream.Write(enchantment->Unknown.v6);
+            stream.Write(enchantment->Unknown.v7);
         }
     }
 }
@@ -121,8 +121,8 @@ void StorageGameSaveWriter::writeArtifactList(StreamHelperWriter& stream, invent
     auto& items = list.GetItems();
     stream.Write<int>(items.size());
     for (auto item : items) {
-        stream.Write<int>(item->BagNumber);
-        stream.Write<int>(item->SlotNumber);
+        stream.Write(item->BagNumber);
+        stream.Write(item->SlotNumber);
         writeArtifact(stream, item.get());
     }
 }
@@ -131,11 +131,11 @@ StorageGameSaveWriter::~StorageGameSaveWriter() {}
 
 void StorageGameSaveWriter::writeUnknownStruct1(StreamHelperWriter& stream, const inventory::Item::UnknownStruct1& us1)
 {
-    stream.Write<unsigned int>(us1.v1);
+    stream.Write(us1.v1);
     // TODO: What is being being compared to 1? Does this apply to writes or only reads?
     //if (something == 1) {
     // Read 2 bytes but I'm not sure if it's int16 or an array
-    stream.Write<short>(us1.v2);
+    stream.Write(us1.v2);
     //}
 }
 
@@ -149,11 +149,11 @@ void StorageGameSaveWriter::writeUnknown1List(StreamHelperWriter& stream, const 
 
 void StorageGameSaveWriter::writeUnknown1ListItem(StreamHelperWriter& stream, const inventory::Item::UnknownList3Item& item)
 {
-    stream.Write<unsigned int>(item.v1);
+    stream.Write(item.v1);
     // TODO: What is being being compared to 1? Does this apply to writes or only reads?
     //if (something == 1) {
     // Read 2 bytes but I'm not sure if it's int16 or an array
-    stream.Write<short>(item.v2);
+    stream.Write(item.v2);
     //}
 }
 
