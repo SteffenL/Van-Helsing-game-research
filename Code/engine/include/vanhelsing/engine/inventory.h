@@ -16,7 +16,7 @@ struct EquipSlot
     };
 };
 
-class Artifact
+class AbstractInventoryItem
 {
 public:
     typedef unsigned int IdType;
@@ -29,33 +29,33 @@ public:
 // Artifact attributes:
 // Armor: Defense, Essence capacity
 
-template<typename ItemType>
-class ItemList
+template<typename ItemType, typename ContainerType = std::vector<ItemType>>
+class AbstractInventoryItemList
 {
 public:
-    void Add(ItemType* item)
+    void Add(ItemType item)
     {
-        m_items.push_back(std::shared_ptr<ItemType>(item));
+        m_items.emplace_back(item);
     }
 
-    const std::vector<std::shared_ptr<ItemType>>& GetItems() const
+    const ContainerType& GetItems() const
     {
         return m_items;
     }
 
-    std::vector<std::shared_ptr<ItemType>>& GetItemsWritable()
+    ContainerType& GetItemsWritable()
     {
         return m_items;
     }
 
 protected:
-    std::vector<std::shared_ptr<ItemType>> m_items;
+    ContainerType m_items;
 };
 
-class Enchantment : public Artifact
+class Enchantment : public AbstractInventoryItem
 {
 public:
-    class List : public ItemList<Enchantment>
+    class List : public AbstractInventoryItemList<std::shared_ptr<Enchantment>>
     {
     public:
 
@@ -74,13 +74,13 @@ public:
     } Unknown;
 };
 
-class Item : public Artifact
+class Artifact : public AbstractInventoryItem
 {
 public:
-    class List : public ItemList<Item>
+    class List : public AbstractInventoryItemList<std::shared_ptr<Artifact>>
     {
     public:
-        void FindByBagNumber(int bagNumber, std::vector<Item*>& items);
+        void FindByBagNumber(int bagNumber, std::vector<std::shared_ptr<Artifact>>& items);
     };
 
     struct Rarity
@@ -134,7 +134,7 @@ public:
     struct UnknownList4Item
     {
         UnknownStruct1 v1;
-        std::vector<inventory::Item::UnknownList3Item> v2;
+        std::vector<inventory::Artifact::UnknownList3Item> v2;
 
         UnknownList4Item() {}
     };
@@ -149,8 +149,8 @@ public:
     int Attribute1;
     int Attribute2;
     int Quantity;
-    Item::Quality::type Quality;
-    Item::Rarity::type Rarity;
+    Artifact::Quality::type Quality;
+    Artifact::Rarity::type Rarity;
     bool IsIdentified;
     struct
     {

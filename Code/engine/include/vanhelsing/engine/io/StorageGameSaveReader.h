@@ -6,7 +6,7 @@
 #include <vanhelsing/engine/log.h>
 #include <iostream>
 
-namespace vanhelsing { namespace engine { namespace inventory { class Item; } } }
+namespace vanhelsing { namespace engine { namespace inventory { class Artifact; } } }
 
 namespace vanhelsing { namespace engine { namespace io {
 
@@ -20,14 +20,14 @@ public:
 
 private:
     void readAllStoredItems(StreamHelperReader& stream);
-    inventory::Item* readArtifact(StreamHelperReader& stream, inventory::Item::List& itemList);
-    void readEnchantments(StreamHelperReader& stream, inventory::Item& item);
-    void readUnknownMaybeEnchantments(StreamHelperReader& stream, inventory::Item& item);
-    void readUnknownStruct1(StreamHelperReader& stream, inventory::Item::UnknownStruct1& us1);
-    void readUnknown1List(StreamHelperReader& stream, std::vector<inventory::Item::UnknownList3Item>& list);
-    void readUnknown1ListItem(StreamHelperReader& stream, inventory::Item::UnknownList3Item& item);
-    void readArtifactList(StreamHelperReader& stream, inventory::Item::List& list);
-    void readUnknown2List(StreamHelperReader& stream, std::vector<inventory::Item::UnknownList4Item>& list);
+    std::shared_ptr<inventory::Artifact> readArtifact(StreamHelperReader& stream, inventory::Artifact::List& itemList);
+    void readEnchantments(StreamHelperReader& stream, inventory::Artifact& item);
+    void readUnknownMaybeEnchantments(StreamHelperReader& stream, inventory::Artifact& item);
+    void readUnknownStruct1(StreamHelperReader& stream, inventory::Artifact::UnknownStruct1& us1);
+    void readUnknown1List(StreamHelperReader& stream, std::vector<inventory::Artifact::UnknownList3Item>& list);
+    void readUnknown1ListItem(StreamHelperReader& stream, inventory::Artifact::UnknownList3Item& item);
+    void readArtifactList(StreamHelperReader& stream, inventory::Artifact::List& list);
+    void readUnknown2List(StreamHelperReader& stream, std::vector<inventory::Artifact::UnknownList4Item>& list);
     Log m_logger;
     StorageGameSave& m_gameSave;
 };

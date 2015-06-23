@@ -23,9 +23,9 @@ void StorageGameSaveWriter::writeAllStoredItems(StreamHelperWriter& stream)
     // TODO: When arg_0 is equal to 1, more writes follow; but I don't know where this value comes from. Applies to only reads or also writes?
 }
 
-void StorageGameSaveWriter::writeArtifact(StreamHelperWriter& stream, const inventory::Item* item)
+void StorageGameSaveWriter::writeArtifact(StreamHelperWriter& stream, const inventory::Artifact* item)
 {
-    using inventory::Item;
+    using inventory::Artifact;
 
     stream.Write(item->Id);
     stream.Write(item->Attribute1);
@@ -74,7 +74,7 @@ void StorageGameSaveWriter::writeArtifact(StreamHelperWriter& stream, const inve
     stream.Write(item->Unknown.v8);
 }
 
-void StorageGameSaveWriter::writeEnchantments(StreamHelperWriter& stream, const inventory::Item& item)
+void StorageGameSaveWriter::writeEnchantments(StreamHelperWriter& stream, const inventory::Artifact& item)
 {
     auto& enchantments = item.GetEnchantments().GetItems();
 
@@ -95,7 +95,7 @@ void StorageGameSaveWriter::writeEnchantments(StreamHelperWriter& stream, const 
     }
 }
 
-void StorageGameSaveWriter::writeUnknownMaybeEnchantments(StreamHelperWriter& stream, const inventory::Item& item)
+void StorageGameSaveWriter::writeUnknownMaybeEnchantments(StreamHelperWriter& stream, const inventory::Artifact& item)
 {
     auto& enchantments = item.Unknown.MaybeEnchantments.GetItems();
 
@@ -116,7 +116,7 @@ void StorageGameSaveWriter::writeUnknownMaybeEnchantments(StreamHelperWriter& st
     }
 }
 
-void StorageGameSaveWriter::writeArtifactList(StreamHelperWriter& stream, inventory::Item::List& list)
+void StorageGameSaveWriter::writeArtifactList(StreamHelperWriter& stream, inventory::Artifact::List& list)
 {
     auto& items = list.GetItems();
     stream.Write<int>(items.size());
@@ -129,7 +129,7 @@ void StorageGameSaveWriter::writeArtifactList(StreamHelperWriter& stream, invent
 
 StorageGameSaveWriter::~StorageGameSaveWriter() {}
 
-void StorageGameSaveWriter::writeUnknownStruct1(StreamHelperWriter& stream, const inventory::Item::UnknownStruct1& us1)
+void StorageGameSaveWriter::writeUnknownStruct1(StreamHelperWriter& stream, const inventory::Artifact::UnknownStruct1& us1)
 {
     stream.Write(us1.v1);
     // TODO: What is being being compared to 1? Does this apply to writes or only reads?
@@ -139,7 +139,7 @@ void StorageGameSaveWriter::writeUnknownStruct1(StreamHelperWriter& stream, cons
     //}
 }
 
-void StorageGameSaveWriter::writeUnknown1List(StreamHelperWriter& stream, const std::vector<inventory::Item::UnknownList3Item>& list)
+void StorageGameSaveWriter::writeUnknown1List(StreamHelperWriter& stream, const std::vector<inventory::Artifact::UnknownList3Item>& list)
 {
     stream.Write<unsigned int>(list.size());
     for (const auto& item : list) {
@@ -147,7 +147,7 @@ void StorageGameSaveWriter::writeUnknown1List(StreamHelperWriter& stream, const 
     }
 }
 
-void StorageGameSaveWriter::writeUnknown1ListItem(StreamHelperWriter& stream, const inventory::Item::UnknownList3Item& item)
+void StorageGameSaveWriter::writeUnknown1ListItem(StreamHelperWriter& stream, const inventory::Artifact::UnknownList3Item& item)
 {
     stream.Write(item.v1);
     // TODO: What is being being compared to 1? Does this apply to writes or only reads?
@@ -157,7 +157,7 @@ void StorageGameSaveWriter::writeUnknown1ListItem(StreamHelperWriter& stream, co
     //}
 }
 
-void StorageGameSaveWriter::writeUnknown2List(StreamHelperWriter& stream, const std::vector<inventory::Item::UnknownList4Item>& list)
+void StorageGameSaveWriter::writeUnknown2List(StreamHelperWriter& stream, const std::vector<inventory::Artifact::UnknownList4Item>& list)
 {
     stream.Write<int>(list.size());
     for (const auto& item : list) {

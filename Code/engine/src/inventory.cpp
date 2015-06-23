@@ -3,17 +3,17 @@
 
 namespace vanhelsing { namespace engine { namespace inventory {
 
-std::string Item::GetName() const
+std::string Artifact::GetName() const
 {
     return GameData::Get().GetItemNameFromId(Id);
 }
 
-const Enchantment::List& Item::GetEnchantments() const
+const Enchantment::List& Artifact::GetEnchantments() const
 {
     return m_enchantments;
 }
 
-Enchantment::List& Item::GetEnchantmentsWritable()
+Enchantment::List& Artifact::GetEnchantmentsWritable()
 {
     return m_enchantments;
 }
@@ -23,21 +23,21 @@ std::string Enchantment::GetName() const
     return GameData::Get().GetEnchantmentNameFromId(Id);
 }
 
-void Item::List::FindByBagNumber(int bagNumber, std::vector<Item*>& items)
+void Artifact::List::FindByBagNumber(int bagNumber, std::vector<std::shared_ptr<Artifact>>& items)
 {
     for (auto& item : m_items) {
         if (item->BagNumber == bagNumber) {
-            items.push_back(item.get());
+            items.push_back(item);
         }
     }
 }
 
-bool Item::Rarity::IsValid(type v)
+bool Artifact::Rarity::IsValid(type v)
 {
     return ((v >= FIRST) && (v < LAST_PLUS_ONE));
 }
 
-bool Item::Quality::IsValid(type v)
+bool Artifact::Quality::IsValid(type v)
 {
     return ((v >= FIRST) && (v < LAST_PLUS_ONE));
 }
