@@ -16,13 +16,13 @@ GameSaveContainerReader::GameSaveContainerReader(ContainerInfoType& containerInf
     }
 
     m_containerInfo.Signature = signature;
-    m_containerInfo.Version = stream.Read<unsigned int>();
+    stream.Read(m_containerInfo.Version);
 
     checkVersion();
 
-    m_containerInfo.Unknown.v1 = stream.Read<int>();
+    stream.Read(m_containerInfo.Unknown.v1);
     
-    m_containerInfo.Unknown.v2 = stream.Read<char>();
+    stream.Read(m_containerInfo.Unknown.v2);
     if (m_containerInfo.Unknown.v2 != 0) {
         throw std::runtime_error("Not supported");
     }
