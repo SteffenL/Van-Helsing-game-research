@@ -83,7 +83,7 @@ bool GameData::Impl::GetItemData(inventory::Enchantment::IdType id, EnchantmentD
     return true;
 }
 
-std::unique_ptr<GameData> GameData::m_instance = std::unique_ptr<GameData>(new GameData);
+std::unique_ptr<GameData> GameData::m_instance = std::make_unique<GameData>();
 
 void GameData::Load(const std::string& gameDir)
 {
@@ -188,12 +188,12 @@ void GameData::loadEnchantments()
     }
 }
 
-GameData::GameData() : m_impl(new Impl) {}
+GameData::GameData() : m_impl(std::make_unique<Impl>()) {}
 
 GameData& GameData::Get()
 {
-    if (!m_instance.get()) {
-        m_instance.reset(new GameData);
+    if (!m_instance) {
+        m_instance = std::make_unique<GameData>();
     }
 
     return *m_instance;

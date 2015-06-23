@@ -26,7 +26,7 @@ void StorageGameSaveReader::readAllStoredItems(StreamHelperReader& stream)
 inventory::Item* StorageGameSaveReader::readArtifact(StreamHelperReader& stream, inventory::Item::List& itemList)
 {
     using inventory::Item;
-    std::unique_ptr<Item> item(new Item);
+    auto item = std::make_unique<Item>();
 
     stream.Read(item->Id);
     stream.Read(item->Attribute1);
@@ -112,7 +112,7 @@ void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, invento
     m_logger << Log::indent;
     for (unsigned int i = 0; i < count; ++i) {
         using inventory::Enchantment;
-        std::unique_ptr<Enchantment> enchantment(new Enchantment);
+        auto enchantment = std::make_unique<Enchantment>();
 
         m_logger << "#" << i << ":" << std::endl;
         m_logger << Log::indent;
@@ -155,7 +155,7 @@ void StorageGameSaveReader::readUnknownMaybeEnchantments(StreamHelperReader& str
     m_logger << Log::indent;
     for (unsigned int i = 0; i < count; ++i) {
         using inventory::Enchantment;
-        std::unique_ptr<Enchantment> enchantment(new Enchantment);
+        auto enchantment = std::make_unique<Enchantment>();
 
         m_logger << "#" << i << ":" << std::endl;
         m_logger << Log::indent;

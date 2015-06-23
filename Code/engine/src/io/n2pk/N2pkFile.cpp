@@ -61,14 +61,14 @@ std::unique_ptr<N2pkIStream> N2pkFile::GetFile(unsigned int index) const
 {
     auto& fileEntry = GetFileEntry(index);
     auto buf = new substreambuf(m_stream->rdbuf(), fileEntry.GetOffset(), fileEntry.GetSize());
-    return std::unique_ptr<N2pkIStream>(new N2pkIStream(buf));
+    return std::make_unique<N2pkIStream>(buf);
 }
 
 std::unique_ptr<N2pkIStream> N2pkFile::GetFile(const std::string& path) const
 {
     auto& fileEntry = GetFileEntry(path);
     auto buf = new substreambuf(m_stream->rdbuf(), fileEntry.GetOffset(), fileEntry.GetSize());
-    return std::unique_ptr<N2pkIStream>(new N2pkIStream(buf));
+    return std::make_unique<N2pkIStream>(buf);
 }
 
 vanhelsing::engine::io::n2pk::FileEntry N2pkFile::GetFileEntry(unsigned int index) const
@@ -87,7 +87,7 @@ vanhelsing::engine::io::n2pk::FileEntry N2pkFile::GetFileEntry(const std::string
     return *it;
 }
 
-N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(new Impl), m_logger(LogLevel::Trace)
+N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(std::make_unique<Impl>()), m_logger(LogLevel::Trace)
 {
     m_logger << "Opening Neocore Package: " << filePath << std::endl;
 
