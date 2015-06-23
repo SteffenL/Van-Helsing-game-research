@@ -485,7 +485,7 @@ void StorageItemsTabPage::updateItemSection()
     using namespace vanhelsing::engine::inventory;
 
     std::vector<Item*> items;
-    m_gameSave->GetItems().FindByBagNumber(m_bagNumber, items);
+    m_gameSave->GetArtifacts1().FindByBagNumber(m_bagNumber, items);
     auto& textManager = GameData::Get().GetTextManager();
 
     m_itemList.DeleteAllItems();

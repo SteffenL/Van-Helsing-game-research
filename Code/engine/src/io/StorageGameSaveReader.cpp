@@ -9,42 +9,21 @@ StorageGameSaveReader::StorageGameSaveReader(StorageGameSave& gameSave, std::ist
     : GameSaveContainerReader(gameSave.ContainerInfo, inStream), m_gameSave(gameSave), m_logger(LogLevel::Trace)
 {
     StreamHelperReader stream(getInStream());
-    readArtifacts(stream);
+    readAllStoredItems(stream);
 }
 
-void StorageGameSaveReader::readArtifacts(StreamHelperReader& stream)
+void StorageGameSaveReader::readAllStoredItems(StreamHelperReader& stream)
 {
-    auto count = stream.Read<int>();
-    m_logger << "Artifacts (" << count << "):" << std::endl;
-    m_logger << Log::indent;
-    for (int i = 0; i < count; ++i) {
-        m_logger << "#" << i << ":" << std::endl;
-        m_logger << Log::indent;
-        auto bagNumber = stream.Read<int>();
-        auto slotNumber = stream.Read<int>();
-        m_logger << "Bag #: " << bagNumber << std::endl;
-        m_logger << "Slot #: " << slotNumber << std::endl;
-        m_logger << "" << std::endl;
-        auto item = readItem(stream);
-        if (item) {
-            item->BagNumber = bagNumber;
-            item->SlotNumber = slotNumber;
-        }
-
-        m_logger << Log::outdent;
-        m_logger << "" << std::endl;
-    }
+    readArtifactList(stream, m_gameSave.GetArtifacts1());
+    readArtifactList(stream, m_gameSave.GetArtifacts2());
 
     m_gameSave.Unknown.Artifacts.v1 = stream.Read<int>();
-    if (m_gameSave.Unknown.Artifacts.v1 > 0) {
-        // TODO: Need to test with more files because there are more reads here
-        throw std::runtime_error("This file must be investigated");
-    }
+    m_gameSave.Unknown.Artifacts.v2 = stream.Read<int>();
 
-    m_logger << Log::outdent;
+    // TODO: When arg_0 is equal to 1, more reads follow; but I don't know where this value comes from
 }
 
-inventory::Item* StorageGameSaveReader::readItem(StreamHelperReader& stream)
+inventory::Item* StorageGameSaveReader::readArtifact(StreamHelperReader& stream, inventory::Item::List& itemList)
 {
     using inventory::Item;
     std::unique_ptr<Item> item(new Item);
@@ -85,9 +64,40 @@ inventory::Item* StorageGameSaveReader::readItem(StreamHelperReader& stream)
     item->Unknown.v1 = stream.Read<bool>();
     m_logger << "Unknown: " << item->Unknown.v1 << std::endl;
 
-    auto& manager = m_gameSave.GetItems();
+    item->Unknown.v2 = stream.Read<unsigned int>();
+    {
+        // TODO: Move code in this block into a function
+        // IDA hint: my_storage_ReadArtifact_UnknownFunc001
+
+        auto count = stream.Read<int>();
+        m_logger << "Unknown (" << count << "):" << std::endl;
+        m_logger << Log::indent;
+        for (int i = 0; i < count; ++i) {
+            auto v1 = stream.Read<unsigned int>();
+            auto v2 = stream.Read<int>();
+            m_logger << v1 << ", " << v2 << std::endl;
+            item->Unknown.List2.push_back(Item::UnknownList2Item(v1, v2));
+        }
+
+        m_logger << Log::outdent;
+    }
+
+    item->Unknown.v3 = stream.Read<bool>();
+    readUnknownStruct1(stream, item->Unknown.UnknownStruct1_1);
+    readUnknownStruct1(stream, item->Unknown.UnknownStruct1_2);
+    readUnknown1List(stream, item->Unknown.List3);
+    readUnknown2List(stream, item->Unknown.List4);
+    readUnknown1List(stream, item->Unknown.List5);
+    readUnknownStruct1(stream, item->Unknown.UnknownStruct1_3);
+    item->Unknown.v4 = stream.Read<int>();
+    readUnknownStruct1(stream, item->Unknown.UnknownStruct1_4);
+    item->Unknown.v5 = stream.Read<int>();
+    item->Unknown.v6 = stream.Read<int>();
+    item->Unknown.v7 = stream.Read<float>();
+    item->Unknown.v8 = stream.Read<float>();
+
     auto itemPtr = item.get();
-    manager.Add(itemPtr);
+    itemList.Add(itemPtr);
     // Manager owns it now
     item.release();
     return itemPtr;
@@ -180,5 +190,78 @@ void StorageGameSaveReader::readUnknownMaybeEnchantments(StreamHelperReader& str
 }
 
 StorageGameSaveReader::~StorageGameSaveReader() {}
+
+void StorageGameSaveReader::readUnknownStruct1(StreamHelperReader& stream, inventory::Item::UnknownStruct1& us1)
+{
+    us1.v1 = stream.Read<unsigned int>();
+    // TODO: What is being being compared to 1?
+    //if (something == 1) {
+    // Read 2 bytes but I'm not sure if it's int16 or an array
+    us1.v2 = stream.Read<short>();
+    //}
+}
+
+void StorageGameSaveReader::readUnknown1List(StreamHelperReader& stream, std::vector<inventory::Item::UnknownList3Item>& list)
+{
+    auto count = stream.Read<unsigned int>();
+    for (decltype(count) i = 0; i < count; ++i) {
+        // TODO: Learn more about the case when count > 0
+        throw std::runtime_error("This file must be investigated");
+
+        inventory::Item::UnknownList3Item item;
+        readUnknown1ListItem(stream, item);
+        list.emplace_back(item);
+    }
+}
+
+void StorageGameSaveReader::readUnknown1ListItem(StreamHelperReader& stream, inventory::Item::UnknownList3Item& item)
+{
+    item.v1 = stream.Read<unsigned int>();
+    // TODO: What is being being compared to 1?
+    //if (something == 1) {
+    // Read 2 bytes but I'm not sure if it's int16 or an array
+    item.v2 = stream.Read<short>();
+    //}
+}
+
+void StorageGameSaveReader::readArtifactList(StreamHelperReader& stream, inventory::Item::List& list)
+{
+    auto count = stream.Read<int>();
+    m_logger << "Artifacts (" << count << "):" << std::endl;
+    m_logger << Log::indent;
+    for (int i = 0; i < count; ++i) {
+        m_logger << "#" << i << ":" << std::endl;
+        m_logger << Log::indent;
+        auto bagNumber = stream.Read<int>();
+        auto slotNumber = stream.Read<int>();
+        m_logger << "Bag #: " << bagNumber << std::endl;
+        m_logger << "Slot #: " << slotNumber << std::endl;
+        m_logger << "" << std::endl;
+        auto item = readArtifact(stream, list);
+        if (item) {
+            item->BagNumber = bagNumber;
+            item->SlotNumber = slotNumber;
+        }
+
+        m_logger << Log::outdent;
+        m_logger << "" << std::endl;
+    }
+
+    m_logger << Log::outdent;
+}
+
+void StorageGameSaveReader::readUnknown2List(StreamHelperReader& stream, std::vector<inventory::Item::UnknownList4Item>& list)
+{
+    auto count = stream.Read<int>();
+    for (decltype(count) i = 0; i < count; ++i) {
+        // TODO: Investigate. Throw to make sure we know when to do it.
+        throw std::runtime_error("This file must be investigated");
+
+        inventory::Item::UnknownList4Item item;
+        readUnknownStruct1(stream, item.v1);
+        readUnknown1List(stream, item.v2);
+        list.emplace_back(item);
+    }
+}
 
 }}} // namespace
