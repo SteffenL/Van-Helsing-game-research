@@ -1,4 +1,4 @@
-Van Helsing game research
+﻿Van Helsing game research
 =========================
 
 This project was initiated for fun and learning. The main goal is to research the internals of the game *The Incredible Adventures of Van Helsing*. I plan to reverse engineer interesting parts of the game and its file formats. Eventually, it may become useful for myself and other developers, or even end-users.
@@ -14,14 +14,14 @@ A few links for search engines:
 
 ## Coding environment
 - Operating system: Windows 8.
-- IDE/Compiler: Visual Studio/C++ 2012.
+- IDE/Compiler: Visual Studio/C++ 2013 with update 4.
 - Code is written to be cross-platform, but the GUI is coded with WTL (Windows Template Library), specifically for Windows.
 - 3rd party libraries are included (except Boost).
 
 ## Current programs
 - Unpacker for N2PK packages (*Files.N2PK*). These files contain textures, models, etc.
 - Storage viewer (command line) (*storage.sav*). Displays all of the items you have in your storage.
-- Storage editor (GUI). Very early stage; only basic viewing at this time.
+- Storage editor (GUI). Very early stage; only basic viewing and editing at this time.
 
 ## Early preview
 ![Storage Editor](https://raw.github.com/wiki/SteffenL/Van-Helsing-game-research/images/mainwindow.png)
