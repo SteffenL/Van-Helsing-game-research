@@ -4,7 +4,7 @@
 #include "HaliteTabPage.hpp"
 #include <vanhelsing/engine/StorageGameSave.h>
 
-namespace vanhelsing { namespace engine { class TextManager; namespace inventory { class Item; } } }
+namespace vanhelsing { namespace engine { class TextManager; namespace inventory { class Artifact; } } }
 
 class StorageItemsTabPage :
     public CHalTabPageImpl<StorageItemsTabPage>,
@@ -110,7 +110,7 @@ private:
     void updateItemSection();
     void updateModifyItemSection(
         const vanhelsing::engine::TextManager& textManager,
-        const vanhelsing::engine::inventory::Item* item);
+        const vanhelsing::engine::inventory::Artifact* item);
     void applyItemAttribute1();
     void applyItemAttribute2();
     void applyItemRarity();
@@ -122,7 +122,7 @@ private:
     void updateEnchantmentListItem(int i);
     void updateEnchantmentSection(
         const vanhelsing::engine::TextManager& textManager,
-        const vanhelsing::engine::inventory::Item* item);
+        const vanhelsing::engine::inventory::Artifact* item);
     void updateModifyEnchantmentSection(
         const vanhelsing::engine::TextManager& textManager,
         const vanhelsing::engine::inventory::Enchantment* item);

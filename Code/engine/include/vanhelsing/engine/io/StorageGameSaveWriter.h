@@ -6,7 +6,7 @@
 #include <vanhelsing/engine/log.h>
 #include <iostream>
 
-namespace vanhelsing { namespace engine { namespace inventory { class Item; } } }
+namespace vanhelsing { namespace engine { namespace inventory { class Artifact; } } }
 
 namespace vanhelsing { namespace engine { namespace io {
 
@@ -20,14 +20,14 @@ public:
 
 private:
     void writeAllStoredItems(StreamHelperWriter& stream);
-    void writeArtifact(StreamHelperWriter& stream, const inventory::Item* item);
-    void writeEnchantments(StreamHelperWriter& stream, const inventory::Item& item);
-    void writeUnknownMaybeEnchantments(StreamHelperWriter& stream, const inventory::Item& item);
-    void writeArtifactList(StreamHelperWriter& stream, inventory::Item::List& list);
-    void writeUnknownStruct1(StreamHelperWriter& stream, const inventory::Item::UnknownStruct1& us1);
-    void writeUnknown1List(StreamHelperWriter& stream, const std::vector<inventory::Item::UnknownList3Item>& list);
-    void writeUnknown1ListItem(StreamHelperWriter& stream, const inventory::Item::UnknownList3Item& item);
-    void writeUnknown2List(StreamHelperWriter& stream, const std::vector<inventory::Item::UnknownList4Item>& list);
+    void writeArtifact(StreamHelperWriter& stream, const inventory::Artifact* item);
+    void writeEnchantments(StreamHelperWriter& stream, const inventory::Artifact& item);
+    void writeUnknownMaybeEnchantments(StreamHelperWriter& stream, const inventory::Artifact& item);
+    void writeArtifactList(StreamHelperWriter& stream, inventory::Artifact::List& list);
+    void writeUnknownStruct1(StreamHelperWriter& stream, const inventory::Artifact::UnknownStruct1& us1);
+    void writeUnknown1List(StreamHelperWriter& stream, const std::vector<inventory::Artifact::UnknownList3Item>& list);
+    void writeUnknown1ListItem(StreamHelperWriter& stream, const inventory::Artifact::UnknownList3Item& item);
+    void writeUnknown2List(StreamHelperWriter& stream, const std::vector<inventory::Artifact::UnknownList4Item>& list);
     Log m_logger;
     StorageGameSave& m_gameSave;
 };

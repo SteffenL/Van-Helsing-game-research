@@ -16,8 +16,8 @@ class TextManager
 
 public:
     bool Load(const std::string& filePath);
-    std::string GetRarityText(inventory::Item::Rarity::type rarity) const;
-    std::string GetQualityText(inventory::Item::Quality::type quality) const;
+    std::string GetRarityText(inventory::Artifact::Rarity::type rarity) const;
+    std::string GetQualityText(inventory::Artifact::Quality::type quality) const;
     std::string GetItemText(const std::string& name) const;
     std::string GetSetNameText(const std::string& name) const;
     /*const std::string GetTypeText(type) const;
@@ -44,7 +44,7 @@ public:
     class ItemData
     {
     public:
-        inventory::Item::IdType Id;
+        inventory::Artifact::IdType Id;
         std::string Name;
         std::string Icon;
     };
@@ -60,14 +60,14 @@ public:
     static GameData& Get();
     void Load(const std::string& gameDir);
     // Inventory items
-    bool GetArtifactData(inventory::Item::IdType id, ItemData& data) const;
+    bool GetArtifactData(inventory::Artifact::IdType id, ItemData& data) const;
     bool GetArtifactData(inventory::Enchantment::IdType id, EnchantmentData& data) const;
     inventory::Artifact::IdType GetArtifactIdFromName(const std::string& name) const;
     const TextManager& GetTextManager() const;
-    std::string GetItemNameFromId(inventory::Item::IdType id) const;
+    std::string GetItemNameFromId(inventory::Artifact::IdType id) const;
     std::string GetEnchantmentNameFromId(inventory::Artifact::IdType id) const;
-    const std::vector<inventory::Item::Quality::type> GetQualityDataList() const;
-    const std::vector<inventory::Item::Rarity::type> GetRarityDataList() const;
+    const std::vector<inventory::Artifact::Quality::type> GetQualityDataList() const;
+    const std::vector<inventory::Artifact::Rarity::type> GetRarityDataList() const;
 
 private:
     void loadTexts();

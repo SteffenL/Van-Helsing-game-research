@@ -181,7 +181,7 @@ void StorageItemsTabPage::syncItemList()
     using namespace vanhelsing::engine::inventory;
     auto firstSelection = m_itemListSelectedItems[0];
     auto& textManager = GameData::Get().GetTextManager();
-    auto item = reinterpret_cast<Item*>(m_itemList.GetItemData(firstSelection));
+    auto item = reinterpret_cast<Artifact*>(m_itemList.GetItemData(firstSelection));
     updateModifyItemSection(textManager, item);
     updateEnchantmentSection(textManager, item);
 }
@@ -243,7 +243,7 @@ void StorageItemsTabPage::updateItemListItem(int i)
     using namespace vanhelsing::engine::inventory;
 
     auto& textManager = GameData::Get().GetTextManager();
-    auto item = reinterpret_cast<Item*>(m_itemList.GetItemData(i));
+    auto item = reinterpret_cast<Artifact*>(m_itemList.GetItemData(i));
 
     auto& name = nowide::widen(textManager.GetItemText(item->GetName()));
     CString slotNumber;
@@ -270,7 +270,7 @@ void StorageItemsTabPage::updateItemListItem(int i)
 
 void StorageItemsTabPage::updateModifyItemSection(
     const vanhelsing::engine::TextManager& textManager,
-    const vanhelsing::engine::inventory::Item* item)
+    const vanhelsing::engine::inventory::Artifact* item)
 {
     using namespace vanhelsing::engine;
     using namespace vanhelsing::engine::inventory;
@@ -288,9 +288,9 @@ void StorageItemsTabPage::updateModifyItemSection(
         m_itemAttribute2.SetValue(ss.str().c_str());
     }
     // Rarity
-    m_itemRarity.SetCurSel(Item::Rarity::IsValid(item->Rarity) ? item->Rarity : -1);
+    m_itemRarity.SetCurSel(Artifact::Rarity::IsValid(item->Rarity) ? item->Rarity : -1);
     // Quality
-    m_itemQuality.SetCurSel(Item::Quality::IsValid(item->Quality) ? item->Quality : -1);
+    m_itemQuality.SetCurSel(Artifact::Quality::IsValid(item->Quality) ? item->Quality : -1);
     // Identified
     m_itemIsIdentified.SetCheck(item->IsIdentified ? BST_CHECKED : BST_UNCHECKED);
     // Quantity
@@ -303,7 +303,7 @@ void StorageItemsTabPage::updateModifyItemSection(
 
 void StorageItemsTabPage::updateEnchantmentSection(
     const vanhelsing::engine::TextManager& textManager,
-    const vanhelsing::engine::inventory::Item* item)
+    const vanhelsing::engine::inventory::Artifact* item)
 {
     using namespace vanhelsing::engine;
     using namespace vanhelsing::engine::inventory;
@@ -339,10 +339,10 @@ void StorageItemsTabPage::editOnApply(CMyEdit::ApplyEventArg& e)
 
 void StorageItemsTabPage::applyItemAttribute1()
 {
-    using vanhelsing::engine::inventory::Item;
+    using vanhelsing::engine::inventory::Artifact;
     TCHAR text[100];
     for (auto& i : m_itemListSelectedItems) {
-        auto item = reinterpret_cast<Item*>(m_itemList.GetItemData(i));
+        auto item = reinterpret_cast<Artifact*>(m_itemList.GetItemData(i));
         ::GetDlgItemText(*this, IDC_ITEM_ATTRIBUTE1_EDIT, text, _countof(text));
         std::wstringstream ss(text);
         ss >> item->Attribute1;
@@ -352,10 +352,10 @@ void StorageItemsTabPage::applyItemAttribute1()
 
 void StorageItemsTabPage::applyItemAttribute2()
 {
-    using vanhelsing::engine::inventory::Item;
+    using vanhelsing::engine::inventory::Artifact;
     TCHAR text[100];
     for (auto& i : m_itemListSelectedItems) {
-        auto item = reinterpret_cast<Item*>(m_itemList.GetItemData(i));
+        auto item = reinterpret_cast<Artifact*>(m_itemList.GetItemData(i));
         ::GetDlgItemText(*this, IDC_ITEM_ATTRIBUTE2_EDIT, text, _countof(text));
         std::wstringstream ss(text);
         ss >> item->Attribute2;
@@ -365,29 +365,29 @@ void StorageItemsTabPage::applyItemAttribute2()
 
 void StorageItemsTabPage::applyItemRarity()
 {
-    using vanhelsing::engine::inventory::Item;
+    using vanhelsing::engine::inventory::Artifact;
     for (auto& i : m_itemListSelectedItems) {
-        auto item = reinterpret_cast<Item*>(m_itemList.GetItemData(i));
-        item->Rarity = static_cast<Item::Rarity::type>(m_itemRarity.GetCurSel());
+        auto item = reinterpret_cast<Artifact*>(m_itemList.GetItemData(i));
+        item->Rarity = static_cast<Artifact::Rarity::type>(m_itemRarity.GetCurSel());
         updateItemListItem(i);
     }
 }
 
 void StorageItemsTabPage::applyItemQuality()
 {
-    using vanhelsing::engine::inventory::Item;
+    using vanhelsing::engine::inventory::Artifact;
     for (auto& i : m_itemListSelectedItems) {
-        auto item = reinterpret_cast<Item*>(m_itemList.GetItemData(i));
-        item->Quality = static_cast<Item::Quality::type>(m_itemQuality.GetCurSel());
+        auto item = reinterpret_cast<Artifact*>(m_itemList.GetItemData(i));
+        item->Quality = static_cast<Artifact::Quality::type>(m_itemQuality.GetCurSel());
         updateItemListItem(i);
     }
 }
 
 void StorageItemsTabPage::applyItemIsIdentified()
 {
-    using vanhelsing::engine::inventory::Item;
+    using vanhelsing::engine::inventory::Artifact;
     for (auto& i : m_itemListSelectedItems) {
-        auto item = reinterpret_cast<Item*>(m_itemList.GetItemData(i));
+        auto item = reinterpret_cast<Artifact*>(m_itemList.GetItemData(i));
         item->IsIdentified = (m_itemIsIdentified.GetCheck() == BST_CHECKED);
         updateItemListItem(i);
     }
@@ -395,10 +395,10 @@ void StorageItemsTabPage::applyItemIsIdentified()
 
 void StorageItemsTabPage::applyItemQuantity()
 {
-    using vanhelsing::engine::inventory::Item;
+    using vanhelsing::engine::inventory::Artifact;
     TCHAR text[100];
     for (auto& i : m_itemListSelectedItems) {
-        auto item = reinterpret_cast<Item*>(m_itemList.GetItemData(i));
+        auto item = reinterpret_cast<Artifact*>(m_itemList.GetItemData(i));
         ::GetDlgItemText(*this, IDC_ITEM_QUANTITY_EDIT, text, _countof(text));
         std::wstringstream ss(text);
         ss >> item->Quantity;
@@ -484,7 +484,7 @@ void StorageItemsTabPage::updateItemSection()
     using namespace vanhelsing::engine;
     using namespace vanhelsing::engine::inventory;
 
-    std::vector<Item*> items;
+    std::vector<std::shared_ptr<Artifact>> items;
     m_gameSave->GetArtifacts1().FindByBagNumber(m_bagNumber, items);
     auto& textManager = GameData::Get().GetTextManager();
 
@@ -492,7 +492,7 @@ void StorageItemsTabPage::updateItemSection()
     int i = 0;
     for (auto item : items) {
         m_itemList.AddItem(i, 0, nullptr);
-        m_itemList.SetItemData(i, reinterpret_cast<DWORD_PTR>(item));
+        m_itemList.SetItemData(i, reinterpret_cast<DWORD_PTR>(item.get()));
         updateItemListItem(i);
         ++i;
     }

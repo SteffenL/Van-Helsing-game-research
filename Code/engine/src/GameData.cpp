@@ -33,7 +33,7 @@ public:
         typedef bmi::multi_index_container<
             ItemData,
             bmi::indexed_by<
-                bmi::ordered_unique<bmi::member<ItemData, inventory::Item::IdType, &ItemData::Id>>,
+                bmi::ordered_unique<bmi::member<ItemData, inventory::Artifact::IdType, &ItemData::Id>>,
                 bmi::ordered_unique<bmi::member<ItemData, std::string, &ItemData::Name>>
             >
         > type;
@@ -51,7 +51,7 @@ public:
         > type;
     };
 
-    bool GetItemData(inventory::Item::IdType id, ItemData& data);
+    bool GetItemData(inventory::Artifact::IdType id, ItemData& data);
     bool GetItemData(inventory::Enchantment::IdType id, EnchantmentData& data);
 
 private:
@@ -59,7 +59,7 @@ private:
     EnchantmentDataContainer::type m_enchantmentData;
 };
 
-bool GameData::Impl::GetItemData(inventory::Item::IdType id, ItemData& data)
+bool GameData::Impl::GetItemData(inventory::Artifact::IdType id, ItemData& data)
 {
     auto& view = m_itemData.get<0>();
     auto it = view.find(id);
@@ -83,7 +83,7 @@ bool GameData::Impl::GetItemData(inventory::Enchantment::IdType id, EnchantmentD
     return true;
 }
 
-std::unique_ptr<GameData> GameData::m_instance = std::unique_ptr<GameData>(new GameData);
+std::unique_ptr<GameData> GameData::m_instance = std::make_unique<GameData>();
 
 void GameData::Load(const std::string& gameDir)
 {
@@ -188,18 +188,18 @@ void GameData::loadEnchantments()
     }
 }
 
-GameData::GameData() : m_impl(new Impl) {}
+GameData::GameData() : m_impl(std::make_unique<Impl>()) {}
 
 GameData& GameData::Get()
 {
-    if (!m_instance.get()) {
-        m_instance.reset(new GameData);
+    if (!m_instance) {
+        m_instance = std::make_unique<GameData>();
     }
 
     return *m_instance;
 }
 
-bool GameData::GetArtifactData(inventory::Item::IdType id, ItemData& data) const
+bool GameData::GetArtifactData(inventory::Artifact::IdType id, ItemData& data) const
 {
     return m_impl->GetItemData(id, data);
 }
@@ -220,7 +220,7 @@ inventory::Artifact::IdType GameData::GetArtifactIdFromName(const std::string& n
     return id;
 }
 
-std::string GameData::GetItemNameFromId(inventory::Item::IdType id) const
+std::string GameData::GetItemNameFromId(inventory::Artifact::IdType id) const
 {
     ItemData data;
     if (!GetArtifactData(id, data)) {
@@ -259,26 +259,26 @@ void GameData::loadTexts()
     m_texts.Load(filePath.string());
 }
 
-const std::vector<vanhelsing::engine::inventory::Item::Quality::type> GameData::GetQualityDataList() const
+const std::vector<vanhelsing::engine::inventory::Artifact::Quality::type> GameData::GetQualityDataList() const
 {
-    using vanhelsing::engine::inventory::Item;
-    std::vector<Item::Quality::type> list;
-    list.push_back(Item::Quality::Normal);
-    list.push_back(Item::Quality::Cracked);
-    list.push_back(Item::Quality::Masterwork);
+    using vanhelsing::engine::inventory::Artifact;
+    std::vector<Artifact::Quality::type> list;
+    list.push_back(Artifact::Quality::Normal);
+    list.push_back(Artifact::Quality::Cracked);
+    list.push_back(Artifact::Quality::Masterwork);
     return list;
 }
 
-const std::vector<vanhelsing::engine::inventory::Item::Rarity::type> GameData::GetRarityDataList() const
+const std::vector<vanhelsing::engine::inventory::Artifact::Rarity::type> GameData::GetRarityDataList() const
 {
-    using vanhelsing::engine::inventory::Item;
-    std::vector<Item::Rarity::type> list;
-    list.push_back(Item::Rarity::Normal);
-    list.push_back(Item::Rarity::Magic);
-    list.push_back(Item::Rarity::Rare);
-    list.push_back(Item::Rarity::Epic);
-    list.push_back(Item::Rarity::Set);
-    list.push_back(Item::Rarity::Random);
+    using inventory::Artifact;
+    std::vector<Artifact::Rarity::type> list;
+    list.push_back(Artifact::Rarity::Normal);
+    list.push_back(Artifact::Rarity::Magic);
+    list.push_back(Artifact::Rarity::Rare);
+    list.push_back(Artifact::Rarity::Epic);
+    list.push_back(Artifact::Rarity::Set);
+    list.push_back(Artifact::Rarity::Random);
     return list;
 }
 
@@ -292,32 +292,34 @@ bool TextManager::Load(const std::string& filePath)
     return true;
 }
 
-std::string TextManager::GetRarityText(inventory::Item::Rarity::type rarity) const
+std::string TextManager::GetRarityText(inventory::Artifact::Rarity::type rarity) const
 {
+    using inventory::Artifact;
+
     std::string textName;
     switch (rarity)
     {
-    case vanhelsing::engine::inventory::Item::Rarity::Normal:
+    case Artifact::Rarity::Normal:
         textName = "Normal";
         break;
 
-    case vanhelsing::engine::inventory::Item::Rarity::Magic:
+    case Artifact::Rarity::Magic:
         textName = "Magic";
         break;
 
-    case vanhelsing::engine::inventory::Item::Rarity::Rare:
+    case Artifact::Rarity::Rare:
         textName = "Rare";
         break;
 
-    case vanhelsing::engine::inventory::Item::Rarity::Epic:
+    case Artifact::Rarity::Epic:
         textName = "Epic";
         break;
 
-    case vanhelsing::engine::inventory::Item::Rarity::Set:
+    case Artifact::Rarity::Set:
         textName = "Set";
         break;
 
-    case vanhelsing::engine::inventory::Item::Rarity::Random:
+    case Artifact::Rarity::Random:
         return "Random?";
         break;
 
@@ -340,19 +342,21 @@ std::string TextManager::GetRarityText(inventory::Item::Rarity::type rarity) con
     }
 }
 
-std::string TextManager::GetQualityText(inventory::Item::Quality::type quality) const
+std::string TextManager::GetQualityText(inventory::Artifact::Quality::type quality) const
 {
+    using inventory::Artifact;
+
     std::string textName;
     switch (quality)
     {
-    case vanhelsing::engine::inventory::Item::Quality::Normal:
+    case Artifact::Quality::Normal:
         return "";
 
-    case vanhelsing::engine::inventory::Item::Quality::Cracked:
+    case Artifact::Quality::Cracked:
         textName = "Cracked";
         break;
 
-    case vanhelsing::engine::inventory::Item::Quality::Masterwork:
+    case Artifact::Quality::Masterwork:
         textName = "Masterwork";
         break;
 

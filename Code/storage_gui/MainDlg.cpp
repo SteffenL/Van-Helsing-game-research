@@ -124,7 +124,7 @@ LRESULT CMainDlg::OnFileOpen(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, B
     auto& filePath(nowide::narrow(fileDialog.m_szFileName));
     nowide::ifstream file(filePath.c_str(), std::ios::binary);
 
-    m_openedFiles.StorageGameSave.reset(new vanhelsing::engine::StorageGameSave);
+    m_openedFiles.StorageGameSave = std::make_unique<vanhelsing::engine::StorageGameSave>();
 
     try {
         vanhelsing::engine::io::StorageGameSaveReader reader(*m_openedFiles.StorageGameSave, file);
