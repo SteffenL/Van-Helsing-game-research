@@ -17,8 +17,8 @@ void StorageGameSaveReader::readAllStoredItems(StreamHelperReader& stream)
     readArtifactList(stream, m_gameSave.GetArtifacts1());
     readArtifactList(stream, m_gameSave.GetArtifacts2());
 
-    m_gameSave.Unknown.Artifacts.v1 = stream.Read<int>();
-    m_gameSave.Unknown.Artifacts.v2 = stream.Read<int>();
+    stream.Read(m_gameSave.Unknown.Artifacts.v1);
+    stream.Read(m_gameSave.Unknown.Artifacts.v2);
 
     // TODO: When arg_0 is equal to 1, more reads follow; but I don't know where this value comes from
 }
@@ -28,10 +28,10 @@ inventory::Item* StorageGameSaveReader::readArtifact(StreamHelperReader& stream,
     using inventory::Item;
     std::unique_ptr<Item> item(new Item);
 
-    item->Id = stream.Read<Item::IdType>();
-    item->Attribute1 = stream.Read<int>();
-    item->Attribute2 = stream.Read<int>();
-    item->Quantity = stream.Read<int>();
+    stream.Read(item->Id);
+    stream.Read(item->Attribute1);
+    stream.Read(item->Attribute2);
+    stream.Read(item->Quantity);
 
     auto& name = item->GetName();
     m_logger << "ID: 0x" << std::hex << item->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
@@ -51,20 +51,20 @@ inventory::Item* StorageGameSaveReader::readArtifact(StreamHelperReader& stream,
 
     m_logger << Log::outdent;
 
-    item->Quality = stream.Read<Item::Quality::type>();
-    item->Rarity = stream.Read<Item::Rarity::type>();
+    stream.Read(item->Quality);
+    stream.Read(item->Rarity);
     m_logger << "Quality: " << item->Quality << std::endl;
     m_logger << "Rarity: " << item->Rarity << std::endl;
 
     readEnchantments(stream, *item);
     readUnknownMaybeEnchantments(stream, *item);
 
-    item->IsIdentified = stream.Read<bool>();
+    stream.Read(item->IsIdentified);
     m_logger << "Is identified: " << item->IsIdentified << std::endl;
-    item->Unknown.v1 = stream.Read<bool>();
+    stream.Read(item->Unknown.v1);
     m_logger << "Unknown: " << item->Unknown.v1 << std::endl;
 
-    item->Unknown.v2 = stream.Read<unsigned int>();
+    stream.Read(item->Unknown.v2);
     {
         // TODO: Move code in this block into a function
         // IDA hint: my_storage_ReadArtifact_UnknownFunc001
@@ -82,19 +82,19 @@ inventory::Item* StorageGameSaveReader::readArtifact(StreamHelperReader& stream,
         m_logger << Log::outdent;
     }
 
-    item->Unknown.v3 = stream.Read<bool>();
+    stream.Read(item->Unknown.v3);
     readUnknownStruct1(stream, item->Unknown.UnknownStruct1_1);
     readUnknownStruct1(stream, item->Unknown.UnknownStruct1_2);
     readUnknown1List(stream, item->Unknown.List3);
     readUnknown2List(stream, item->Unknown.List4);
     readUnknown1List(stream, item->Unknown.List5);
     readUnknownStruct1(stream, item->Unknown.UnknownStruct1_3);
-    item->Unknown.v4 = stream.Read<int>();
+    stream.Read(item->Unknown.v4);
     readUnknownStruct1(stream, item->Unknown.UnknownStruct1_4);
-    item->Unknown.v5 = stream.Read<int>();
-    item->Unknown.v6 = stream.Read<int>();
-    item->Unknown.v7 = stream.Read<float>();
-    item->Unknown.v8 = stream.Read<float>();
+    stream.Read(item->Unknown.v5);
+    stream.Read(item->Unknown.v6);
+    stream.Read(item->Unknown.v7);
+    stream.Read(item->Unknown.v8);
 
     auto itemPtr = item.get();
     itemList.Add(itemPtr);
@@ -117,10 +117,10 @@ void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, invento
         m_logger << "#" << i << ":" << std::endl;
         m_logger << Log::indent;
 
-        enchantment->Id = stream.Read<Enchantment::IdType>();
-        enchantment->Unknown.v2 = stream.Read<int>();
-        enchantment->Multiplier = stream.Read<float>();
-        enchantment->Unknown.v4 = stream.Read<unsigned int>();
+        stream.Read(enchantment->Id);
+        stream.Read(enchantment->Unknown.v2);
+        stream.Read(enchantment->Multiplier);
+        stream.Read(enchantment->Unknown.v4);
 
         auto& name = enchantment->GetName();
         m_logger << "ID: 0x" << std::hex << enchantment->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
@@ -129,9 +129,9 @@ void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, invento
         m_logger << enchantment->Unknown.v2 << ", " << enchantment->Multiplier << ", " << enchantment->Unknown.v4 << std::endl;
 
         if (m_containerInfo.Version >= 0x2b6) {
-            enchantment->Unknown.v5 = stream.Read<int>();
-            enchantment->Unknown.v6 = stream.Read<unsigned int>();
-            enchantment->Unknown.v7 = stream.Read<int>();
+            stream.Read(enchantment->Unknown.v5);
+            stream.Read(enchantment->Unknown.v6);
+            stream.Read(enchantment->Unknown.v7);
 
             m_logger << enchantment->Unknown.v5 << ", " << enchantment->Unknown.v6 << ", " << enchantment->Unknown.v7 << std::endl;
         }
@@ -160,10 +160,10 @@ void StorageGameSaveReader::readUnknownMaybeEnchantments(StreamHelperReader& str
         m_logger << "#" << i << ":" << std::endl;
         m_logger << Log::indent;
 
-        enchantment->Id = stream.Read<Enchantment::IdType>();
-        enchantment->Unknown.v2 = stream.Read<int>();
-        enchantment->Multiplier = stream.Read<float>();
-        enchantment->Unknown.v4 = stream.Read<unsigned int>();
+        stream.Read(enchantment->Id);
+        stream.Read(enchantment->Unknown.v2);
+        stream.Read(enchantment->Multiplier);
+        stream.Read(enchantment->Unknown.v4);
 
         auto& name = enchantment->GetName();
         m_logger << "ID: 0x" << std::hex << enchantment->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
@@ -172,9 +172,9 @@ void StorageGameSaveReader::readUnknownMaybeEnchantments(StreamHelperReader& str
         m_logger << enchantment->Unknown.v2 << ", " << enchantment->Multiplier << ", " << enchantment->Unknown.v4 << std::endl;
 
         if (m_containerInfo.Version >= 0x2b6) {
-            enchantment->Unknown.v5 = stream.Read<int>();
-            enchantment->Unknown.v6 = stream.Read<unsigned int>();
-            enchantment->Unknown.v7 = stream.Read<int>();
+            stream.Read(enchantment->Unknown.v5);
+            stream.Read(enchantment->Unknown.v6);
+            stream.Read(enchantment->Unknown.v7);
 
             m_logger << enchantment->Unknown.v5 << ", " << enchantment->Unknown.v6 << ", " << enchantment->Unknown.v7 << std::endl;
         }
@@ -193,11 +193,11 @@ StorageGameSaveReader::~StorageGameSaveReader() {}
 
 void StorageGameSaveReader::readUnknownStruct1(StreamHelperReader& stream, inventory::Item::UnknownStruct1& us1)
 {
-    us1.v1 = stream.Read<unsigned int>();
+    stream.Read(us1.v1);
     // TODO: What is being being compared to 1?
     //if (something == 1) {
     // Read 2 bytes but I'm not sure if it's int16 or an array
-    us1.v2 = stream.Read<short>();
+    stream.Read(us1.v2);
     //}
 }
 
@@ -216,11 +216,11 @@ void StorageGameSaveReader::readUnknown1List(StreamHelperReader& stream, std::ve
 
 void StorageGameSaveReader::readUnknown1ListItem(StreamHelperReader& stream, inventory::Item::UnknownList3Item& item)
 {
-    item.v1 = stream.Read<unsigned int>();
+    stream.Read(item.v1);
     // TODO: What is being being compared to 1?
     //if (something == 1) {
     // Read 2 bytes but I'm not sure if it's int16 or an array
-    item.v2 = stream.Read<short>();
+    stream.Read(item.v2);
     //}
 }
 

@@ -80,6 +80,12 @@ public:
         return buffer;
     }
 
+    template<typename T>
+    void Read(T& buffer)
+    {
+        buffer = Read<T>();
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     /// <summary>   Reads from the stream from the current position. </summary>
     ///

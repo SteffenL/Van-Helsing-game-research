@@ -8,9 +8,9 @@ GameSaveContainerWriter::GameSaveContainerWriter(const ContainerInfoType& contai
 {
     StreamHelperWriter stream(getOutStream());
     stream.WriteString(m_containerInfo.Signature, 5);
-    stream.Write<unsigned int>(m_containerInfo.Version);
-    stream.Write<int>(m_containerInfo.Unknown.v1);
-    stream.Write<char>(m_containerInfo.Unknown.v2);
+    stream.Write(m_containerInfo.Version);
+    stream.Write(m_containerInfo.Unknown.v1);
+    stream.Write(m_containerInfo.Unknown.v2);
 }
 
 GameSaveContainerWriter::~GameSaveContainerWriter() {}
