@@ -21,8 +21,7 @@ public:
 private:
     void readAllStoredItems(StreamHelperReader& stream);
     std::shared_ptr<inventory::Artifact> readArtifact(StreamHelperReader& stream, inventory::Artifact::List& itemList);
-    void readEnchantments(StreamHelperReader& stream, inventory::Artifact& item);
-    void readUnknownMaybeEnchantments(StreamHelperReader& stream, inventory::Artifact& item);
+    void readEnchantments(StreamHelperReader& stream, inventory::Enchantment::List& enchantments);
     void readUnknownStruct1(StreamHelperReader& stream, inventory::Artifact::UnknownStruct1& us1);
     void readUnknown1List(StreamHelperReader& stream, std::vector<inventory::Artifact::UnknownList3Item>& list);
     void readUnknown1ListItem(StreamHelperReader& stream, inventory::Artifact::UnknownList3Item& item);

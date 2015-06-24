@@ -25,8 +25,10 @@ LRESULT StorageItemsTabPage::onInitDialog(HWND, LPARAM)
     m_itemQuantity.SubclassWindow(GetDlgItem(IDC_ITEM_QUANTITY_EDIT));
     m_itemQuantity.ApplyEvent->connect(boost::bind(&StorageItemsTabPage::editOnApply, this, _1));
     // Enchantments
-    m_enchantmentMultiplier.SubclassWindow(GetDlgItem(IDC_ENCHANTMENT_MULTIPLIER_EDIT));
-    m_enchantmentMultiplier.ApplyEvent->connect(boost::bind(&StorageItemsTabPage::editOnApply, this, _1));
+    m_enchantmentEffectValue.SubclassWindow(GetDlgItem(IDC_ENCHANTMENT_EFFECT_VALUE_EDIT));
+    m_enchantmentEffectValue.ApplyEvent->connect(boost::bind(&StorageItemsTabPage::editOnApply, this, _1));
+    m_enchantmentEffectModifier.SubclassWindow(GetDlgItem(IDC_ENCHANTMENT_EFFECT_MODIFIER_EDIT));
+    m_enchantmentEffectModifier.ApplyEvent->connect(boost::bind(&StorageItemsTabPage::editOnApply, this, _1));
 
     DoDataExchange(false);
     resize_class_t::DlgResize_Init(false, false, WS_CLIPCHILDREN);
@@ -60,7 +62,8 @@ LRESULT StorageItemsTabPage::onInitDialog(HWND, LPARAM)
 
     // Enchantments
     m_enchantmentList.AddColumn(_T("Name"), 0);
-    m_enchantmentList.AddColumn(_T("Multiplier"), 1);
+    m_enchantmentList.AddColumn(_T("Value"), 1);
+    m_enchantmentList.AddColumn(_T("Modifier"), 2);
     m_enchantmentList.SetExtendedListViewStyle(m_enchantmentList.GetExtendedListViewStyle() | (LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP | LVS_EX_DOUBLEBUFFER));
     ::SetWindowTheme(m_enchantmentList.m_hWnd, L"Explorer", NULL);
 
@@ -226,11 +229,11 @@ LRESULT StorageItemsTabPage::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam)
         auto item = reinterpret_cast<vanhelsing::engine::inventory::Enchantment*>(m_enchantmentList.GetItemData(i));
 
         TCHAR text[100];
-        // Multiplier
+        // Modifier
         {
-            ::GetDlgItemText(*this, IDC_ENCHANTMENT_MULTIPLIER_EDIT, text, _countof(text));
+            ::GetDlgItemText(*this, IDC_ENCHANTMENT_EFFECT_MODIFIER_EDIT, text, _countof(text));
             std::wstringstream ss(text);
-            ss >> item->Multiplier;
+            ss >> item->Modifier;
         }
     }*/
 
@@ -332,8 +335,11 @@ void StorageItemsTabPage::editOnApply(CMyEdit::ApplyEventArg& e)
         applyItemQuantity();
     }
     // Enchantments
-    else if (obj == &m_enchantmentMultiplier) {
-        applyEnchantmentMultiplier();
+    else if (obj == &m_enchantmentEffectValue) {
+        applyEnchantmentEffectValue();
+    }
+    else if (obj == &m_enchantmentEffectModifier) {
+        applyEnchantmentEffectModifier();
     }
 }
 
@@ -444,22 +450,40 @@ void StorageItemsTabPage::updateEnchantmentListItem(int i)
     auto enchantment = reinterpret_cast<Enchantment*>(m_enchantmentList.GetItemData(i));
 
     auto& name = nowide::widen(enchantment->GetName());
-    CString multiplier;
-    multiplier.Format(_T("%.2f"), enchantment->Multiplier);
+
+    CString effectValue;
+    effectValue.Format(_T("%d"), enchantment->EffectValue);
+
+    CString effectModifier;
+    effectModifier.Format(_T("%.2f"), enchantment->EffectModifier);
 
     m_enchantmentList.SetItemText(i, 0, name.c_str());
-    m_enchantmentList.SetItemText(i, 1, static_cast<LPCTSTR>(multiplier));
+    m_enchantmentList.SetItemText(i, 1, static_cast<LPCTSTR>(effectValue));
+    m_enchantmentList.SetItemText(i, 2, static_cast<LPCTSTR>(effectModifier));
 }
 
-void StorageItemsTabPage::applyEnchantmentMultiplier()
+void StorageItemsTabPage::applyEnchantmentEffectModifier()
 {
     using vanhelsing::engine::inventory::Enchantment;
     TCHAR text[100];
     for (auto& i : m_enchantmentListSelectedItems) {
         auto enchantment = reinterpret_cast<Enchantment*>(m_enchantmentList.GetItemData(i));
-        ::GetDlgItemText(*this, IDC_ENCHANTMENT_MULTIPLIER_EDIT, text, _countof(text));
+        ::GetDlgItemText(*this, IDC_ENCHANTMENT_EFFECT_MODIFIER_EDIT, text, _countof(text));
         std::wstringstream ss(text);
-        ss >> enchantment->Multiplier;
+        ss >> enchantment->EffectModifier;
+        updateEnchantmentListItem(i);
+    }
+}
+
+void StorageItemsTabPage::applyEnchantmentEffectValue()
+{
+    using vanhelsing::engine::inventory::Enchantment;
+    TCHAR text[100];
+    for (auto& i : m_enchantmentListSelectedItems) {
+        auto enchantment = reinterpret_cast<Enchantment*>(m_enchantmentList.GetItemData(i));
+        ::GetDlgItemText(*this, IDC_ENCHANTMENT_EFFECT_VALUE_EDIT, text, _countof(text));
+        std::wstringstream ss(text);
+        ss >> enchantment->EffectValue;
         updateEnchantmentListItem(i);
     }
 }
@@ -471,11 +495,18 @@ void StorageItemsTabPage::updateModifyEnchantmentSection(
     using namespace vanhelsing::engine;
     using namespace vanhelsing::engine::inventory;
 
-    // Multiplier
+    // Effect value
     {
         std::wstringstream ss;
-        ss << item->Multiplier;
-        m_enchantmentMultiplier.SetValue(ss.str().c_str());
+        ss << item->EffectValue;
+        m_enchantmentEffectValue.SetValue(ss.str().c_str());
+    }
+
+    // Effect modifier
+    {
+        std::wstringstream ss;
+        ss << item->EffectModifier;
+        m_enchantmentEffectModifier.SetValue(ss.str().c_str());
     }
 }
 

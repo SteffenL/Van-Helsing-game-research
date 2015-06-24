@@ -41,8 +41,8 @@ void StorageGameSaveWriter::writeArtifact(StreamHelperWriter& stream, const inve
     stream.Write(item->Quality);
     stream.Write(item->Rarity);
 
-    writeEnchantments(stream, *item);
-    writeUnknownMaybeEnchantments(stream, *item);
+    writeEnchantments(stream, item->GetEnchantments());
+    writeEnchantments(stream, item->Unknown.MaybeEnchantments);
 
     stream.Write(item->IsIdentified);
     stream.Write(item->Unknown.v1);
@@ -74,38 +74,17 @@ void StorageGameSaveWriter::writeArtifact(StreamHelperWriter& stream, const inve
     stream.Write(item->Unknown.v8);
 }
 
-void StorageGameSaveWriter::writeEnchantments(StreamHelperWriter& stream, const inventory::Artifact& item)
+void StorageGameSaveWriter::writeEnchantments(StreamHelperWriter& stream, const inventory::Enchantment::List& enchantments_)
 {
-    auto& enchantments = item.GetEnchantments().GetItems();
+    auto& enchantments = enchantments_.GetItems();
 
     stream.Write<unsigned int>(enchantments.size());
     for (auto enchantment : enchantments) {
         using inventory::Enchantment;
 
         stream.Write(enchantment->Id);
-        stream.Write(enchantment->Unknown.v2);
-        stream.Write(enchantment->Multiplier);
-        stream.Write(enchantment->Unknown.v4);
-
-        if (m_containerInfo.Version >= 0x2b6) {
-            stream.Write(enchantment->Unknown.v5);
-            stream.Write(enchantment->Unknown.v6);
-            stream.Write(enchantment->Unknown.v7);
-        }
-    }
-}
-
-void StorageGameSaveWriter::writeUnknownMaybeEnchantments(StreamHelperWriter& stream, const inventory::Artifact& item)
-{
-    auto& enchantments = item.Unknown.MaybeEnchantments.GetItems();
-
-    stream.Write<unsigned int>(enchantments.size());
-    for (auto enchantment : enchantments) {
-        using inventory::Enchantment;
-
-        stream.Write(enchantment->Id);
-        stream.Write(enchantment->Unknown.v2);
-        stream.Write(enchantment->Multiplier);
+        stream.Write(enchantment->EffectValue);
+        stream.Write(enchantment->EffectModifier);
         stream.Write(enchantment->Unknown.v4);
 
         if (m_containerInfo.Version >= 0x2b6) {

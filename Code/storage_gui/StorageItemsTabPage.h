@@ -39,7 +39,8 @@ public:
         DDX_CONTROL_HANDLE(IDC_ITEM_QUANTITY_EDIT, m_itemQuantity)
         // Enchantments
         DDX_CONTROL_HANDLE(IDC_ENCHANTMENT_LIST, m_enchantmentList)
-        DDX_CONTROL_HANDLE(IDC_ENCHANTMENT_MULTIPLIER_EDIT, m_enchantmentMultiplier)
+        DDX_CONTROL_HANDLE(IDC_ENCHANTMENT_EFFECT_VALUE_EDIT, m_enchantmentEffectValue)
+        DDX_CONTROL_HANDLE(IDC_ENCHANTMENT_EFFECT_MODIFIER_EDIT, m_enchantmentEffectModifier)
     END_DDX_MAP()
 
     BEGIN_MSG_MAP_EX(this_class_t)
@@ -84,8 +85,10 @@ public:
         DLGRESIZE_CONTROL(IDC_ENCHANTMENT_HEADING, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_ENCHANTMENT_LIST, DLSZ_MOVE_X | DLSZ_SIZE_Y)
         DLGRESIZE_CONTROL(IDC_MODIFY_ENCHANTMENT_GROUP, DLSZ_MOVE_X | DLSZ_MOVE_Y)
-        DLGRESIZE_CONTROL(IDC_ENCHANTMENT_MULTIPLIER_TEXT, DLSZ_MOVE_X | DLSZ_MOVE_Y)
-        DLGRESIZE_CONTROL(IDC_ENCHANTMENT_MULTIPLIER_EDIT, DLSZ_MOVE_X | DLSZ_MOVE_Y)
+        DLGRESIZE_CONTROL(IDC_ENCHANTMENT_EFFECT_VALUE_TEXT, DLSZ_MOVE_X | DLSZ_MOVE_Y)
+        DLGRESIZE_CONTROL(IDC_ENCHANTMENT_EFFECT_VALUE_EDIT, DLSZ_MOVE_X | DLSZ_MOVE_Y)
+        DLGRESIZE_CONTROL(IDC_ENCHANTMENT_EFFECT_MODIFIER_TEXT, DLSZ_MOVE_X | DLSZ_MOVE_Y)
+        DLGRESIZE_CONTROL(IDC_ENCHANTMENT_EFFECT_MODIFIER_EDIT, DLSZ_MOVE_X | DLSZ_MOVE_Y)
     END_DLGRESIZE_MAP()
 
     LRESULT onInitDialog(HWND, LPARAM);
@@ -126,7 +129,8 @@ private:
     void updateModifyEnchantmentSection(
         const vanhelsing::engine::TextManager& textManager,
         const vanhelsing::engine::inventory::Enchantment* item);
-    void applyEnchantmentMultiplier();
+    void applyEnchantmentEffectModifier();
+    void applyEnchantmentEffectValue();
 protected:
     int WM_ITEM_LVSELCHANGE;
     int WM_ENCHANTMENT_LVSELCHANGE;
@@ -151,5 +155,6 @@ protected:
     // Enchantments
     CListViewCtrl m_enchantmentList;
     std::vector<int> m_enchantmentListSelectedItems;
-    CMyEdit m_enchantmentMultiplier;
+    CMyEdit m_enchantmentEffectValue;
+    CMyEdit m_enchantmentEffectModifier;
 };

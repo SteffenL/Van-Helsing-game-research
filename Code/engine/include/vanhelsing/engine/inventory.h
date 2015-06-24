@@ -63,10 +63,11 @@ public:
 
     virtual std::string GetName() const;
 
-    float Multiplier;
+    int EffectValue;
+    float EffectModifier;
+
     struct
     {
-        int v2;
         unsigned int v4;
         int v5;
         unsigned int v6;

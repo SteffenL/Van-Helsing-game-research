@@ -20,8 +20,8 @@ struct FileHeader
 struct ArtifactEnchantment
 {
     uint32 Id;
-    int32 Unknown002;
-    float Multiplied;
+    int32 EffectValue;
+    float EffectModifier; // 0 to 1
     uint32 Unknown004;
 
     // Version-specific

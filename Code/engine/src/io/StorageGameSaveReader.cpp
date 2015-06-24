@@ -56,8 +56,8 @@ std::shared_ptr<inventory::Artifact> StorageGameSaveReader::readArtifact(StreamH
     m_logger << "Quality: " << item->Quality << std::endl;
     m_logger << "Rarity: " << item->Rarity << std::endl;
 
-    readEnchantments(stream, *item);
-    readUnknownMaybeEnchantments(stream, *item);
+    readEnchantments(stream, item->GetEnchantmentsWritable());
+    readEnchantments(stream, item->Unknown.MaybeEnchantments);
 
     stream.Read(item->IsIdentified);
     m_logger << "Is identified: " << item->IsIdentified << std::endl;
@@ -100,10 +100,8 @@ std::shared_ptr<inventory::Artifact> StorageGameSaveReader::readArtifact(StreamH
     return item;
 }
 
-void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, inventory::Artifact& item)
+void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, inventory::Enchantment::List& enchantments)
 {
-    auto& enchantments = item.GetEnchantmentsWritable();
-
     auto count = stream.Read<unsigned int>();
     m_logger << "Enchantments (" << count << "):" << std::endl;
     m_logger << Log::indent;
@@ -115,57 +113,18 @@ void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, invento
         m_logger << Log::indent;
 
         stream.Read(enchantment->Id);
-        stream.Read(enchantment->Unknown.v2);
-        stream.Read(enchantment->Multiplier);
+        stream.Read(enchantment->EffectValue);
+        stream.Read(enchantment->EffectModifier);
         stream.Read(enchantment->Unknown.v4);
 
         auto& name = enchantment->GetName();
         m_logger << "ID: 0x" << std::hex << enchantment->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
+        m_logger << "Effect value: " << enchantment->EffectValue << std::endl;
+        m_logger << "Effect modifier: " << enchantment->EffectModifier << std::endl;
+
         m_logger << "Unknown:" << std::endl;
         m_logger << Log::indent;
-        m_logger << enchantment->Unknown.v2 << ", " << enchantment->Multiplier << ", " << enchantment->Unknown.v4 << std::endl;
-
-        if (m_containerInfo.Version >= 0x2b6) {
-            stream.Read(enchantment->Unknown.v5);
-            stream.Read(enchantment->Unknown.v6);
-            stream.Read(enchantment->Unknown.v7);
-
-            m_logger << enchantment->Unknown.v5 << ", " << enchantment->Unknown.v6 << ", " << enchantment->Unknown.v7 << std::endl;
-        }
-
-        enchantments.Add(enchantment);
-
-        m_logger << Log::outdent << Log::outdent;
-        m_logger << "" << std::endl;
-    }
-
-    m_logger << Log::outdent;
-}
-
-void StorageGameSaveReader::readUnknownMaybeEnchantments(StreamHelperReader& stream, inventory::Artifact& item)
-{
-    auto& enchantments = item.Unknown.MaybeEnchantments;
-
-    auto count = stream.Read<unsigned int>();
-    m_logger << "Unknown, maybe enchantments (" << count << "):" << std::endl;
-    m_logger << Log::indent;
-    for (unsigned int i = 0; i < count; ++i) {
-        using inventory::Enchantment;
-        auto enchantment = std::make_shared<Enchantment>();
-
-        m_logger << "#" << i << ":" << std::endl;
-        m_logger << Log::indent;
-
-        stream.Read(enchantment->Id);
-        stream.Read(enchantment->Unknown.v2);
-        stream.Read(enchantment->Multiplier);
-        stream.Read(enchantment->Unknown.v4);
-
-        auto& name = enchantment->GetName();
-        m_logger << "ID: 0x" << std::hex << enchantment->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
-        m_logger << "Unknown:" << std::endl;
-        m_logger << Log::indent;
-        m_logger << enchantment->Unknown.v2 << ", " << enchantment->Multiplier << ", " << enchantment->Unknown.v4 << std::endl;
+        m_logger << enchantment->Unknown.v4 << std::endl;
 
         if (m_containerInfo.Version >= 0x2b6) {
             stream.Read(enchantment->Unknown.v5);
