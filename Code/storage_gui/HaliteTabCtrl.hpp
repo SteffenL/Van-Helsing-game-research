@@ -7,6 +7,9 @@
 // Jun 6 2013: Added OnSelChangeEvent.
 //             Reduced flicker when switching tab.
 // - Steffen A. Langnes
+//
+// Jun 25 2015: Improved handling of tab stop (but it's apparently not perfect yet).
+// - Steffen A. Langnes
 
 #pragma once
 
@@ -54,6 +57,11 @@ public:
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg)
 	{
+		if (IsDialogMessage(pMsg))
+		{
+			return TRUE;
+		}
+
 		if (::IsWindow(m_hWnd))
 		{
 			assert(pages_[GetCurSel()].msgFilter);
