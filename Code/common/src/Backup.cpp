@@ -1,9 +1,9 @@
-#include <steffenl/common/backup.h>
+#include <common/Backup.h>
 #include <boost/date_time.hpp>
 #include <boost/filesystem.hpp>
 #include <cassert>
 
-namespace steffenl { namespace common {
+namespace common {
 
 Backup::Backup(const std::string& backupDir) : m_backupDir(backupDir) {}
 
@@ -212,4 +212,4 @@ bool DeleteOlderBackups(const wxString& fullPath)
     return true;
 }*/
 
-}} // namespace
+}

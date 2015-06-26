@@ -1,6 +1,8 @@
 #ifndef vanhelsing_engine_io_StreamHelperReader_
 #define vanhelsing_engine_io_StreamHelperReader_
 
+#include <common/exceptions/IoError.h>
+
 #include <iostream>
 #include <stdexcept>
 
@@ -24,10 +26,10 @@ public:
     /// <remarks>   Steffen 5, 5/30/2012. </remarks>
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class ReadFailedException : public std::runtime_error
+    class ReadFailedException : public common::IoError
     {
     public:
-        ReadFailedException() : std::runtime_error("Couldn't read from stream") {}
+        ReadFailedException() : IoError("Couldn't read from stream") {}
     };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////

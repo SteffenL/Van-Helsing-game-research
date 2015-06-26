@@ -31,8 +31,8 @@ public:
     BEGIN_DDX_MAP(CMainDlg)
         // Items
         DDX_CONTROL_HANDLE(IDC_ITEM_LIST, m_itemList)
-        DDX_CONTROL_HANDLE(IDC_ITEM_ATTRIBUTE1_EDIT, m_itemAttribute1)
-        DDX_CONTROL_HANDLE(IDC_ITEM_ATTRIBUTE2_EDIT, m_itemAttribute2)
+        DDX_CONTROL_HANDLE(IDC_ITEM_ATTRIBUTE1_EDIT, m_itemProperty1)
+        DDX_CONTROL_HANDLE(IDC_ITEM_ATTRIBUTE2_EDIT, m_itemProperty2)
         DDX_CONTROL_HANDLE(IDC_ITEM_RARITY_COMBO, m_itemRarity)
         DDX_CONTROL_HANDLE(IDC_ITEM_QUALITY_COMBO, m_itemQuality)
         DDX_CONTROL_HANDLE(IDC_ITEM_IDENTIFIED_CHECK, m_itemIsIdentified)
@@ -114,8 +114,8 @@ private:
     void updateModifyItemSection(
         const vanhelsing::engine::TextManager& textManager,
         const vanhelsing::engine::inventory::Artifact* item);
-    void applyItemAttribute1();
-    void applyItemAttribute2();
+    void applyItemProperty1();
+    void applyItemProperty2();
     void applyItemRarity();
     void applyItemQuality();
     void applyItemIsIdentified();
@@ -143,10 +143,10 @@ protected:
     // Items
     CListViewCtrl m_itemList;
     std::vector<int> m_itemListSelectedItems;
-    CMyEdit m_itemAttribute1;
-    CUpDownCtrl m_itemAttribute1SpinCtrl;
-    CMyEdit m_itemAttribute2;
-    CUpDownCtrl m_itemAttribute2SpinCtrl;
+    CMyEdit m_itemProperty1;
+    CUpDownCtrl m_itemProperty1SpinCtrl;
+    CMyEdit m_itemProperty2;
+    CUpDownCtrl m_itemProperty2SpinCtrl;
     CComboBox m_itemRarity;
     CComboBox m_itemQuality;
     CButton m_itemIsIdentified;

@@ -3,6 +3,7 @@
 #include <vanhelsing/engine/CfgParser.h>
 #include <vanhelsing/engine/inventory.h>
 #include <vanhelsing/engine/io/n2pk/N2pkFile.h>
+#include <vanhelsing/engine/exceptions/VanHelsingEngineError.h>
 
 #include <pugixml.hpp>
 #include <boost/filesystem.hpp>
@@ -99,7 +100,7 @@ void GameData::Load(const std::string& gameDir)
         loadArtifacts();
         loadEnchantments();
     }
-    catch (std::runtime_error& ex) {
+    catch (const VanHelsingEngineError& ex) {
         Log(LogLevel::Error) << "Exception while loading game data: " << ex.what() << std::endl;
         return;
     }
@@ -128,7 +129,7 @@ void GameData::loadArtifacts()
     try {
         parser.Parse();
     }
-    catch (std::runtime_error&) {
+    catch (const VanHelsingEngineError&) {
         Log(LogLevel::Error) << "Failed to parse file: " << filePath.string() << std::endl;
         return;
     }
@@ -170,7 +171,7 @@ void GameData::loadEnchantments()
     try {
         parser.Parse();
     }
-    catch (std::runtime_error&) {
+    catch (const VanHelsingEngineError&) {
         Log(LogLevel::Error) << "Failed to parse file: " << filePath.string() << std::endl;
         return;
     }
@@ -427,7 +428,7 @@ bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
 #pragma warning(pop)
 
     if (!result) {
-        throw std::runtime_error("Error while parsing language XML file.");
+        throw VanHelsingEngineError("Error while parsing language XML file.");
     }
 
     // Items
@@ -544,7 +545,7 @@ bool TextManager::loadSkillText(const io::n2pk::N2pkFile& package)
 #pragma warning(pop)
 
     if (!result) {
-        throw std::runtime_error("Error while parsing language XML file.");
+        throw VanHelsingEngineError("Error while parsing language XML file.");
     }
 
     // Properties

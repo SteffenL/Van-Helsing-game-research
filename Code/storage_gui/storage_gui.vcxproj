@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -11,8 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{67E753C8-CB8F-4DC4-9118-A5C80AB20A09}</ProjectGuid>
-    <ProjectName>storage_gui</ProjectName>
+    <ProjectGuid>{732B9995-F1C1-475A-A962-D77EE337244B}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>storage_gui</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -25,8 +26,8 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120_xp</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -40,121 +41,71 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)3rd_party\wtl\Include;$(SolutionDir)3rd_party\wtl_extra;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)3rd_party\wtl\Include;$(SolutionDir)3rd_party\wtl_extra;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <MinimalRebuild>true</MinimalRebuild>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>BOOST_ALL_DYN_LINK;_CRT_SECURE_NO_WARNINGS;_USING_V110_SDK71_;WIN32;_WINDOWS;STRICT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOSTDIR);$(SolutionDir)common\include;$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;__WXDEBUG__;UNICODE;wxUSE_GUI=1;WINVER=0x0500;__WXMSW__;WXUSINGDLL;BOOST_ALL_DYN_LINK;_CRT_SECURE_NO_WARNINGS;_USING_V110_SDK71_;WIN32;_WINDOWS;STRICT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(BOOSTDIR);$(SolutionDir)services\include;$(SolutionDir)common\include;$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;..\3rd_party\wxWidgets\include;..\3rd_party\wxWidgets\include\msvc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(BOOSTDIR)\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOSTDIR)\stage\lib;$(SolutionDir)3rd_party\wxWidgets\lib\vc_dll</AdditionalLibraryDirectories>
     </Link>
-    <ResourceCompile>
-      <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
-    <Midl>
-      <MkTypLibCompatible>false</MkTypLibCompatible>
-      <TargetEnvironment>Win32</TargetEnvironment>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <HeaderFileName>main.h</HeaderFileName>
-      <InterfaceIdentifierFileName>main_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>main_p.c</ProxyFileName>
-      <GenerateStublessProxies>true</GenerateStublessProxies>
-      <TypeLibraryName>$(IntDir)/main.tlb</TypeLibraryName>
-      <DllDataFileName />
-    </Midl>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <DebugInformationFormat />
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_USING_V110_SDK71_;WIN32;_WINDOWS;STRICT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>$(BOOSTDIR);$(SolutionDir)common\include;$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide</AdditionalIncludeDirectories>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MinSpace</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;__WXDEBUG__;UNICODE;wxUSE_GUI=1;WINVER=0x0500;__WXMSW__;_CRT_SECURE_NO_WARNINGS;_USING_V110_SDK71_;WIN32;_WINDOWS;STRICT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(BOOSTDIR);$(SolutionDir)services\include;$(SolutionDir)common\include;$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;..\3rd_party\wxWidgets\include;..\3rd_party\wxWidgets\include\msvc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>$(BOOSTDIR)\stage\lib</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(BOOSTDIR)\stage\lib;..\3rd_party\wxWidgets\lib\vc_lib</AdditionalLibraryDirectories>
     </Link>
-    <ResourceCompile>
-      <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
-    <Midl>
-      <MkTypLibCompatible>false</MkTypLibCompatible>
-      <TargetEnvironment>Win32</TargetEnvironment>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <HeaderFileName>main.h</HeaderFileName>
-      <InterfaceIdentifierFileName>main_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>main_p.c</ProxyFileName>
-      <GenerateStublessProxies>true</GenerateStublessProxies>
-      <TypeLibraryName>$(IntDir)/main.tlb</TypeLibraryName>
-      <DllDataFileName />
-    </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\3rd_party\nowide\src\iostream.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="AboutDlg.cpp" />
-    <ClCompile Include="MainDlg.cpp" />
-    <ClCompile Include="MyEdit.cpp" />
-    <ClCompile Include="my_console_output_buffer.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="StorageItemsTabPage.cpp" />
+    <ClCompile Include="App.cpp" />
+    <ClCompile Include="services\ApplicationServices.cpp" />
+    <ClCompile Include="ui\viewmodels\ArtifactViewModel.cpp" />
+    <ClCompile Include="ui\generated\main.cpp" />
+    <ClCompile Include="ui\MainFrame.cpp" />
+    <ClCompile Include="ui\StorageEditorPanel.cpp" />
+    <ClCompile Include="ui\viewmodels\EnchantmentViewModel.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AboutDlg.h" />
-    <ClInclude Include="MyEdit.hpp" />
-    <ClInclude Include="my_console_output_buffer.h" />
-    <ClInclude Include="MainDlg.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="StorageItemsTabPage.h" />
+    <ClInclude Include="App.h" />
+    <ClInclude Include="AppVersion.h" />
+    <ClInclude Include="services\ApplicationServices.h" />
+    <ClInclude Include="ui\viewmodels\ArtifactViewModel.h" />
+    <ClInclude Include="ui\generated\main.h" />
+    <ClInclude Include="ui\MainFrame.h" />
+    <ClInclude Include="ui\StorageEditorPanel.h" />
+    <ClInclude Include="ui\viewmodels\EnchantmentViewModel.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="main.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\main.ico" />
+    <None Include="ui\main.fbp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\common\common.vcxproj">
@@ -163,13 +114,11 @@
     <ProjectReference Include="..\engine\engine.vcxproj">
       <Project>{5d6b5d96-121b-4de6-8ef6-dc88c1697fb9}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\services\services.vcxproj">
+      <Project>{db470aab-a4cf-47d6-bb5d-77afd384f988}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties RESOURCE_FILE="main.rc" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>

@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\3rd_party\pugixml-1.2\src\pugixml.cpp" />
     <ClCompile Include="src\CfgParser.cpp" />
     <ClCompile Include="src\GameData.cpp" />
     <ClCompile Include="src\GamePaths.cpp" />
@@ -32,6 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\vanhelsing\engine\CfgParser.h" />
+    <ClInclude Include="include\vanhelsing\engine\exceptions\VanHelsingEngineError.h" />
     <ClInclude Include="include\vanhelsing\engine\GameData.h" />
     <ClInclude Include="include\vanhelsing\engine\GamePaths.h" />
     <ClInclude Include="include\vanhelsing\engine\GameSave.h" />
@@ -112,9 +112,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_USING_V110_SDK71_;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)3rd_party\pugixml-1.2\src;$(SolutionDir)common\include;$(SolutionDir)engine\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);$(SolutionDir)3rd_party\misc;$(SolutionDir)3rd_party\jsoncpp-src-0.5.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>

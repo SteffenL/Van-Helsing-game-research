@@ -1,5 +1,7 @@
 #include <vanhelsing/engine/CfgParser.h>
 #include <vanhelsing/engine/log.h>
+#include <vanhelsing/engine/exceptions/VanHelsingEngineError.h>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -52,7 +54,7 @@ void CfgParser::Parse()
                 }
 
                 vanhelsing::engine::Log(LogLevel::Error) << "Parse error around offset " << m_stream.tellg() << std::endl;
-                throw std::runtime_error("Parse error");
+                throw VanHelsingEngineError("Parse error");
             }
         }
 

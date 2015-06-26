@@ -4,6 +4,8 @@
 #include <vector>
 #include <array>
 #include <memory>
+#include <set>
+#include <map>
 
 namespace vanhelsing { namespace engine { namespace inventory {
 
@@ -26,41 +28,27 @@ public:
     IdType Id;
 };
 
-// Artifact attributes:
-// Armor: Defense, Essence capacity
-
 template<typename ItemType, typename ContainerType = std::vector<ItemType>>
-class AbstractInventoryItemList
+class AbstractInventoryItemList : public ContainerType
 {
 public:
-    void Add(ItemType item)
-    {
-        m_items.emplace_back(item);
-    }
-
-    const ContainerType& GetItems() const
-    {
-        return m_items;
-    }
-
-    ContainerType& GetItemsWritable()
-    {
-        return m_items;
-    }
-
-protected:
-    ContainerType m_items;
+    AbstractInventoryItemList() {}
+    virtual ~AbstractInventoryItemList() {}
 };
+
+using BagIndexType = unsigned int;
+using BagSlotIndexType = unsigned int;
+
+// A bag contains slots for items
+template<typename ItemType>
+using AbstractInventoryItemBag = std::map<BagSlotIndexType, ItemType>;
+
+// Artifact properties:
+// Armor: Defense, Essence capacity
 
 class Enchantment : public AbstractInventoryItem
 {
 public:
-    class List : public AbstractInventoryItemList<std::shared_ptr<Enchantment>>
-    {
-    public:
-
-    };
-
     virtual std::string GetName() const;
 
     int EffectValue;
@@ -75,15 +63,13 @@ public:
     } Unknown;
 };
 
+using EnchantmentPtr = std::unique_ptr<Enchantment>;
+using EnchantmentCollection = std::vector<EnchantmentPtr>;
+using EnchantmentIndexType = EnchantmentCollection::size_type;
+
 class Artifact : public AbstractInventoryItem
 {
 public:
-    class List : public AbstractInventoryItemList<std::shared_ptr<Artifact>>
-    {
-    public:
-        void FindByBagNumber(int bagNumber, std::vector<std::shared_ptr<Artifact>>& items);
-    };
-
     struct Rarity
     {
         enum type : unsigned int { FIRST, Normal = FIRST, Magic, Rare, Epic, Set, Random, LAST_PLUS_ONE };
@@ -144,11 +130,8 @@ public:
 
     virtual std::string GetName() const;
 
-    unsigned int BagNumber;
-    unsigned int SlotNumber;
-
-    int Attribute1;
-    int Attribute2;
+    int Property1;
+    int Property2;
     int Quantity;
     Artifact::Quality::type Quality;
     Artifact::Rarity::type Rarity;
@@ -157,7 +140,7 @@ public:
     {
         std::vector<UnknownList1Item> List1;
         bool v1;
-        Enchantment::List MaybeEnchantments;
+        EnchantmentCollection MaybeEnchantments;
         std::vector<UnknownList2Item> List2;
         unsigned int v2;
         bool v3;
@@ -175,12 +158,25 @@ public:
         float v8;
     } Unknown;
 
-    const Enchantment::List& GetEnchantments() const;
-    Enchantment::List& GetEnchantmentsWritable();
+    const EnchantmentCollection& GetEnchantments() const;
+    EnchantmentCollection& GetEnchantmentsWritable();
 
 protected:
-    Enchantment::List m_enchantments;
+    EnchantmentCollection m_enchantments;
 };
+
+using ArtifactPtr = std::unique_ptr<Artifact>;
+using ArtifactBag = AbstractInventoryItemBag<ArtifactPtr>;
+using ArtifactBagSlot = ArtifactBag::value_type;
+
+class ArtifactBagCollection : public std::map<BagIndexType, ArtifactBag>
+{
+public:
+    ArtifactBagCollection() {}
+    virtual ~ArtifactBagCollection() {}
+};
+
+using IndexToArtifactBagPair = ArtifactBagCollection::value_type;
 
 }}} // namespace
 #endif

@@ -18,10 +18,10 @@ LRESULT StorageItemsTabPage::onInitDialog(HWND, LPARAM)
 
     // Subclass controls before DoDataExchange
     // Items
-    m_itemAttribute1.SubclassWindow(GetDlgItem(IDC_ITEM_ATTRIBUTE1_EDIT));
-    m_itemAttribute1.ApplyEvent->connect(boost::bind(&StorageItemsTabPage::editOnApply, this, _1));
-    m_itemAttribute2.SubclassWindow(GetDlgItem(IDC_ITEM_ATTRIBUTE2_EDIT));
-    m_itemAttribute2.ApplyEvent->connect(boost::bind(&StorageItemsTabPage::editOnApply, this, _1));
+    m_itemProperty1.SubclassWindow(GetDlgItem(IDC_ITEM_ATTRIBUTE1_EDIT));
+    m_itemProperty1.ApplyEvent->connect(boost::bind(&StorageItemsTabPage::editOnApply, this, _1));
+    m_itemProperty2.SubclassWindow(GetDlgItem(IDC_ITEM_ATTRIBUTE2_EDIT));
+    m_itemProperty2.ApplyEvent->connect(boost::bind(&StorageItemsTabPage::editOnApply, this, _1));
     m_itemQuantity.SubclassWindow(GetDlgItem(IDC_ITEM_QUANTITY_EDIT));
     m_itemQuantity.ApplyEvent->connect(boost::bind(&StorageItemsTabPage::editOnApply, this, _1));
     // Enchantments
@@ -38,8 +38,8 @@ LRESULT StorageItemsTabPage::onInitDialog(HWND, LPARAM)
     // Items
     m_itemList.AddColumn(_T("Slot #"), 0);
     m_itemList.AddColumn(_T("Name"), 1);
-    m_itemList.AddColumn(_T("Attribute 1"), 2);
-    m_itemList.AddColumn(_T("Attribute 2"), 3);
+    m_itemList.AddColumn(_T("Property 1"), 2);
+    m_itemList.AddColumn(_T("Property 2"), 3);
     m_itemList.AddColumn(_T("Rarity"), 4);
     m_itemList.AddColumn(_T("Quality"), 5);
     m_itemList.AddColumn(_T("Quantity"), 6);
@@ -242,6 +242,7 @@ LRESULT StorageItemsTabPage::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void StorageItemsTabPage::updateItemListItem(int i)
 {
+#if 0
     using namespace vanhelsing::engine;
     using namespace vanhelsing::engine::inventory;
 
@@ -251,10 +252,10 @@ void StorageItemsTabPage::updateItemListItem(int i)
     auto& name = nowide::widen(textManager.GetItemText(item->GetName()));
     CString slotNumber;
     slotNumber.Format(_T("%u"), item->SlotNumber);
-    CString attribute1;
-    attribute1.Format(_T("%d"), item->Attribute1);
-    CString attribute2;
-    attribute2.Format(_T("%d"), item->Attribute2);
+    CString property1;
+    property1.Format(_T("%d"), item->Property1);
+    CString property2;
+    property2.Format(_T("%d"), item->Property2);
     auto& rarity = nowide::widen(textManager.GetRarityText(item->Rarity));
     auto& quality = nowide::widen(textManager.GetQualityText(item->Quality));
     CString quantity;
@@ -263,12 +264,13 @@ void StorageItemsTabPage::updateItemListItem(int i)
 
     m_itemList.SetItemText(i, 0, static_cast<LPCTSTR>(slotNumber));
     m_itemList.SetItemText(i, 1, name.c_str());
-    m_itemList.SetItemText(i, 2, static_cast<LPCTSTR>(attribute1));
-    m_itemList.SetItemText(i, 3, static_cast<LPCTSTR>(attribute2));
+    m_itemList.SetItemText(i, 2, static_cast<LPCTSTR>(property1));
+    m_itemList.SetItemText(i, 3, static_cast<LPCTSTR>(property2));
     m_itemList.SetItemText(i, 4, rarity.c_str());
     m_itemList.SetItemText(i, 5, quality.c_str());
     m_itemList.SetItemText(i, 6, static_cast<LPCTSTR>(quantity));
     m_itemList.SetItemText(i, 7, static_cast<LPCTSTR>(identified));
+#endif
 }
 
 void StorageItemsTabPage::updateModifyItemSection(
@@ -278,17 +280,17 @@ void StorageItemsTabPage::updateModifyItemSection(
     using namespace vanhelsing::engine;
     using namespace vanhelsing::engine::inventory;
 
-    // Attribute 1
+    // Property 1
     {
         std::wstringstream ss;
-        ss << item->Attribute1;
-        m_itemAttribute1.SetValue(ss.str().c_str());
+        ss << item->Property1;
+        m_itemProperty1.SetValue(ss.str().c_str());
     }
-    // Attribute 2
+    // Property 2
     {
         std::wstringstream ss;
-        ss << item->Attribute2;
-        m_itemAttribute2.SetValue(ss.str().c_str());
+        ss << item->Property2;
+        m_itemProperty2.SetValue(ss.str().c_str());
     }
     // Rarity
     m_itemRarity.SetCurSel(Artifact::Rarity::IsValid(item->Rarity) ? item->Rarity : -1);
@@ -308,6 +310,7 @@ void StorageItemsTabPage::updateEnchantmentSection(
     const vanhelsing::engine::TextManager& textManager,
     const vanhelsing::engine::inventory::Artifact* item)
 {
+#if 0
     using namespace vanhelsing::engine;
     using namespace vanhelsing::engine::inventory;
     auto& enchantments = item->GetEnchantments();
@@ -319,17 +322,18 @@ void StorageItemsTabPage::updateEnchantmentSection(
         updateEnchantmentListItem(i);
         ++i;
     }
+#endif
 }
 
 void StorageItemsTabPage::editOnApply(CMyEdit::ApplyEventArg& e)
 {
     auto obj = e.GetEventObject();
     // Items
-    if (obj == &m_itemAttribute1) {
-        applyItemAttribute1();
+    if (obj == &m_itemProperty1) {
+        applyItemProperty1();
     }
-    else if (obj == &m_itemAttribute2) {
-        applyItemAttribute2();
+    else if (obj == &m_itemProperty2) {
+        applyItemProperty2();
     }
     else if (obj == &m_itemQuantity) {
         applyItemQuantity();
@@ -343,7 +347,7 @@ void StorageItemsTabPage::editOnApply(CMyEdit::ApplyEventArg& e)
     }
 }
 
-void StorageItemsTabPage::applyItemAttribute1()
+void StorageItemsTabPage::applyItemProperty1()
 {
     using vanhelsing::engine::inventory::Artifact;
     TCHAR text[100];
@@ -351,12 +355,12 @@ void StorageItemsTabPage::applyItemAttribute1()
         auto item = reinterpret_cast<Artifact*>(m_itemList.GetItemData(i));
         ::GetDlgItemText(*this, IDC_ITEM_ATTRIBUTE1_EDIT, text, _countof(text));
         std::wstringstream ss(text);
-        ss >> item->Attribute1;
+        ss >> item->Property1;
         updateItemListItem(i);
     }
 }
 
-void StorageItemsTabPage::applyItemAttribute2()
+void StorageItemsTabPage::applyItemProperty2()
 {
     using vanhelsing::engine::inventory::Artifact;
     TCHAR text[100];
@@ -364,7 +368,7 @@ void StorageItemsTabPage::applyItemAttribute2()
         auto item = reinterpret_cast<Artifact*>(m_itemList.GetItemData(i));
         ::GetDlgItemText(*this, IDC_ITEM_ATTRIBUTE2_EDIT, text, _countof(text));
         std::wstringstream ss(text);
-        ss >> item->Attribute2;
+        ss >> item->Property2;
         updateItemListItem(i);
     }
 }
@@ -512,6 +516,7 @@ void StorageItemsTabPage::updateModifyEnchantmentSection(
 
 void StorageItemsTabPage::updateItemSection()
 {
+#if 0
     using namespace vanhelsing::engine;
     using namespace vanhelsing::engine::inventory;
 
@@ -527,6 +532,7 @@ void StorageItemsTabPage::updateItemSection()
         updateItemListItem(i);
         ++i;
     }
+#endif
 }
 
 void StorageItemsTabPage::FullUpdate()

@@ -1,3 +1,7 @@
 [submodule "Doc/Developers/IDA/Game binaries"]
 	path = Doc/Developers/IDA/Game binaries
 	url = https://github.com/SteffenL/Van-Helsing-game-binaries.git
+[submodule "Code/3rd_party/wxWidgets"]
+	path = Code/3rd_party/wxWidgets
+	url = https://github.com/SteffenL/wxWidgets.git
+    ignore = untracked

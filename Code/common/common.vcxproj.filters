@@ -21,12 +21,21 @@
     <ClCompile Include="src\Backup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\3rd_party\nowide\src\iostream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd_party\pugixml-1.2\src\pugixml.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\steffenl\common\Registry.h">
+    <ClInclude Include="include\common\exceptions\IoError.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\steffenl\common\Backup.h">
+    <ClInclude Include="include\common\Backup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\common\Registry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

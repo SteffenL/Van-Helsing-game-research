@@ -9,8 +9,8 @@ namespace vanhelsing { namespace engine {
 class StorageGameSave
 {
 public:
-    inventory::Artifact::List& GetArtifacts1();
-    inventory::Artifact::List& GetArtifacts2();
+    inventory::ArtifactBagCollection& GetArtifactBags1();
+    inventory::ArtifactBagCollection& GetArtifactBags2();
     virtual ~StorageGameSave();
 
     io::GameSaveContainerBase::ContainerInfoType ContainerInfo;
@@ -25,8 +25,8 @@ public:
     } Unknown;
 
 private:
-    inventory::Artifact::List m_artifacts1;
-    inventory::Artifact::List m_artifacts2;
+    inventory::ArtifactBagCollection m_artifactBags1;
+    inventory::ArtifactBagCollection m_artifactBags2;
 };
 
 }} // namespace

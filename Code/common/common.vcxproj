@@ -11,10 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\steffenl\common\Backup.h" />
-    <ClInclude Include="include\steffenl\common\Registry.h" />
+    <ClInclude Include="include\common\exceptions\IoError.h" />
+    <ClInclude Include="include\common\Backup.h" />
+    <ClInclude Include="include\common\Registry.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\3rd_party\nowide\src\iostream.cpp" />
+    <ClCompile Include="..\3rd_party\pugixml-1.2\src\pugixml.cpp" />
     <ClCompile Include="src\Backup.cpp" />
     <ClCompile Include="src\Registry.cpp" />
   </ItemGroup>
@@ -80,9 +83,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_USING_V110_SDK71_;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)common\include;$(SolutionDir)3rd_party\nowide;$(BOOSTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
