@@ -1,0 +1,246 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "atlres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG 0, 0, 187, 102
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,130,81,50,14
+    CTEXT           "Storage Editor v1.0\n\n(c) Copyright 2013",IDC_STATIC,25,57,78,32
+    ICON            IDR_MAINFRAME,IDC_STATIC,55,26,18,20
+    GROUPBOX        "",IDC_STATIC,7,7,115,88
+END
+
+IDD_MAINDLG DIALOGEX 0, 0, 471, 309
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Storage Editor"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_STORAGE_TABS,"SysTabControl32",WS_TABSTOP,5,5,461,299
+END
+
+IDD_STORAGE_TAB_PAGE DIALOGEX 0, 0, 379, 216
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Artifacts",IDC_ARTIFACT_HEADING,2,2,228,8
+    CONTROL         "",IDC_ITEM_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,2,14,225,126
+    GROUPBOX        "Modify artifact",IDC_MODIFY_ITEM_GROUP,2,144,225,70
+    LTEXT           "Rarity:",IDC_ITEM_RARITY_TEXT,12,156,23,8
+    COMBOBOX        IDC_ITEM_RARITY_COMBO,42,156,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Quality:",IDC_ITEM_QUALITY_TEXT,12,174,26,8
+    COMBOBOX        IDC_ITEM_QUALITY_COMBO,42,174,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Attribute 1:",IDC_ITEM_ATTRIBUTE1_TEXT,96,156,38,8
+    EDITTEXT        IDC_ITEM_ATTRIBUTE1_EDIT,138,156,42,14,ES_AUTOHSCROLL
+    LTEXT           "Attribute 2:",IDC_ITEM_ATTRIBUTE2_TEXT,96,174,38,8
+    EDITTEXT        IDC_ITEM_ATTRIBUTE2_EDIT,138,174,42,14,ES_AUTOHSCROLL
+    LTEXT           "Quantity:",IDC_ITEM_QUANTITY_TEXT,96,192,32,8
+    EDITTEXT        IDC_ITEM_QUANTITY_EDIT,138,192,42,14,ES_AUTOHSCROLL
+    CONTROL         "Identified",IDC_ITEM_IDENTIFIED_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,186,156,47,10
+    LTEXT           "Enchantments",IDC_ENCHANTMENT_HEADING,230,2,147,8
+    CONTROL         "",IDC_ENCHANTMENT_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,230,14,147,126
+    GROUPBOX        "Modify enchantment",IDC_MODIFY_ENCHANTMENT_GROUP,230,144,147,70
+    LTEXT           "Value:",IDC_ENCHANTMENT_EFFECT_VALUE_TEXT,240,156,21,8
+    EDITTEXT        IDC_ENCHANTMENT_EFFECT_VALUE_EDIT,276,156,42,14,ES_AUTOHSCROLL
+    LTEXT           "Modifier:",IDC_ENCHANTMENT_EFFECT_MODIFIER_TEXT,240,174,32,8
+    EDITTEXT        IDC_ENCHANTMENT_EFFECT_MODIFIER_EDIT,276,174,42,14,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 95
+    END
+
+    IDD_MAINDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 466
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 304
+    END
+
+    IDD_STORAGE_TAB_PAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 377
+        VERTGUIDE, 8
+        VERTGUIDE, 230
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 214
+        HORZGUIDE, 14
+        HORZGUIDE, 140
+        HORZGUIDE, 144
+        HORZGUIDE, 154
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_FILE_SAVE_AS,        VIRTKEY, SHIFT, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "FileDescription", "Storage Editor"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "Storage Editor"
+            VALUE "LegalCopyright", "Copyright 2013"
+            VALUE "OriginalFilename", "storage_gui.exe"
+            VALUE "ProductName", "Storage Editor"
+            VALUE "ProductVersion", "1, 0, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAIN_MENU MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &as...\tCtrl+Shift+S",   ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_FILE_EXIT
+    END
+    POPUP "Help"
+    BEGIN
+        MENUITEM "&Support",                    ID_HELP_SUPPORT
+        MENUITEM "&About Storage Editor",       ID_HELP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "storage_gui"
+END
+
+#endif    // English resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""atlres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\main.ico"
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+

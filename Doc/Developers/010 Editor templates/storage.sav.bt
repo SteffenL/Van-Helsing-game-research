@@ -1,0 +1,151 @@
+//--------------------------------------
+//--- 010 Editor v6.0 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+
+struct FileHeader
+{
+    char Signature[5];
+    Assert(Strcmp(Signature, "C2AR\0") == 0);
+    uint32 Version;
+    Assert(Version > 0);
+    uint32 Unknown002;
+    char Unknown003;
+};
+
+struct ArtifactEnchantment
+{
+    uint32 Id;
+    int32 EffectValue;
+    float EffectModifier; // 0 to 1
+    uint32 Unknown004;
+
+    // Version-specific
+    int32 Unknown005;
+    uint32 Unknown006;
+    int32 Unknown007;
+};
+
+struct ArtifactEnchantmentCollection
+{
+    uint32 Count;
+    if (Count > 0) {
+        ArtifactEnchantment Items[Count]<optimize=false>;
+    }
+};
+
+struct Artifact_UnknownItem
+{
+    uint32 Unknown1;
+    int32 Unknown2;
+};
+
+struct Artifact_UnknownItemsCollection1
+{
+    uint32 Count;
+    if (Count > 0) {
+        Artifact_UnknownItem Items[Count]<optimize=false>;
+    }
+};
+
+struct Artifact_UnknownItemsCollection2
+{
+    uint32 Count;
+    if (Count > 0) {
+        Artifact_UnknownItem Items[Count]<optimize=false>;
+    }
+};
+
+struct Artifact_UnknownStruct_1
+{
+    uint32 v1;
+    int32 v2;
+};
+
+struct Artifact_UnknownStruct_2
+{
+    uint32 v1;
+    int16 v2;
+};
+
+// TODO: Work more on this
+struct Artifact_UnknownStruct
+{
+    uint32 v1;
+    int32 v2Count;
+
+    if (v2Count > 0) {
+        Artifact_UnknownStruct_1 items[v2Count] <optimize=false>;
+    }
+
+    char v5;
+    Artifact_UnknownStruct_2 v6;
+    Artifact_UnknownStruct_2 v7;
+
+    int32 v9Count;
+    if (v9Count > 0) {
+        Artifact_UnknownStruct_2 v10[v9Count] <optimize=false>;
+    }
+
+    int32 v11;
+    int32 v12;
+    int32 v13;
+    int16 v14;
+    int32 v15;
+    int32 v16;
+    int16 v17;
+    int32 v18;
+    int32 v19;
+    float v20;
+    float v21;
+};
+
+// TODO: Work more on this
+struct Artifact
+{
+    uint32 Id;
+    int32 Attribute1;
+    int32 Attribute2;
+    int32 Quantity;
+    Artifact_UnknownItemsCollection1 UnknownItems1;
+    int32 Quality;
+    int32 Rarity;
+    ArtifactEnchantmentCollection Enchantments;
+    Artifact_UnknownItemsCollection2 UnknownItems2;
+    char IsIdentified;
+    char Unknown1;
+
+    // Experiment for v1.4.0c of the game
+    Artifact_UnknownStruct Unknown2;
+};
+
+struct StoredItem
+{
+    uint32 BagNumber;
+    uint32 SlotNumber;
+    Artifact AssignedItem;
+};
+
+struct ItemStorageContainer
+{
+    uint32 Count;
+    if (Count > 0) {
+        StoredItem Items[Count]<optimize=false>;
+    }
+    uint32 Unknown001;
+    // Experiment for v1.4.0c of the game
+    uint32 Unknown002;
+    uint32 Unknown003;
+};
+
+struct StorageFile
+{
+    FileHeader Header;
+    ItemStorageContainer Bag;
+};
+
+StorageFile storageFile;
