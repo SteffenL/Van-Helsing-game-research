@@ -44,4 +44,4 @@ bool Artifact::Quality::IsValid(type v)
     return ((v >= FIRST) && (v < LAST_PLUS_ONE));
 }
 
-}}} // namespace
+}}}

@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_GameData_
-#define vanhelsing_engine_GameData_
+#pragma once
 
 #include <vanhelsing/engine/inventory.h>
 #include <string>
@@ -82,5 +81,4 @@ private:
     TextManager m_texts;
 };
 
-}} // namespace
-#endif // guard
+}}

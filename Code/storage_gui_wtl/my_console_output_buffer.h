@@ -1,5 +1,4 @@
-#ifndef vanhelsing_nowide_details_console_output_buffer_
-#define vanhelsing_nowide_details_console_output_buffer_
+#pragma once
 
 #include <nowide/iostream.hpp>
 
@@ -22,5 +21,4 @@ private:
     bool isatty_;
 };
 
-}} // namespace
-#endif // guard
+}}

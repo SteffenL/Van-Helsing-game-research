@@ -34,4 +34,4 @@ std::string GamePaths::GetGetGameSavePath()
     return std::string();
 }
 
-}} // namespace
+}}

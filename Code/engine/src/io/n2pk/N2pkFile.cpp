@@ -89,7 +89,7 @@ vanhelsing::engine::io::n2pk::FileEntry N2pkFile::GetFileEntry(const std::string
     return *it;
 }
 
-N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(std::make_unique<Impl>()), m_logger(LogLevel::Trace)
+N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(std::make_unique<Impl>()), m_logger(common::LogLevel::Trace)
 {
     m_logger << "Opening Neocore Package: " << filePath << std::endl;
 
@@ -141,4 +141,4 @@ void N2pkFile::readFileTable(StreamHelperReader& stream)
     }
 }
 
-}}}} // namespace
+}}}}

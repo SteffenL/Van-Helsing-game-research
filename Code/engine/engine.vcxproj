@@ -26,7 +26,6 @@
     <ClCompile Include="src\io\StreamHelper.cpp" />
     <ClCompile Include="src\io\StreamHelperReader.cpp" />
     <ClCompile Include="src\io\StreamHelperWriter.cpp" />
-    <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\StorageGameSave.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -47,8 +46,12 @@
     <ClInclude Include="include\vanhelsing\engine\io\StreamHelper.h" />
     <ClInclude Include="include\vanhelsing\engine\io\StreamHelperReader.h" />
     <ClInclude Include="include\vanhelsing\engine\io\StreamHelperWriter.h" />
-    <ClInclude Include="include\vanhelsing\engine\log.h" />
     <ClInclude Include="include\vanhelsing\engine\StorageGameSave.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\common\common.vcxproj">
+      <Project>{a8fac840-25f0-4ea7-b9dd-66eb9f4328e6}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5D6B5D96-121B-4DE6-8EF6-DC88C1697FB9}</ProjectGuid>

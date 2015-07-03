@@ -51,4 +51,4 @@ void GameSaveContainerReader::checkVersion()
 
 }
 }
-} // namespace
+}

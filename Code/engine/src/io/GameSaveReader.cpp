@@ -20,4 +20,4 @@ GameSave& GameSaveReader::getGameSave()
     return m_gameSave;
 }
 
-}}} // namespace
+}}}

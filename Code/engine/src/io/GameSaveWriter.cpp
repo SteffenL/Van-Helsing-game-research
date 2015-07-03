@@ -9,4 +9,4 @@ GameSaveWriter::GameSaveWriter(GameSave& gameSave) : m_gameSave(gameSave)
 
 GameSaveWriter::~GameSaveWriter() {}
 
-}}} // namespace
+}}}

@@ -115,4 +115,4 @@ void StreamHelperReader::SeekI(std::streamoff offset, std::ios::seekdir directio
     m_currentOffset += (m_stream.tellg() - oldOffset);
 }
 
-}}} // namespace
+}}}

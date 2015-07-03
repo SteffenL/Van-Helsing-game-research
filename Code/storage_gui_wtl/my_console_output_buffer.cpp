@@ -69,4 +69,4 @@ my_console_output_buffer::my_console_output_buffer(void* h) :
     }
 }
 
-}} // namespace
+}}

@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_StorageGameSave_
-#define vanhelsing_engine_StorageGameSave_
+#pragma once
 
 #include <vanhelsing/engine/inventory.h>
 #include <vanhelsing/engine/io/GameSaveContainerBase.h>
@@ -29,5 +28,4 @@ private:
     inventory::ArtifactBagCollection m_artifactBags2;
 };
 
-}} // namespace
-#endif // guard
+}}

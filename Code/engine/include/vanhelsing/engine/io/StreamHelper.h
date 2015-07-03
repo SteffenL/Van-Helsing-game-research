@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_io_StreamHelper_
-#define vanhelsing_engine_io_StreamHelper_
+#pragma once
 
 #include <vanhelsing/engine/io/StreamHelperReader.h>
 #include <vanhelsing/engine/io/StreamHelperWriter.h>
@@ -54,5 +53,4 @@ private:
     std::ostream m_dummyOutStream;
 };
 
-}}} // namespace
-#endif // guard
+}}}

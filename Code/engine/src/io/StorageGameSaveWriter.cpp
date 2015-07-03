@@ -6,7 +6,7 @@
 namespace vanhelsing { namespace engine { namespace io {
 
 StorageGameSaveWriter::StorageGameSaveWriter(StorageGameSave& gameSave, std::ostream& outStream)
-    : GameSaveContainerWriter(gameSave.ContainerInfo, outStream), m_gameSave(gameSave), m_logger(LogLevel::Trace)
+    : GameSaveContainerWriter(gameSave.ContainerInfo, outStream), m_gameSave(gameSave), m_logger(common::LogLevel::Trace)
 {
     StreamHelperWriter stream(getOutStream());
     writeAllStoredItems(stream);
@@ -172,4 +172,4 @@ void StorageGameSaveWriter::writeUnknown2List(StreamHelperWriter& stream, const 
     }
 }
 
-}}} // namespace
+}}}

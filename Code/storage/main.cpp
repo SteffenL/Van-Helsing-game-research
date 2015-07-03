@@ -1,6 +1,6 @@
 #include <vanhelsing/engine/StorageGameSave.h>
 #include <vanhelsing/engine/io/StorageGameSaveReader.h>
-#include <vanhelsing/engine/log.h>
+#include <common/Log.h>
 #include <vanhelsing/engine/GameData.h>
 #include <vanhelsing/engine/GamePaths.h>
 
@@ -26,6 +26,7 @@ int main(int argc, char* argv[])
     std::string filePath(argv[0]);
     bool shouldBeVerbose = (argc >= 2 ? (std::string(argv[1]) == "1") : false);
 
+    using namespace common;
     using namespace vanhelsing::engine;
 
     if (shouldBeVerbose) {

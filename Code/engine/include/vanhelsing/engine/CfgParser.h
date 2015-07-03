@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_CfgParser_
-#define vanhelsing_engine_CfgParser_
+#pragma once
 
 #include <string>
 #include <map>
@@ -27,5 +26,4 @@ private:
     std::vector<GroupType> m_groups;
 };
 
-}} // namespace
-#endif // guard
+}}

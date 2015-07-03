@@ -1,9 +1,8 @@
-#ifndef vanhelsing_engine_io_StorageGameSaveReader_
-#define vanhelsing_engine_io_StorageGameSaveReader_
+#pragma once
 
 #include <vanhelsing/engine/StorageGameSave.h>
 #include <vanhelsing/engine/io/GameSaveContainerReader.h>
-#include <vanhelsing/engine/log.h>
+#include <common/Log.h>
 #include <iostream>
 
 namespace vanhelsing { namespace engine { namespace inventory { class Artifact; } } }
@@ -28,9 +27,8 @@ private:
     void readUnknown1ListItem(StreamHelperReader& stream, inventory::Artifact::UnknownList3Item& item);
     void readArtifactBags(StreamHelperReader& stream, inventory::ArtifactBagCollection& bags);
     void readUnknown2List(StreamHelperReader& stream, std::vector<inventory::Artifact::UnknownList4Item>& list);
-    Log m_logger;
+    common::Log m_logger;
     StorageGameSave& m_gameSave;
 };
 
-}}} // namespace
-#endif // guard
+}}}

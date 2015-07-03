@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_inventory_
-#define vanhelsing_engine_inventory_
+#pragma once
 
 #include <vector>
 #include <array>
@@ -190,5 +189,4 @@ public:
 
 using IndexToArtifactBagPair = ArtifactBagCollection::value_type;
 
-}}} // namespace
-#endif
+}}}

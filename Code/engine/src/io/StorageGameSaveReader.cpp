@@ -8,7 +8,7 @@
 namespace vanhelsing { namespace engine { namespace io {
 
 StorageGameSaveReader::StorageGameSaveReader(StorageGameSave& gameSave, std::istream& inStream)
-    : GameSaveContainerReader(gameSave.ContainerInfo, inStream), m_gameSave(gameSave), m_logger(LogLevel::Trace)
+    : GameSaveContainerReader(gameSave.ContainerInfo, inStream), m_gameSave(gameSave), m_logger(common::LogLevel::Trace)
 {
     StreamHelperReader stream(getInStream());
     readAllStoredItems(stream);
@@ -27,7 +27,9 @@ void StorageGameSaveReader::readAllStoredItems(StreamHelperReader& stream)
 
 std::unique_ptr<inventory::Artifact> StorageGameSaveReader::readArtifact(StreamHelperReader& stream)
 {
+    using namespace common;
     using inventory::Artifact;
+
     auto item = std::make_unique<Artifact>();
 
     stream.Read(item->Id);
@@ -103,6 +105,8 @@ std::unique_ptr<inventory::Artifact> StorageGameSaveReader::readArtifact(StreamH
 
 void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, inventory::EnchantmentCollection& enchantments)
 {
+    using namespace common;
+
     auto count = stream.Read<unsigned int>();
     m_logger << "Enchantments (" << count << "):" << std::endl;
     m_logger << Log::indent;
@@ -146,6 +150,7 @@ void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, invento
 
 void StorageGameSaveReader::readInfusedArtifacts(StreamHelperReader& stream, inventory::ArtifactCollection& items)
 {
+    using namespace common;
     using namespace inventory;
 
     auto count = stream.Read<int>();
@@ -203,6 +208,7 @@ void StorageGameSaveReader::readUnknown1ListItem(StreamHelperReader& stream, inv
 
 void StorageGameSaveReader::readArtifactBags(StreamHelperReader& stream, inventory::ArtifactBagCollection& bags)
 {
+    using namespace common;
     using namespace inventory;
 
     auto count = stream.Read<int>();
@@ -244,4 +250,4 @@ void StorageGameSaveReader::readUnknown2List(StreamHelperReader& stream, std::ve
     }
 }
 
-}}} // namespace
+}}}

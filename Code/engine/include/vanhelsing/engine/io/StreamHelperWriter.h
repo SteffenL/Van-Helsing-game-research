@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_io_StreamHelperWriter_
-#define vanhelsing_engine_io_StreamHelperWriter_
+#pragma once
 
 #include <common/exceptions/IoError.h>
 
@@ -128,5 +127,4 @@ private:
     std::streamsize m_streamSize;
 };
 
-}}} // namespace
-#endif // guard
+}}}

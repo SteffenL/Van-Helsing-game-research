@@ -20,4 +20,4 @@ std::ostream& GameSaveContainerWriter::getOutStream()
     return m_outStream;
 }
 
-}}} // namespace
+}}}

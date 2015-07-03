@@ -104,4 +104,4 @@ StreamHelperWriter::StreamHelperWriter(std::ostream& stream) : m_stream(stream),
     m_stream.seekp(oldOffset, std::ios::beg);*/
 }
 
-}}} // namespace
+}}}

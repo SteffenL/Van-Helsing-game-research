@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_io_GameSaveContainerWriter_
-#define vanhelsing_engine_io_GameSaveContainerWriter_
+#pragma once
 
 #include <vanhelsing/engine/io/GameSaveContainerBase.h>
 #include <iostream>
@@ -20,5 +19,4 @@ private:
     std::ostream& m_outStream;
 };
 
-}}} // namespace
-#endif // guard
+}}}

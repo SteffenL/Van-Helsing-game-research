@@ -4,4 +4,4 @@ namespace vanhelsing { namespace engine {
 
 GameSave::~GameSave() {}
 
-}} // namespace
+}}

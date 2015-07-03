@@ -1,5 +1,5 @@
 #include <vanhelsing/engine/io/n2pk/N2pkFile.h>
-#include <vanhelsing/engine/log.h>
+#include <common/Log.h>
 #include <nowide/args.hpp>
 #include <nowide/convert.hpp>
 #include <nowide/iostream.hpp>
@@ -26,6 +26,7 @@ int main(int argc, char* argv[])
     bool shouldUnpack = !targetDir.empty();
     bool shouldBeVerbose = (argc >= 3 ? (std::string(argv[2]) == "1") : false);
 
+    using namespace common;
     using namespace vanhelsing::engine;
 
     if (shouldBeVerbose) {
