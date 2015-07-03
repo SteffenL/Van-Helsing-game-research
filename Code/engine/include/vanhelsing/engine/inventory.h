@@ -21,7 +21,7 @@ struct EquipSlot
 class AbstractInventoryItem
 {
 public:
-    typedef unsigned int IdType;
+    using IdType = unsigned int;
 
     virtual std::string GetName() const = 0;
 
@@ -36,6 +36,7 @@ public:
     virtual ~AbstractInventoryItemList() {}
 };
 
+
 using BagIndexType = unsigned int;
 using BagSlotIndexType = unsigned int;
 
@@ -43,8 +44,15 @@ using BagSlotIndexType = unsigned int;
 template<typename ItemType>
 using AbstractInventoryItemBag = std::map<BagSlotIndexType, ItemType>;
 
+
 // Artifact properties:
 // Armor: Defense, Essence capacity
+
+class Enchantment;
+
+using EnchantmentPtr = std::unique_ptr<Enchantment>;
+using EnchantmentCollection = std::vector<EnchantmentPtr>;
+using EnchantmentIndexType = EnchantmentCollection::size_type;
 
 class Enchantment : public AbstractInventoryItem
 {
@@ -63,9 +71,13 @@ public:
     } Unknown;
 };
 
-using EnchantmentPtr = std::unique_ptr<Enchantment>;
-using EnchantmentCollection = std::vector<EnchantmentPtr>;
-using EnchantmentIndexType = EnchantmentCollection::size_type;
+
+class Artifact;
+
+using ArtifactPtr = std::unique_ptr<Artifact>;
+using ArtifactCollection = std::vector<ArtifactPtr>;
+using ArtifactBag = AbstractInventoryItemBag<ArtifactPtr>;
+using ArtifactBagSlot = ArtifactBag::value_type;
 
 class Artifact : public AbstractInventoryItem
 {
@@ -136,11 +148,11 @@ public:
     Artifact::Quality::type Quality;
     Artifact::Rarity::type Rarity;
     bool IsIdentified;
+
     struct
     {
         std::vector<UnknownList1Item> List1;
         bool v1;
-        EnchantmentCollection MaybeEnchantments;
         std::vector<UnknownList2Item> List2;
         unsigned int v2;
         bool v3;
@@ -161,13 +173,13 @@ public:
     const EnchantmentCollection& GetEnchantments() const;
     EnchantmentCollection& GetEnchantmentsWritable();
 
+    const ArtifactCollection& GetInfusedArtifacts() const;
+    ArtifactCollection& GetInfusedArtifactsWritable();
+
 protected:
     EnchantmentCollection m_enchantments;
+    ArtifactCollection m_infusedArtifacts;
 };
-
-using ArtifactPtr = std::unique_ptr<Artifact>;
-using ArtifactBag = AbstractInventoryItemBag<ArtifactPtr>;
-using ArtifactBagSlot = ArtifactBag::value_type;
 
 class ArtifactBagCollection : public std::map<BagIndexType, ArtifactBag>
 {

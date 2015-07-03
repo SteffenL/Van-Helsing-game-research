@@ -22,6 +22,7 @@ private:
     void writeAllStoredItems(StreamHelperWriter& stream);
     void writeArtifact(StreamHelperWriter& stream, const inventory::Artifact& item);
     void writeEnchantments(StreamHelperWriter& stream, const inventory::EnchantmentCollection& enchantments);
+    void writeInfusedArtifacts(StreamHelperWriter& stream, const inventory::ArtifactCollection& items);
     void writeArtifactBags(StreamHelperWriter& stream, inventory::ArtifactBagCollection& bags);
     void writeUnknownStruct1(StreamHelperWriter& stream, const inventory::Artifact::UnknownStruct1& us1);
     void writeUnknown1List(StreamHelperWriter& stream, const std::vector<inventory::Artifact::UnknownList3Item>& list);

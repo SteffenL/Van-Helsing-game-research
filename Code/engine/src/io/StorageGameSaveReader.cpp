@@ -59,7 +59,7 @@ std::unique_ptr<inventory::Artifact> StorageGameSaveReader::readArtifact(StreamH
     m_logger << "Rarity: " << item->Rarity << std::endl;
 
     readEnchantments(stream, item->GetEnchantmentsWritable());
-    readEnchantments(stream, item->Unknown.MaybeEnchantments);
+    readInfusedArtifacts(stream, item->GetInfusedArtifactsWritable());
 
     stream.Read(item->IsIdentified);
     m_logger << "Is identified: " << item->IsIdentified << std::endl;
@@ -142,6 +142,28 @@ void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, invento
     }
 
     m_logger << Log::outdent;
+}
+
+void StorageGameSaveReader::readInfusedArtifacts(StreamHelperReader& stream, inventory::ArtifactCollection& items)
+{
+    using namespace inventory;
+
+    auto count = stream.Read<int>();
+    m_logger << "Infused artifacts (" << count << "):" << std::endl;
+    m_logger << Log::indent;
+    for (int i = 0; i < count; ++i) {
+        m_logger << "#" << i << ":" << std::endl;
+        m_logger << Log::indent;
+
+        auto artifact = readArtifact(stream);
+        items.emplace_back(std::move(artifact));
+
+        m_logger << Log::outdent;
+        m_logger << "" << std::endl;
+    }
+
+    m_logger << Log::outdent;
+
 }
 
 StorageGameSaveReader::~StorageGameSaveReader() {}

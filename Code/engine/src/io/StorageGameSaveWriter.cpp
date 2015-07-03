@@ -42,7 +42,7 @@ void StorageGameSaveWriter::writeArtifact(StreamHelperWriter& stream, const inve
     stream.Write(item.Rarity);
 
     writeEnchantments(stream, item.GetEnchantments());
-    writeEnchantments(stream, item.Unknown.MaybeEnchantments);
+    writeInfusedArtifacts(stream, item.GetInfusedArtifacts());
 
     stream.Write(item.IsIdentified);
     stream.Write(item.Unknown.v1);
@@ -90,6 +90,14 @@ void StorageGameSaveWriter::writeEnchantments(StreamHelperWriter& stream, const 
             stream.Write(enchantment->Unknown.v6);
             stream.Write(enchantment->Unknown.v7);
         }
+    }
+}
+
+void StorageGameSaveWriter::writeInfusedArtifacts(StreamHelperWriter& stream, const inventory::ArtifactCollection& items)
+{
+    stream.Write<int>(items.size());
+    for (const auto& item : items) {
+        writeArtifact(stream, *item);
     }
 }
 
