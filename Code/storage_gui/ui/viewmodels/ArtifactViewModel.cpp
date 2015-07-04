@@ -46,8 +46,7 @@ void ArtifactViewModel::GetValue(wxVariant &variant, const wxDataViewItem &item,
     using namespace vanhelsing::engine;
     using namespace vanhelsing::engine::inventory;
 
-    const auto& artifactSlot = *reinterpret_cast<ArtifactBagSlot*>(item.GetID());
-    const auto& artifact = artifactSlot.second;
+    const auto& artifact = reinterpret_cast<Artifact*>(item.GetID());
 
     switch (static_cast<ColumnId>(col)) {
     case ColumnId::Name:
@@ -102,27 +101,50 @@ bool ArtifactViewModel::SetValue(const wxVariant &variant, const wxDataViewItem 
 
 wxDataViewItem ArtifactViewModel::GetParent(const wxDataViewItem &item) const
 {
-    throw std::exception("The method or operation is not implemented.");
+    // TODO: Not sure why and if we need to handle this correctly
+    return wxDataViewItem();
 }
 
 bool ArtifactViewModel::IsContainer(const wxDataViewItem &item) const
 {
-    // Only the root item
-    return !item;
+    if (!item) {
+        // Root has children
+        return true;
+    }
+
+    // Artifacts may have children
+    const auto& artifact = *reinterpret_cast<Artifact*>(item.GetID());
+    return !artifact.GetInfusedArtifacts().empty();
 }
 
 unsigned int ArtifactViewModel::GetChildren(const wxDataViewItem &item, wxDataViewItemArray &children) const
 {
-    // Only the root item can have children
-    if (item || m_artifactBag.empty()) {
-        return 0;
+    // Root item
+    if (!item) {
+        for (auto& slot : m_artifactBag) {
+            auto artifactPtr = slot.second.get();
+            children.Add(wxDataViewItem(artifactPtr));
+        }
+
+        return m_artifactBag.size();
     }
 
-    decltype(GetChildren(item, children)) count = 0;
-    for (auto& slot : m_artifactBag) {
-        children.Add(wxDataViewItem(&slot));
-        ++count;
+    const auto& artifact = *reinterpret_cast<Artifact*>(item.GetID());
+    if (!artifact.GetInfusedArtifacts().empty()) {
+        const auto& infusedArtifacts = artifact.GetInfusedArtifacts();
+        for (auto& infusedArtifact : infusedArtifacts) {
+            auto artifactPtr = infusedArtifact.get();
+            children.Add(wxDataViewItem(artifactPtr));
+        }
+
+        return infusedArtifacts.size();
     }
 
-    return count;
+    assert(!!"Should not happen");
+    return 0;
+}
+
+bool ArtifactViewModel::HasContainerColumns(const wxDataViewItem& WXUNUSED(item)) const
+{
+    return true;
 }

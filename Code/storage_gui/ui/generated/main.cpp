@@ -113,7 +113,7 @@ StorageEditorPanelBase::StorageEditorPanelBase( wxWindow* parent, wxWindowID id,
 	m_panel6->Layout();
 	bSizer10->Fit( m_panel6 );
 	m_panel7 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_panel7, wxAuiPaneInfo() .Name( wxT("properties") ).Right() .Caption( _("Properties") ).CloseButton( false ).Movable( false ).Dock().Resizable().FloatingSize( wxSize( -1,-1 ) ).Floatable( false ).BestSize( wxSize( 280,-1 ) ).Layer( 2 ) );
+	m_mgr.AddPane( m_panel7, wxAuiPaneInfo() .Name( wxT("objectInspector") ).Right() .Caption( _("Object inspector") ).CloseButton( false ).Movable( false ).Dock().Resizable().FloatingSize( wxSize( -1,-1 ) ).Floatable( false ).BestSize( wxSize( 280,-1 ) ).Layer( 2 ) );
 	
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer( wxVERTICAL );

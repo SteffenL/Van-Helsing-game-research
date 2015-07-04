@@ -14,6 +14,11 @@ class ApplicationServices;
 
 class ArtifactViewModel : public wxDataViewModel
 {
+    using BagSlotIndexType = vanhelsing::engine::inventory::BagSlotIndexType;
+    using Artifact = vanhelsing::engine::inventory::Artifact;
+    using ArtifactBag = vanhelsing::engine::inventory::ArtifactBag;
+    using ArtifactBagSlot = vanhelsing::engine::inventory::ArtifactBagSlot;
+
     enum class ColumnId
     {
         Name, Property1, Property2, Rarity, Quality, Quantity, Identified,
@@ -21,6 +26,11 @@ class ArtifactViewModel : public wxDataViewModel
     };
 
 public:
+    enum class ViewItemType
+    {
+        ArtifactInBagSlot, InfusedArtifact
+    };
+
     ArtifactViewModel(vanhelsing::engine::inventory::ArtifactBag& artifactBag);
     virtual ~ArtifactViewModel();
 
@@ -33,9 +43,11 @@ private:
     virtual wxDataViewItem GetParent(const wxDataViewItem &item) const;
     virtual bool IsContainer(const wxDataViewItem &item) const;
     virtual unsigned int GetChildren(const wxDataViewItem &item, wxDataViewItemArray &children) const;
+    virtual bool HasContainerColumns(const wxDataViewItem& WXUNUSED(item)) const;
 
-    // Event handlers
 
+    void getValue(wxVariant& variant, const ArtifactBagSlot& artifactSlot, unsigned int col) const;
+    void getValue(wxVariant& variant, const Artifact& infusedArtifact, unsigned int col) const;
 
     vanhelsing::engine::inventory::ArtifactBag& m_artifactBag;
 };

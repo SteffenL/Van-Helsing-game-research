@@ -123,7 +123,6 @@ void StorageEditorPanel::initializeUi()
 
     // Artifact list columns
     {
-        m_artifacts->AppendTextColumn(wxEmptyString, -1, wxDATAVIEW_CELL_INERT, -1, wxALIGN_NOT, wxDATAVIEW_COL_HIDDEN);
         m_artifacts->AppendTextColumn(_("Name"), 0, wxDATAVIEW_CELL_INERT, 200, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE)
             ->GetRenderer()->EnableEllipsize(wxELLIPSIZE_END);
         m_artifacts->AppendTextColumn(_("Property 1"), 1, wxDATAVIEW_CELL_INERT, 90, wxALIGN_RIGHT, wxDATAVIEW_COL_RESIZABLE)
@@ -280,8 +279,11 @@ void StorageEditorPanel::propertyManagerOnPropertyGridChanged(wxPropertyGridEven
             throw std::logic_error("Property is not mapped");
         }
 
-        // TODO: Update only the changed item
-        m_artifacts->GetModel()->Cleared();
+        // TODO: Update only changed items
+        wxDataViewItemArray selections;
+        m_artifacts->GetSelections(selections);
+        auto model = m_artifacts->GetModel();
+        model->ItemsChanged(selections);
     }
     else if (property->GetParentState() == m_propertiesEnchantmentPage->GetStatePtr()) {
         auto& enchantment = *reinterpret_cast<Enchantment*>(m_propertiesEnchantmentPage->GetClientData());
@@ -296,8 +298,11 @@ void StorageEditorPanel::propertyManagerOnPropertyGridChanged(wxPropertyGridEven
             throw std::logic_error("Property is not mapped");
         }
 
-        // TODO: Update only the changed item
-        m_artifactEnchantments->GetModel()->Cleared();
+        // TODO: Update only changed items
+        wxDataViewItemArray selections;
+        m_artifactEnchantments->GetSelections(selections);
+        auto model = m_artifactEnchantments->GetModel();
+        model->ItemsChanged(selections);
     }
     else {
         throw std::logic_error("Property page is not mapped");
@@ -314,8 +319,7 @@ void StorageEditorPanel::artifactsOnDataViewCtrlSelectionChanged(wxDataViewEvent
         return;
     }
 
-    auto& indexToSlotPair = *reinterpret_cast<ArtifactBag::value_type*>(event.GetItem().GetID());
-    auto& artifact = *indexToSlotPair.second;
+    auto& artifact = *reinterpret_cast<Artifact*>(event.GetItem().GetID());
 
     clearEnchantments();
     populateEnchantments(artifact);
