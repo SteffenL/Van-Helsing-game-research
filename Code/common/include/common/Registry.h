@@ -1,10 +1,9 @@
-#ifndef vanhelsing_gui_Registry_
-#define vanhelsing_gui_Registry_
+#pragma once
 
 #include <string>
 #include <memory>
 
-namespace steffenl { namespace common {
+namespace common {
 
 struct RegWow64Flag
 {
@@ -24,6 +23,4 @@ public:
     static bool GetValue(const std::string& fullPath, std::string& v, RegWow64Flag::type wow64Flag = RegWow64Flag::None);
 };
 
-}} // namespace
-
-#endif // guard
+}

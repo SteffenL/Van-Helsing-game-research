@@ -3,6 +3,8 @@
 *.suo
 *.opensdf
 *.aps
+*.log
+
 /bin
 /obj
 /ipch

@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_io_GameSaveReader_
-#define vanhelsing_engine_io_GameSaveReader_
+#pragma once
 
 #include "../GameSave.h"
 #include <iostream>
@@ -22,5 +21,4 @@ private:
     std::istream& m_inStream;
 };
 
-}}} // namespace
-#endif // guard
+}}}

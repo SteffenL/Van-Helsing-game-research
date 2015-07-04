@@ -1,12 +1,11 @@
-#ifndef vanhelsing_engine_log_
-#define vanhelsing_engine_log_
+#pragma once
 
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <streambuf>
 
-namespace vanhelsing { namespace engine {
+namespace common {
 
 struct LogLevel
 {
@@ -49,5 +48,4 @@ private:
     static LogLevel::type sm_logLevelFilter;
 };
 
-}} // namespace
-#endif // guard
+}

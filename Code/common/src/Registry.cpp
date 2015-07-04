@@ -1,4 +1,4 @@
-#include <steffenl/common/Registry.h>
+#include <common/Registry.h>
 #include <Windows.h>
 #include <WinReg.h>
 #include <stdexcept>
@@ -13,7 +13,7 @@
 #define LSTATUS LONG
 #endif
 
-namespace steffenl { namespace common {
+namespace common {
 
 class RegistryImpl
 {
@@ -177,4 +177,4 @@ bool Registry::GetValue(const std::string& fullPath, std::string& v, RegWow64Fla
     }
 }
 
-}} // namespace
+}

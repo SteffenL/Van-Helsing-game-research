@@ -1,9 +1,9 @@
-#include <vanhelsing/engine/log.h>
+#include <common/Log.h>
 #include <iomanip>
 #include <sstream>
 #include <nowide/iostream.hpp>
 
-namespace vanhelsing { namespace engine {
+namespace common {
 
 int Log::sm_indentLevel = 0;
 LogLevel::type Log::sm_logLevelFilter = LogLevel::Info;
@@ -64,4 +64,4 @@ void Log::LogBuffer::Indent() { m_indentLevel += 1; }
 
 void Log::LogBuffer::Outdent() { m_indentLevel -= 1; }
 
-}} // namespace
+}

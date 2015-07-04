@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_GameSave_
-#define vanhelsing_engine_GameSave_
+#pragma once
 
 #include <vanhelsing/engine/inventory.h>
 
@@ -17,5 +16,4 @@ private:
     //inventory::Manager<inventory::Artifact> m_equippedItems;
 };
 
-}} // namespace
-#endif // guard
+}}

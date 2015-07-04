@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_io_GameSaveWriter_
-#define vanhelsing_engine_io_GameSaveWriter_
+#pragma once
 
 #include "../GameSave.h"
 
@@ -15,5 +14,4 @@ private:
     GameSave& m_gameSave;
 };
 
-}}} // namespace
-#endif // guard
+}}}

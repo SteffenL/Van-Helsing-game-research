@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_io_GameSaveContainerReader_
-#define vanhelsing_engine_io_GameSaveContainerReader_
+#pragma once
 
 #include <vanhelsing/engine/io/GameSaveContainerBase.h>
 #include <iostream>
@@ -23,5 +22,4 @@ private:
     void checkVersion();
 };
 
-}}} // namespace
-#endif // guard
+}}}

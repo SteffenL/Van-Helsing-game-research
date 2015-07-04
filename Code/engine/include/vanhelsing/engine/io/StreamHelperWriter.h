@@ -1,5 +1,6 @@
-#ifndef vanhelsing_engine_io_StreamHelperWriter_
-#define vanhelsing_engine_io_StreamHelperWriter_
+#pragma once
+
+#include <common/exceptions/IoError.h>
 
 #include <iostream>
 #include <stdexcept>
@@ -25,10 +26,10 @@ public:
     /// <remarks>   Steffen 5, 5/30/2012. </remarks>
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class WriteFailedException : public std::runtime_error
+    class WriteFailedException : public common::IoError
     {
     public:
-        WriteFailedException() : std::runtime_error("Couldn't write to stream") {}
+        WriteFailedException() : IoError("Couldn't write to stream") {}
     };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,5 +127,4 @@ private:
     std::streamsize m_streamSize;
 };
 
-}}} // namespace
-#endif // guard
+}}}

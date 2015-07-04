@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_io_GameSaveContainerBase_
-#define vanhelsing_engine_io_GameSaveContainerBase_
+#pragma once
 
 #include <iostream>
 
@@ -26,5 +25,4 @@ protected:
     //ContainerInfoType m_containerInfo;
 };
 
-}}} // namespace
-#endif // guard
+}}}

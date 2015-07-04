@@ -1,5 +1,7 @@
 #include <vanhelsing/engine/CfgParser.h>
-#include <vanhelsing/engine/log.h>
+#include <common/Log.h>
+#include <vanhelsing/engine/exceptions/VanHelsingEngineError.h>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -51,8 +53,8 @@ void CfgParser::Parse()
                     }
                 }
 
-                vanhelsing::engine::Log(LogLevel::Error) << "Parse error around offset " << m_stream.tellg() << std::endl;
-                throw std::runtime_error("Parse error");
+                common::Log(common::LogLevel::Error) << "Parse error around offset " << m_stream.tellg() << std::endl;
+                throw VanHelsingEngineError("Parse error");
             }
         }
 
@@ -172,4 +174,4 @@ const std::vector<CfgParser::GroupType>& CfgParser::GetGroups() const
     return m_groups;
 }
 
-}} // namespace
+}}

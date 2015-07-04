@@ -1,9 +1,8 @@
-#ifndef steffenl_common_backup_
-#define steffenl_common_backup_
+#pragma once
 
 #include <string>
 
-namespace steffenl { namespace common {
+namespace common {
 
 class Backup
 {
@@ -19,5 +18,4 @@ private:
     std::string m_backupDir;
 };
 
-}} // namespace
-#endif // guard
+}

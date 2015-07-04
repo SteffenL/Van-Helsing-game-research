@@ -1,9 +1,8 @@
-#ifndef vanhelsing_engine_io_StorageGameSaveReader_
-#define vanhelsing_engine_io_StorageGameSaveReader_
+#pragma once
 
 #include <vanhelsing/engine/StorageGameSave.h>
 #include <vanhelsing/engine/io/GameSaveContainerReader.h>
-#include <vanhelsing/engine/log.h>
+#include <common/Log.h>
 #include <iostream>
 
 namespace vanhelsing { namespace engine { namespace inventory { class Artifact; } } }
@@ -20,16 +19,16 @@ public:
 
 private:
     void readAllStoredItems(StreamHelperReader& stream);
-    std::shared_ptr<inventory::Artifact> readArtifact(StreamHelperReader& stream, inventory::Artifact::List& itemList);
-    void readEnchantments(StreamHelperReader& stream, inventory::Enchantment::List& enchantments);
+    std::unique_ptr<inventory::Artifact> readArtifact(StreamHelperReader& stream);
+    void readEnchantments(StreamHelperReader& stream, inventory::EnchantmentCollection& enchantments);
+    void readInfusedArtifacts(StreamHelperReader& stream, inventory::ArtifactCollection& items);
     void readUnknownStruct1(StreamHelperReader& stream, inventory::Artifact::UnknownStruct1& us1);
     void readUnknown1List(StreamHelperReader& stream, std::vector<inventory::Artifact::UnknownList3Item>& list);
     void readUnknown1ListItem(StreamHelperReader& stream, inventory::Artifact::UnknownList3Item& item);
-    void readArtifactList(StreamHelperReader& stream, inventory::Artifact::List& list);
+    void readArtifactBags(StreamHelperReader& stream, inventory::ArtifactBagCollection& bags);
     void readUnknown2List(StreamHelperReader& stream, std::vector<inventory::Artifact::UnknownList4Item>& list);
-    Log m_logger;
+    common::Log m_logger;
     StorageGameSave& m_gameSave;
 };
 
-}}} // namespace
-#endif // guard
+}}}

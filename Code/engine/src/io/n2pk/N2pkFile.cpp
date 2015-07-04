@@ -1,5 +1,7 @@
 #include <vanhelsing/engine/io/n2pk/N2pkFile.h>
 #include <vanhelsing/engine/io/StreamHelperReader.h>
+#include <vanhelsing/engine/exceptions/VanHelsingEngineError.h>
+
 #include <nowide/fstream.hpp>
 #include <iomanip>
 #include <misc/substreambuf.hpp>
@@ -81,19 +83,19 @@ vanhelsing::engine::io::n2pk::FileEntry N2pkFile::GetFileEntry(const std::string
     auto& view = m_impl->Files.get<1>();
     auto it = view.find(path);
     if (it == view.end()) {
-        throw std::runtime_error("File not found");
+        throw VanHelsingEngineError("File not found");
     }
 
     return *it;
 }
 
-N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(std::make_unique<Impl>()), m_logger(LogLevel::Trace)
+N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(std::make_unique<Impl>()), m_logger(common::LogLevel::Trace)
 {
     m_logger << "Opening Neocore Package: " << filePath << std::endl;
 
     auto fileStream = new nowide::ifstream(filePath.c_str(), std::ios::binary);
     if (!fileStream->is_open()) {
-        throw std::runtime_error("Couldn't open file");
+        throw VanHelsingEngineError("Couldn't open file");
     }
 
     fileStream->rdbuf()->pubsetbuf(m_buffer, sizeof(m_buffer));
@@ -102,7 +104,7 @@ N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(
     StreamHelperReader stream(*m_stream);
     if ((stream.Read<int>() != 15) ||
         (nowide::narrow(stream.ReadWString(15)) != "Neocore Package")) {
-        throw std::runtime_error("Invalid signature");
+        throw VanHelsingEngineError("Invalid signature");
     }
 
     stream.SeekI(2); // Null-terminator?
@@ -139,4 +141,4 @@ void N2pkFile::readFileTable(StreamHelperReader& stream)
     }
 }
 
-}}}} // namespace
+}}}}

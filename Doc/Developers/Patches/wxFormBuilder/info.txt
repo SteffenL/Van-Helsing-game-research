@@ -1,0 +1,2 @@
+The following file(s) should go into the directory where wxFormBuilder is installed, under ./plugins/additional/xml:
+- data.cppcode

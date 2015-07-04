@@ -1,0 +1,1 @@
+wxFormBuilder v3.5.1-rc1 (with custom patch; see ./Patches/wxFormBuilder)

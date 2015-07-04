@@ -1,12 +1,14 @@
 #include <vanhelsing/engine/io/StorageGameSaveReader.h>
 #include <vanhelsing/engine/io/StreamHelperReader.h>
+#include <vanhelsing/engine/exceptions/VanHelsingEngineError.h>
+
 #include <nowide/iostream.hpp>
 #include <iomanip>
 
 namespace vanhelsing { namespace engine { namespace io {
 
 StorageGameSaveReader::StorageGameSaveReader(StorageGameSave& gameSave, std::istream& inStream)
-    : GameSaveContainerReader(gameSave.ContainerInfo, inStream), m_gameSave(gameSave), m_logger(LogLevel::Trace)
+    : GameSaveContainerReader(gameSave.ContainerInfo, inStream), m_gameSave(gameSave), m_logger(common::LogLevel::Trace)
 {
     StreamHelperReader stream(getInStream());
     readAllStoredItems(stream);
@@ -14,8 +16,8 @@ StorageGameSaveReader::StorageGameSaveReader(StorageGameSave& gameSave, std::ist
 
 void StorageGameSaveReader::readAllStoredItems(StreamHelperReader& stream)
 {
-    readArtifactList(stream, m_gameSave.GetArtifacts1());
-    readArtifactList(stream, m_gameSave.GetArtifacts2());
+    readArtifactBags(stream, m_gameSave.GetArtifactBags1());
+    readArtifactBags(stream, m_gameSave.GetArtifactBags2());
 
     stream.Read(m_gameSave.Unknown.Artifacts.v1);
     stream.Read(m_gameSave.Unknown.Artifacts.v2);
@@ -23,20 +25,22 @@ void StorageGameSaveReader::readAllStoredItems(StreamHelperReader& stream)
     // TODO: When arg_0 is equal to 1, more reads follow; but I don't know where this value comes from
 }
 
-std::shared_ptr<inventory::Artifact> StorageGameSaveReader::readArtifact(StreamHelperReader& stream, inventory::Artifact::List& itemList)
+std::unique_ptr<inventory::Artifact> StorageGameSaveReader::readArtifact(StreamHelperReader& stream)
 {
+    using namespace common;
     using inventory::Artifact;
-    auto item = std::make_shared<Artifact>();
+
+    auto item = std::make_unique<Artifact>();
 
     stream.Read(item->Id);
-    stream.Read(item->Attribute1);
-    stream.Read(item->Attribute2);
+    stream.Read(item->Property1);
+    stream.Read(item->Property2);
     stream.Read(item->Quantity);
 
     auto& name = item->GetName();
     m_logger << "ID: 0x" << std::hex << item->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
-    m_logger << "Attribute 1: " << item->Attribute1 << std::endl;
-    m_logger << "Attribute 2: " << item->Attribute2 << std::endl;
+    m_logger << "Property 1: " << item->Property1 << std::endl;
+    m_logger << "Property 2: " << item->Property2 << std::endl;
     m_logger << "Quantity: " << item->Quantity << std::endl;
     
     auto count = stream.Read<int>();
@@ -57,7 +61,7 @@ std::shared_ptr<inventory::Artifact> StorageGameSaveReader::readArtifact(StreamH
     m_logger << "Rarity: " << item->Rarity << std::endl;
 
     readEnchantments(stream, item->GetEnchantmentsWritable());
-    readEnchantments(stream, item->Unknown.MaybeEnchantments);
+    readInfusedArtifacts(stream, item->GetInfusedArtifactsWritable());
 
     stream.Read(item->IsIdentified);
     m_logger << "Is identified: " << item->IsIdentified << std::endl;
@@ -96,18 +100,19 @@ std::shared_ptr<inventory::Artifact> StorageGameSaveReader::readArtifact(StreamH
     stream.Read(item->Unknown.v7);
     stream.Read(item->Unknown.v8);
 
-    itemList.Add(item);
     return item;
 }
 
-void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, inventory::Enchantment::List& enchantments)
+void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, inventory::EnchantmentCollection& enchantments)
 {
+    using namespace common;
+
     auto count = stream.Read<unsigned int>();
     m_logger << "Enchantments (" << count << "):" << std::endl;
     m_logger << Log::indent;
     for (unsigned int i = 0; i < count; ++i) {
         using inventory::Enchantment;
-        auto enchantment = std::make_shared<Enchantment>();
+        auto enchantment = std::make_unique<Enchantment>();
 
         m_logger << "#" << i << ":" << std::endl;
         m_logger << Log::indent;
@@ -134,13 +139,36 @@ void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, invento
             m_logger << enchantment->Unknown.v5 << ", " << enchantment->Unknown.v6 << ", " << enchantment->Unknown.v7 << std::endl;
         }
 
-        enchantments.Add(enchantment);
+        enchantments.emplace_back(std::move(enchantment));
 
         m_logger << Log::outdent << Log::outdent;
         m_logger << "" << std::endl;
     }
 
     m_logger << Log::outdent;
+}
+
+void StorageGameSaveReader::readInfusedArtifacts(StreamHelperReader& stream, inventory::ArtifactCollection& items)
+{
+    using namespace common;
+    using namespace inventory;
+
+    auto count = stream.Read<int>();
+    m_logger << "Infused artifacts (" << count << "):" << std::endl;
+    m_logger << Log::indent;
+    for (int i = 0; i < count; ++i) {
+        m_logger << "#" << i << ":" << std::endl;
+        m_logger << Log::indent;
+
+        auto artifact = readArtifact(stream);
+        items.emplace_back(std::move(artifact));
+
+        m_logger << Log::outdent;
+        m_logger << "" << std::endl;
+    }
+
+    m_logger << Log::outdent;
+
 }
 
 StorageGameSaveReader::~StorageGameSaveReader() {}
@@ -160,7 +188,7 @@ void StorageGameSaveReader::readUnknown1List(StreamHelperReader& stream, std::ve
     auto count = stream.Read<unsigned int>();
     for (decltype(count) i = 0; i < count; ++i) {
         // TODO: Learn more about the case when count > 0
-        throw std::runtime_error("This file must be investigated");
+        throw VanHelsingEngineError("This file must be investigated");
 
         inventory::Artifact::UnknownList3Item item;
         readUnknown1ListItem(stream, item);
@@ -178,24 +206,28 @@ void StorageGameSaveReader::readUnknown1ListItem(StreamHelperReader& stream, inv
     //}
 }
 
-void StorageGameSaveReader::readArtifactList(StreamHelperReader& stream, inventory::Artifact::List& list)
+void StorageGameSaveReader::readArtifactBags(StreamHelperReader& stream, inventory::ArtifactBagCollection& bags)
 {
+    using namespace common;
+    using namespace inventory;
+
     auto count = stream.Read<int>();
     m_logger << "Artifacts (" << count << "):" << std::endl;
     m_logger << Log::indent;
     for (int i = 0; i < count; ++i) {
         m_logger << "#" << i << ":" << std::endl;
         m_logger << Log::indent;
-        auto bagNumber = stream.Read<int>();
-        auto slotNumber = stream.Read<int>();
+
+        auto bagNumber = stream.Read<BagIndexType>();
+        auto& bag = bags[bagNumber];
+        auto slotNumber = stream.Read<BagSlotIndexType>();
+        auto& slot = bag[slotNumber];
+
         m_logger << "Bag #: " << bagNumber << std::endl;
         m_logger << "Slot #: " << slotNumber << std::endl;
         m_logger << "" << std::endl;
-        auto item = readArtifact(stream, list);
-        if (item) {
-            item->BagNumber = bagNumber;
-            item->SlotNumber = slotNumber;
-        }
+
+        slot = readArtifact(stream);
 
         m_logger << Log::outdent;
         m_logger << "" << std::endl;
@@ -209,7 +241,7 @@ void StorageGameSaveReader::readUnknown2List(StreamHelperReader& stream, std::ve
     auto count = stream.Read<int>();
     for (decltype(count) i = 0; i < count; ++i) {
         // TODO: Investigate. Throw to make sure we know when to do it.
-        throw std::runtime_error("This file must be investigated");
+        throw VanHelsingEngineError("This file must be investigated");
 
         inventory::Artifact::UnknownList4Item item;
         readUnknownStruct1(stream, item.v1);
@@ -218,4 +250,4 @@ void StorageGameSaveReader::readUnknown2List(StreamHelperReader& stream, std::ve
     }
 }
 
-}}} // namespace
+}}}

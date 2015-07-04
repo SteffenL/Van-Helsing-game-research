@@ -6,7 +6,7 @@
 #include "MainDlg.h"
 
 #include "my_console_output_buffer.h"
-#include <vanhelsing/engine/log.h>
+#include <common/Log.h>
 
 CAppModule _Module;
 

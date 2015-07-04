@@ -1,5 +1,4 @@
-#ifndef vanhelsing_engine_GamePaths_
-#define vanhelsing_engine_GamePaths_
+#pragma once
 
 #include <string>
 
@@ -14,5 +13,4 @@ public:
     static std::string GetGetGameSavePath();
 };
 
-}} // namespace
-#endif // guard
+}}
