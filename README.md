@@ -33,3 +33,20 @@ A few links for search engines:
 - backup\*.sav - Backup of previous saves.
 - common\storage.sav - Your own storage/chest.
 - achievements.sav
+
+## Compiling
+
+- Point the environment variable `BOOSTDIR` to the directory of the Boost library. Make sure to build Boost as well.
+- Open the `Developer Command Prompt for VS2013` (make sure Git is available).
+- Initialize the repository:
+
+        git clone --recursive --branch=master https://github.com/SteffenL/Van-Helsing-game-research.git
+        cd Van-Helsing-game-research
+
+- Build dependencies:
+
+        powershell -ExecutionPolicy Bypass -File Code\scripts\build\thirdparty.ps1
+
+- Build the rest:
+
+        msbuild Code\VanHelsingGameResearch.sln /t:Build /p:Configuration=Release
