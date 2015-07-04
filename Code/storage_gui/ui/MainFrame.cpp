@@ -24,6 +24,9 @@ MainFrame::MainFrame(wxWindow* parent)
     : MainFrameBase(parent),
     m_gotFirstIdleEvent(false)
 {
+    // Main window title
+    SetTitle(APP_FRIENDLY_NAME_I18N);
+
     auto mainPanel = new StorageEditorPanel(this);
     auto sizer = new wxBoxSizer(wxVERTICAL);
     sizer->Add(mainPanel, wxSizerFlags().Expand().Proportion(1));
