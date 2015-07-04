@@ -2,9 +2,9 @@
 <html>
 
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Van-helsing-game-research : An effort to reverse engineer parts of the game &quot;The Incredible Adventures of Van Helsing&quot;." />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Van-helsing-game-research : An effort to reverse engineer parts of the game &quot;The Incredible Adventures of Van Helsing&quot;.">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -32,66 +32,40 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a name="van-helsing-game-research" class="anchor" href="#van-helsing-game-research"><span class="octicon octicon-link"></span></a>Van Helsing game research</h1>
+<a id="van-helsing-game-research" class="anchor" href="#van-helsing-game-research" aria-hidden="true"><span class="octicon octicon-link"></span></a>Van Helsing game research</h1>
 
 <p>This project was initiated for fun and learning. The main goal is to research the internals of the game <em>The Incredible Adventures of Van Helsing</em>. I plan to reverse engineer interesting parts of the game and its file formats. Eventually, it may become useful for myself and other developers, or even end-users.</p>
 
-<p>I with focus on extracting info and mainly do work related to the saves. Modding the game and creating proper game-save editors may not be too far away. :)</p>
+<h2>
+<a id="download-binary-windows" class="anchor" href="#download-binary-windows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Download (binary, Windows)</h2>
 
-<p>Research is currently done by myself, Steffen André Langnes. Please don't just take my work and claim it as your own. :)</p>
-
-<p>My other project(s):</p>
-
-<ul>
-<li>
-<a href="http://deadislandsaveeditor.steffenl.com/">Dead Island Save Editor (DISE)</a> - My main project, a game-save editor.</li>
-<li><a href="http://blog.steffenl.com/">"Private" blog</a></li>
-</ul><h2>
-<a name="download-binary-windows" class="anchor" href="#download-binary-windows"><span class="octicon octicon-link"></span></a>Download (binary, Windows)</h2>
-
-<p><a href="http://www.mediafire.com/download/u175wdg7ha1b3if/storage_editor_20130606.zip">r20130606</a></p>
+<p>See <a href="https://github.com/SteffenL/Van-Helsing-game-research/releases">releases on GitHub</a>.</p>
 
 <h2>
-<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
 <ul>
 <li>Operating system: Windows XP or later.</li>
-</ul><h2>
-<a name="current-programs" class="anchor" href="#current-programs"><span class="octicon octicon-link"></span></a>Current programs</h2>
+</ul>
+
+<h2>
+<a id="current-programs" class="anchor" href="#current-programs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Current programs</h2>
 
 <ul>
 <li>Unpacker for N2PK packages (Files.N2PK). These files contain textures, models, etc.</li>
-<li>Storage viewer (command line) (storage.sav). Displays all of the items you have in your storage. (Replaced by GUI app, so this is useless now).</li>
+<li>Storage viewer (command line) (storage.sav). Displays all of the items you have in your storage.</li>
 <li>Storage editor (GUI).</li>
-</ul><h2>
-<a name="screenshot-2013-06-06" class="anchor" href="#screenshot-2013-06-06"><span class="octicon octicon-link"></span></a>Screenshot (2013-06-06)</h2>
-
-<p><img src="https://raw.github.com/wiki/SteffenL/Van-Helsing-game-research/images/mainwindow.png" alt="Storage Editor"></p>
-
-<h2>
-<a name="pages" class="anchor" href="#pages"><span class="octicon octicon-link"></span></a>Pages</h2>
-
-<ul>
-<li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/Keep-the-game-running-in-the-background">Keep the game running in the background</a></li>
-<li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/Skip-logos-on-startup">Skip logos on startup</a></li>
-<li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/Use-the-32-bit-version-of-the-game-on-64-bit-systems">Use the 32 bit version of the game on 64 bit systems</a></li>
-<li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/List-of-items-and-IDs">List of items and IDs</a></li>
-<li><a href="https://github.com/SteffenL/Van-Helsing-game-research/wiki/List-of-enchantments-and-IDs">List of enchantments and IDs</a></li>
-</ul><h2>
-<a name="game-save-location-pc" class="anchor" href="#game-save-location-pc"><span class="octicon octicon-link"></span></a>Game-save location (PC)</h2>
-
-<p><code>Documents\NeocoreGames\Van Helsing\SaveGame\21801362</code></p>
-
-<h2>
-<a name="files" class="anchor" href="#files"><span class="octicon octicon-link"></span></a>Files</h2>
-
-<ul>
-<li>*.sav - Game-save/Character.</li>
-<li>timestamp.hts</li>
-<li>backup*.sav - Backup of previous saves.</li>
-<li>common\storage.sav - Your own storage/chest.</li>
-<li>achievements.sav</li>
 </ul>
+
+<h2>
+<a id="screenshot" class="anchor" href="#screenshot" aria-hidden="true"><span class="octicon octicon-link"></span></a>Screenshot</h2>
+
+<p><img src="images/screenshots/editor/storage.png" alt="Storage Editor"></p>
+
+<h2>
+<a id="game-save-location-pc" class="anchor" href="#game-save-location-pc" aria-hidden="true"><span class="octicon octicon-link"></span></a>Game-save location (PC)</h2>
+
+<p><code>Documents\NeocoreGames\Van Helsing\SaveGame\&lt;number&gt;</code></p>
       </section>
     </div>
 
@@ -99,7 +73,7 @@
     <div id="footer_wrap" class="outer">
       <footer class="inner">
         <p class="copyright">Van-helsing-game-research maintained by <a href="https://github.com/SteffenL">SteffenL</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
 
