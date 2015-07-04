@@ -155,7 +155,6 @@ void StorageEditorPanel::initializeUi()
 
 void StorageEditorPanel::showPropertiesForArtifact(vanhelsing::engine::inventory::Artifact& artifact)
 {
-    m_propertiesArtifactPage->SetClientData(&artifact);
     m_artifactRarityProperty->SetChoiceSelection(artifact.Rarity);
     m_artifactQualityProperty->SetChoiceSelection(artifact.Quality);
     m_artifactQuantityProperty->SetValue(artifact.Quantity);
@@ -167,7 +166,6 @@ void StorageEditorPanel::showPropertiesForArtifact(vanhelsing::engine::inventory
 
 void StorageEditorPanel::showPropertiesForEnchantment(vanhelsing::engine::inventory::Enchantment& enchantment)
 {
-    m_propertiesEnchantmentPage->SetClientData(&enchantment);
     m_enchantmentValueProperty->SetValue(enchantment.EffectValue);
     m_enchantmentModifierProperty->SetValue(enchantment.EffectModifier);
     m_propertyManager->SelectPage(m_propertiesEnchantmentPage);
@@ -255,53 +253,59 @@ void StorageEditorPanel::propertyManagerOnPropertyGridChanged(wxPropertyGridEven
     // TODO: Figure out the correct way to identify the page or whatever so that we can organize the code a bit.
     // This does work but I don't know if it's the one true way.
     if (property->GetParentState() == m_propertiesArtifactPage->GetStatePtr()) {
-        auto& artifact = *reinterpret_cast<Artifact*>(m_propertiesArtifactPage->GetClientData());
-
-        if (property == m_artifactProperty1Property) {
-            artifact.Property1 = value.GetAny().As<decltype(artifact.Property1)>();
-        }
-        else if (property == m_artifactProperty2Property) {
-            artifact.Property2 = value.GetAny().As<decltype(artifact.Property2)>();
-        }
-        else if (property == m_artifactQuantityProperty) {
-            artifact.Quantity = value.GetAny().As<decltype(artifact.Quantity)>();
-        }
-        else if (property == m_artifactIdentifiedProperty) {
-            artifact.IsIdentified = value.GetAny().As<decltype(artifact.IsIdentified)>();
-        }
-        else if (property == m_artifactRarityProperty) {
-            artifact.Rarity = static_cast<decltype(artifact.Rarity)>(value.GetLong());
-        }
-        else if (property == m_artifactQualityProperty) {
-            artifact.Quality = static_cast<decltype(artifact.Quality)>(value.GetLong());
-        }
-        else {
-            throw std::logic_error("Property is not mapped");
-        }
-
-        // TODO: Update only changed items
         wxDataViewItemArray selections;
         m_artifacts->GetSelections(selections);
         auto model = m_artifacts->GetModel();
-        model->ItemsChanged(selections);
-    }
-    else if (property->GetParentState() == m_propertiesEnchantmentPage->GetStatePtr()) {
-        auto& enchantment = *reinterpret_cast<Enchantment*>(m_propertiesEnchantmentPage->GetClientData());
 
-        if (property == m_enchantmentValueProperty) {
-            enchantment.EffectValue = value.GetAny().As<decltype(enchantment.EffectValue)>();
-        }
-        else if (property == m_enchantmentModifierProperty) {
-            enchantment.EffectModifier = value.GetAny().As<decltype(enchantment.EffectModifier)>();
-        }
-        else {
-            throw std::logic_error("Property is not mapped");
+        for (auto& selection : selections) {
+            auto& artifact = *reinterpret_cast<Artifact*>(selection.GetID());
+
+            if (property == m_artifactProperty1Property) {
+                artifact.Property1 = value.GetAny().As<decltype(artifact.Property1)>();
+            }
+            else if (property == m_artifactProperty2Property) {
+                artifact.Property2 = value.GetAny().As<decltype(artifact.Property2)>();
+            }
+            else if (property == m_artifactQuantityProperty) {
+                artifact.Quantity = value.GetAny().As<decltype(artifact.Quantity)>();
+            }
+            else if (property == m_artifactIdentifiedProperty) {
+                artifact.IsIdentified = value.GetAny().As<decltype(artifact.IsIdentified)>();
+            }
+            else if (property == m_artifactRarityProperty) {
+                artifact.Rarity = static_cast<decltype(artifact.Rarity)>(value.GetLong());
+            }
+            else if (property == m_artifactQualityProperty) {
+                artifact.Quality = static_cast<decltype(artifact.Quality)>(value.GetLong());
+            }
+            else {
+                throw std::logic_error("Property is not mapped");
+            }
         }
 
         // TODO: Update only changed items
+        model->ItemsChanged(selections);
+    }
+    else if (property->GetParentState() == m_propertiesEnchantmentPage->GetStatePtr()) {
         wxDataViewItemArray selections;
         m_artifactEnchantments->GetSelections(selections);
         auto model = m_artifactEnchantments->GetModel();
+
+        for (auto& selection : selections) {
+            auto& enchantment = *reinterpret_cast<Enchantment*>(selection.GetID());
+
+            if (property == m_enchantmentValueProperty) {
+                enchantment.EffectValue = value.GetAny().As<decltype(enchantment.EffectValue)>();
+            }
+            else if (property == m_enchantmentModifierProperty) {
+                enchantment.EffectModifier = value.GetAny().As<decltype(enchantment.EffectModifier)>();
+            }
+            else {
+                throw std::logic_error("Property is not mapped");
+            }
+        }
+
+        // TODO: Update only changed items
         model->ItemsChanged(selections);
     }
     else {
