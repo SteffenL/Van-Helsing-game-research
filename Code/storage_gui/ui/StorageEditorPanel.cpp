@@ -32,9 +32,7 @@ void StorageEditorPanel::artifactBagOnToolClicked(wxCommandEvent& event)
     auto& indexToBagPair = *reinterpret_cast<IndexToArtifactBagPair*>(tool->GetClientData());
     auto& bag = indexToBagPair.second;
 
-    clearArtifacts();
-    clearEnchantments();
-    clearProperties();
+    clearDependentOnArtifactBag();
 
     m_artifactViewModel = new ArtifactViewModel(bag);
     m_artifacts->AssociateModel(m_artifactViewModel.get());
@@ -47,10 +45,10 @@ void StorageEditorPanel::artifactBagOnUpdateUI(wxUpdateUIEvent& event)
 
 void StorageEditorPanel::onGameSaveOpened(vanhelsing::services::OpenedStorageGameSaveFile& fileInfo)
 {
-    clearGameSaveDependentUi();
+    clearDependentOnGameSave();
     m_gameSave = fileInfo.GetGameSave();
     initializeGameSaveDependentUi();
-    populateGameSaveDependentUi();
+    populateDependentOnGameSave();
 }
 
 void StorageEditorPanel::subscribeToEvents()
@@ -79,8 +77,6 @@ void StorageEditorPanel::populateEnchantments(vanhelsing::engine::inventory::Art
 
 void StorageEditorPanel::populateBags()
 {
-    m_artifactBagToolBar->ClearTools();
-
     // Add tools
     const auto& toolImage = inventory_png_to_wx_bitmap();
     wxToolBarToolBase* firstTool = nullptr;
@@ -111,7 +107,7 @@ void StorageEditorPanel::populateBags()
     Layout();
 }
 
-void StorageEditorPanel::populateGameSaveDependentUi()
+void StorageEditorPanel::populateDependentOnGameSave()
 {
     populateBags();
     populateArtifacts();
@@ -201,33 +197,23 @@ void StorageEditorPanel::initializeGameSaveDependentUi()
     initializeGameDataDependentProperties();
 }
 
-void StorageEditorPanel::clearGameSaveDependentUi()
+void StorageEditorPanel::clearDependentOnGameSave()
 {
-    clearArtifacts();
-    clearEnchantments();
-    clearProperties();
+    m_artifactBagToolBar->ClearTools();
+    clearDependentOnArtifactBag();
 }
 
-void StorageEditorPanel::clearArtifacts()
-{
-    if (auto model = m_artifacts->GetModel()) {
-        m_artifacts->AssociateModel(nullptr);
-        model->Cleared();
-    }
-}
-
-void StorageEditorPanel::clearEnchantments()
-{
-    if (auto model = m_artifactEnchantments->GetModel()) {
-        m_artifactEnchantments->AssociateModel(nullptr);
-        model->Cleared();
-    }
-}
-
-void StorageEditorPanel::clearProperties()
+void StorageEditorPanel::clearDependentOnEnchantment()
 {
     // Select blank property page
     m_propertyManager->SelectPage(m_propertiesEmptyPage);
+}
+
+void StorageEditorPanel::populateDependentOnArtifact(vanhelsing::engine::inventory::Artifact& artifact)
+{
+    populateEnchantments(artifact);
+    showPropertiesForArtifact(artifact);
+    showImageForArtifact(artifact);
 }
 
 void StorageEditorPanel::showImageForArtifact(vanhelsing::engine::inventory::Artifact& artifact)
@@ -256,12 +242,35 @@ void StorageEditorPanel::showImageForArtifact(vanhelsing::engine::inventory::Art
     m_visualAppearancePanel->Layout();
 }
 
+void StorageEditorPanel::clearDependentOnArtifactBag()
+{
+    if (auto model = m_artifacts->GetModel()) {
+        m_artifacts->AssociateModel(nullptr);
+        model->Cleared();
+    }
+
+    clearDependentOnArtifact();
+}
+
+void StorageEditorPanel::clearDependentOnArtifact()
+{
+    if (auto model = m_artifactEnchantments->GetModel()) {
+        m_artifactEnchantments->AssociateModel(nullptr);
+        model->Cleared();
+    }
+
+    clearDependentOnEnchantment();
+
+    m_visualAppearanceImage->SetBitmap(wxNullBitmap);
+    m_visualAppearancePanel->Layout();
+}
+
 void StorageEditorPanel::artifactEnchantmentsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event)
 {
     using namespace vanhelsing::engine::inventory;
 
     if (!event.GetItem()) {
-        clearProperties();
+        clearDependentOnEnchantment();
         return;
     }
 
@@ -344,15 +353,10 @@ void StorageEditorPanel::artifactsOnDataViewCtrlSelectionChanged(wxDataViewEvent
     using namespace vanhelsing::engine::inventory;
 
     if (!event.GetItem()) {
-        clearEnchantments();
-        clearProperties();
+        clearDependentOnArtifact();
         return;
     }
 
     auto& artifact = *reinterpret_cast<Artifact*>(event.GetItem().GetID());
-
-    clearEnchantments();
-    populateEnchantments(artifact);
-    showPropertiesForArtifact(artifact);
-    showImageForArtifact(artifact);
+    populateDependentOnArtifact(artifact);
 }

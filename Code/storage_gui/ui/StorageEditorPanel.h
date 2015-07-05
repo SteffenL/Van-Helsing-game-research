@@ -33,20 +33,26 @@ private:
 
 
     void subscribeToEvents();
+
+    void initializeUi();
+    void initializeGameDataDependentProperties();
+    void initializeGameSaveDependentUi();
+
     void populateArtifacts();
     void populateEnchantments(vanhelsing::engine::inventory::Artifact& artifact);
     void populateBags();
-    void populateGameSaveDependentUi();
-    void initializeUi();
+    void populateDependentOnGameSave();
+    void populateDependentOnArtifact(vanhelsing::engine::inventory::Artifact& artifact);
+
     void showPropertiesForArtifact(vanhelsing::engine::inventory::Artifact& artifact);
     void showPropertiesForEnchantment(vanhelsing::engine::inventory::Enchantment& enchantment);
-    void initializeGameDataDependentProperties();
-    void initializeGameSaveDependentUi();
-    void clearGameSaveDependentUi();
-    void clearArtifacts();
-    void clearEnchantments();
-    void clearProperties();
     void showImageForArtifact(vanhelsing::engine::inventory::Artifact& artifact);
+
+    void clearDependentOnGameSave();
+    void clearDependentOnArtifactBag();
+    void clearDependentOnArtifact();
+    void clearDependentOnEnchantment();
+    void clearObjectVisualAppearanceViewAndDependentUi();
 
     wxObjectDataPtr<ArtifactViewModel> m_artifactViewModel;
     wxObjectDataPtr<EnchantmentViewModel> m_enchantmentViewModel;
