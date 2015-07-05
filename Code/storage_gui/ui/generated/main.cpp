@@ -118,7 +118,7 @@ StorageEditorPanelBase::StorageEditorPanelBase( wxWindow* parent, wxWindowID id,
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer( wxVERTICAL );
 	
-	m_propertyManager = new wxPropertyGridManager(m_panel7, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DESCRIPTION|wxPG_HIDE_CATEGORIES|wxPG_HIDE_MARGIN|wxPG_SPLITTER_AUTO_CENTER|wxNO_BORDER);
+	m_propertyManager = new wxPropertyGridManager(m_panel7, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_HIDE_CATEGORIES|wxPG_HIDE_MARGIN|wxPG_SPLITTER_AUTO_CENTER|wxNO_BORDER);
 	m_propertyManager->SetExtraStyle( wxPG_EX_INIT_NOCAT|wxPG_EX_NO_FLAT_TOOLBAR ); 
 	
 	m_propertiesEmptyPage = m_propertyManager->AddPage( wxEmptyString, wxNullBitmap );
@@ -142,6 +142,25 @@ StorageEditorPanelBase::StorageEditorPanelBase( wxWindow* parent, wxWindowID id,
 	m_panel7->SetSizer( bSizer9 );
 	m_panel7->Layout();
 	bSizer9->Fit( m_panel7 );
+	m_visualAppearancePanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_mgr.AddPane( m_visualAppearancePanel, wxAuiPaneInfo() .Name( wxT("visualAppearance") ).Right() .Caption( _("Visual appearance") ).CloseButton( false ).Movable( false ).Dock().Resizable().FloatingSize( wxSize( -1,-1 ) ).Floatable( false ).Row( 0 ).Position( 0 ).BestSize( wxSize( 280,-1 ) ).Layer( 2 ) );
+	
+	wxBoxSizer* bSizer4;
+	bSizer4 = new wxBoxSizer( wxVERTICAL );
+	
+	
+	bSizer4->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	m_visualAppearanceImage = new wxStaticBitmap( m_visualAppearancePanel, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer4->Add( m_visualAppearanceImage, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+	
+	
+	bSizer4->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	
+	m_visualAppearancePanel->SetSizer( bSizer4 );
+	m_visualAppearancePanel->Layout();
+	bSizer4->Fit( m_visualAppearancePanel );
 	
 	m_mgr.Update();
 	

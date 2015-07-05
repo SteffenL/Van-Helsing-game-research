@@ -230,6 +230,32 @@ void StorageEditorPanel::clearProperties()
     m_propertyManager->SelectPage(m_propertiesEmptyPage);
 }
 
+void StorageEditorPanel::showImageForArtifact(vanhelsing::engine::inventory::Artifact& artifact)
+{
+    using namespace vanhelsing::engine;
+
+    auto& gameData = GameData::Get();
+
+    GameData::ItemData artifactData;
+    if (!gameData.GetArtifactData(artifact.Id, artifactData)) {
+        // TODO: Log error
+        return;
+    }
+
+    std::vector<char> artifactIconData;
+    if (!gameData.GetArtifactIcon(artifactData.Icon, artifactIconData)) {
+        // TODO: Log error
+        return;
+    }
+
+    wxMemoryInputStream memIStream(artifactIconData.data(), artifactIconData.size());
+    wxImage image(memIStream, wxBITMAP_TYPE_TGA);
+    wxBitmap bmp(image);
+
+    m_visualAppearanceImage->SetBitmap(bmp);
+    m_visualAppearancePanel->Layout();
+}
+
 void StorageEditorPanel::artifactEnchantmentsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event)
 {
     using namespace vanhelsing::engine::inventory;
@@ -328,4 +354,5 @@ void StorageEditorPanel::artifactsOnDataViewCtrlSelectionChanged(wxDataViewEvent
     clearEnchantments();
     populateEnchantments(artifact);
     showPropertiesForArtifact(artifact);
+    showImageForArtifact(artifact);
 }
