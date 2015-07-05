@@ -46,7 +46,7 @@ private:
     void clearArtifacts();
     void clearEnchantments();
     void clearProperties();
-
+    void showImageForArtifact(vanhelsing::engine::inventory::Artifact& artifact);
 
     wxObjectDataPtr<ArtifactViewModel> m_artifactViewModel;
     wxObjectDataPtr<EnchantmentViewModel> m_enchantmentViewModel;

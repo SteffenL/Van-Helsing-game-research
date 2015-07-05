@@ -18,6 +18,7 @@ bool App::OnInit()
     }
 
     wxImage::AddHandler(new wxPNGHandler);
+    wxImage::AddHandler(new wxTGAHandler);
 
     auto frame = new MainFrame(nullptr);
     frame->Show();

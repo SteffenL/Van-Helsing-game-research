@@ -28,8 +28,8 @@
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>
 #include <wx/propgrid/advprops.h>
-#include <wx/aui/aui.h>
 #include <wx/statbmp.h>
+#include <wx/aui/aui.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -93,6 +93,8 @@ class StorageEditorPanelBase : public wxPanel
 		wxPropertyGridPage* m_propertiesEnchantmentPage;
 		wxPGProperty* m_enchantmentValueProperty;
 		wxPGProperty* m_enchantmentModifierProperty;
+		wxPanel* m_visualAppearancePanel;
+		wxStaticBitmap* m_visualAppearanceImage;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void artifactsOnDataViewCtrlSelectionChanged( wxDataViewEvent& event ) { event.Skip(); }

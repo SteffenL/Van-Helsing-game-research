@@ -3,6 +3,7 @@
 #include <vanhelsing/engine/inventory.h>
 #include <string>
 #include <map>
+#include <vector>
 #include <memory>
 
 namespace vanhelsing { namespace engine {
@@ -67,11 +68,13 @@ public:
     std::string GetEnchantmentNameFromId(inventory::Artifact::IdType id) const;
     const std::vector<inventory::Artifact::Quality::type> GetQualityDataList() const;
     const std::vector<inventory::Artifact::Rarity::type> GetRarityDataList() const;
+    bool GetArtifactIcon(const std::string& name, std::vector<char>& imageData) const;
 
 private:
     void loadTexts();
     void loadArtifacts();
     void loadEnchantments();
+    void loadArtifactIcons();
 
 private:
     static std::unique_ptr<GameData> m_instance;
@@ -79,6 +82,7 @@ private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
     TextManager m_texts;
+    std::unique_ptr<io::n2pk::N2pkFile> m_artifactIconsPackage;
 };
 
 }}

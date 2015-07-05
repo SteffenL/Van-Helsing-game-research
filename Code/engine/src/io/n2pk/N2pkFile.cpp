@@ -83,7 +83,7 @@ vanhelsing::engine::io::n2pk::FileEntry N2pkFile::GetFileEntry(const std::string
     auto& view = m_impl->Files.get<1>();
     auto it = view.find(path);
     if (it == view.end()) {
-        throw VanHelsingEngineError("File not found");
+        throw VanHelsingEngineError("File not found: " + path);
     }
 
     return *it;
@@ -95,7 +95,7 @@ N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(
 
     auto fileStream = new nowide::ifstream(filePath.c_str(), std::ios::binary);
     if (!fileStream->is_open()) {
-        throw VanHelsingEngineError("Couldn't open file");
+        throw VanHelsingEngineError("Couldn't open file: " + filePath);
     }
 
     fileStream->rdbuf()->pubsetbuf(m_buffer, sizeof(m_buffer));

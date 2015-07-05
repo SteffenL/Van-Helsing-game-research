@@ -99,6 +99,7 @@ void GameData::Load(const std::string& gameDir)
         loadTexts();
         loadArtifacts();
         loadEnchantments();
+        loadArtifactIcons();
     }
     catch (const VanHelsingEngineError& ex) {
         using namespace common;
@@ -190,6 +191,27 @@ void GameData::loadEnchantments()
         m_impl->m_enchantmentData.insert(data);
         //logger << "0x" << std::setfill('0') << std::setw(8) << std::hex << id << std::dec << "  " << name << std::endl;
     }
+}
+
+void GameData::loadArtifactIcons()
+{
+    using namespace common;
+    namespace fs = boost::filesystem;
+    fs::path filePath(m_gameDir);
+    filePath /= "UI/Artifacts/Files.N2PK";
+
+    if (!fs::exists(filePath)) {
+        Log(LogLevel::Error) << "Game data file doesn't exist: " << filePath.string() << std::endl;
+        return;
+    }
+
+    nowide::ifstream file(filePath.string().c_str());
+    if (!file.is_open()) {
+        Log(LogLevel::Error) << "Couldn't open file: " << filePath.string() << std::endl;
+        return;
+    }
+
+    m_artifactIconsPackage = std::make_unique<io::n2pk::N2pkFile>(filePath.string());
 }
 
 GameData::GameData() : m_impl(std::make_unique<Impl>()) {}
@@ -285,6 +307,29 @@ const std::vector<vanhelsing::engine::inventory::Artifact::Rarity::type> GameDat
     list.push_back(Artifact::Rarity::Set);
     list.push_back(Artifact::Rarity::Random);
     return list;
+}
+
+bool GameData::GetArtifactIcon(const std::string& name, std::vector<char>& imageData) const
+{
+    if (!m_artifactIconsPackage) {
+        // TODO: Log error instead of throwing?
+        //throw VanHelsingEngineError("Artifact icon package is not loaded: " + name);
+        return false;
+    }
+
+    const std::string& fileName = name + "_idle.tga";
+    auto file = m_artifactIconsPackage->GetFile(fileName);
+    if (!file) {
+        // TODO: Log error instead of throwing?
+        //throw VanHelsingEngineError("Failed to get artifact icon: " + name);
+        return false;
+    }
+
+    auto& fileEntry = m_artifactIconsPackage->GetFileEntry(fileName);
+    imageData.resize(static_cast<std::vector<char>::size_type>(fileEntry.GetSize()));
+    file->read(imageData.data(), fileEntry.GetSize());
+
+    return true;
 }
 
 bool TextManager::Load(const std::string& filePath)
