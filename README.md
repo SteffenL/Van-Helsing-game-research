@@ -42,7 +42,7 @@ Note: Although "cross-platform" code is favored, no extra effort is being made t
 - Point the environment `SIGNTOOL` to the full path to the [SignTool](https://msdn.microsoft.com/en-us/library/8s9b9yaz(v=vs.110).aspx) executable.
 - Create package(s):
 
-        powershell -ExecutionPolicy Bypass -File Code\scripts\CreateReleasePackage.bat
+        Code\scripts\CreateReleasePackage.bat
 
 ## Current programs
 
