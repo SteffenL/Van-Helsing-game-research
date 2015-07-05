@@ -97,6 +97,7 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="AppVersion.h" />
+    <ClInclude Include="msw\resource.h" />
     <ClInclude Include="services\ApplicationServices.h" />
     <ClInclude Include="ui\viewmodels\ArtifactViewModel.h" />
     <ClInclude Include="ui\generated\main.h" />
@@ -117,6 +118,9 @@
     <ProjectReference Include="..\services\services.vcxproj">
       <Project>{db470aab-a4cf-47d6-bb5d-77afd384f988}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="msw\App.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
