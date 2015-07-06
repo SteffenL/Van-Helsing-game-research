@@ -91,8 +91,8 @@ class StorageEditorPanelBase : public wxPanel
 		wxPGProperty* m_artifactProperty1Property;
 		wxPGProperty* m_artifactProperty2Property;
 		wxPropertyGridPage* m_propertiesEnchantmentPage;
-		wxPGProperty* m_enchantmentValueProperty;
-		wxPGProperty* m_enchantmentModifierProperty;
+		wxPGProperty* m_enchantmentValueIndexProperty;
+		wxPGProperty* m_enchantmentValueScaleProperty;
 		wxPanel* m_visualAppearancePanel;
 		wxStaticBitmap* m_visualAppearanceImage;
 		

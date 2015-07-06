@@ -57,9 +57,11 @@ class Enchantment : public AbstractInventoryItem
 {
 public:
     virtual std::string GetName() const;
+    void SetSafeValueIndex(int index);
+    void SetSafeValueScale(float scale);
 
-    int EffectValue;
-    float EffectModifier;
+    int ValueIndex;
+    float ValueScale;
 
     struct
     {

@@ -6,18 +6,23 @@
 #include <vanhelsing/engine/exceptions/VanHelsingEngineError.h>
 
 #include <pugixml.hpp>
-#include <boost/filesystem.hpp>
 #include <nowide/fstream.hpp>
-#include <iomanip>
-#include <algorithm>
-#include <sstream>
 
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/random_access_index.hpp>
 
+#include <iomanip>
+#include <algorithm>
+#include <sstream>
+#include <cmath>
 #include <array>
+#include <functional>
+#include <map>
 
 namespace bmi = boost::multi_index;
 
@@ -185,9 +190,48 @@ void GameData::loadEnchantments()
     for (auto& group : parser.GetGroups()) {
         using namespace inventory;
         EnchantmentData data;
-        data.Name = group.at("Name");
-        data.Id = GetArtifactIdFromName(data.Name);
-        //data.
+
+        auto nameIter = group.find("Name");
+        if (nameIter != group.end()) {
+            data.Name = nameIter->second;
+            data.Id = GetArtifactIdFromName(data.Name);
+        }
+
+        auto propertyIter = group.find("Property");
+        if (propertyIter != group.end()) {
+            data.Property = propertyIter->second;
+        }
+
+        auto minValueIter = group.find("MinValue");
+        if (minValueIter != group.end()) {
+            std::vector<std::string> temp;
+            boost::split(temp, minValueIter->second, boost::is_any_of(","));
+            for (auto& s : temp) {
+                boost::trim(s);
+                data.MinValue.push_back(boost::lexical_cast<int>(s));
+            }
+        }
+
+        auto maxValueIter = group.find("MaxValue");
+        if (maxValueIter != group.end()) {
+            std::vector<std::string> temp;
+            boost::split(temp, maxValueIter->second, boost::is_any_of(","));
+            for (auto& s : temp) {
+                boost::trim(s);
+                data.MaxValue.push_back(boost::lexical_cast<int>(s));
+            }
+        }
+
+        auto targetTypeIter = group.find("TargetType");
+        if (targetTypeIter != group.end()) {
+            data.TargetType = targetTypeIter->second;
+        }
+
+        auto priorityGroupIter = group.find("PriorityGroup");
+        if (priorityGroupIter != group.end()) {
+            data.PriorityGroup = priorityGroupIter->second;
+        }
+
         m_impl->m_enchantmentData.insert(data);
         //logger << "0x" << std::setfill('0') << std::setw(8) << std::hex << id << std::dec << "  " << name << std::endl;
     }
@@ -225,12 +269,12 @@ GameData& GameData::Get()
     return *m_instance;
 }
 
-bool GameData::GetArtifactData(inventory::Artifact::IdType id, ItemData& data) const
+bool GameData::GetDataFor(inventory::Artifact::IdType id, ItemData& data) const
 {
     return m_impl->GetItemData(id, data);
 }
 
-bool GameData::GetArtifactData(inventory::Enchantment::IdType id, EnchantmentData& data) const
+bool GameData::GetDataFor(inventory::Enchantment::IdType id, EnchantmentData& data) const
 {
     return m_impl->GetItemData(id, data);
 }
@@ -249,7 +293,7 @@ inventory::Artifact::IdType GameData::GetArtifactIdFromName(const std::string& n
 std::string GameData::GetItemNameFromId(inventory::Artifact::IdType id) const
 {
     ItemData data;
-    if (!GetArtifactData(id, data)) {
+    if (!GetDataFor(id, data)) {
         return std::string();
     }
 
@@ -259,7 +303,7 @@ std::string GameData::GetItemNameFromId(inventory::Artifact::IdType id) const
 std::string GameData::GetEnchantmentNameFromId(inventory::Enchantment::IdType id) const
 {
     EnchantmentData data;
-    if (!GetArtifactData(id, data)) {
+    if (!GetDataFor(id, data)) {
         return std::string();
     }
 
@@ -457,6 +501,17 @@ std::string TextManager::GetSetNameText(const std::string& name) const
     }
 }
 
+const TextManager::SkillProperty& TextManager::GetSkillPropertyText(const std::string& name) const
+{
+    try {
+        return m_skillProperties.at(name);
+    }
+    catch (std::out_of_range&) {
+        static SkillProperty emptySkillProperty;
+        return emptySkillProperty;
+    }
+}
+
 bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
 {
     auto file = package.GetFile("lang_artifacts.xml");
@@ -600,17 +655,120 @@ bool TextManager::loadSkillText(const io::n2pk::N2pkFile& package)
     // Properties
     {
         auto items = doc.select_nodes("/Root/Property/*");
-        for (pugi::xpath_node_set::const_iterator it = items.begin(), end = items.end(); it != end; ++it)
+        for (pugi::xpath_node_set::const_iterator propertyRootNodeIter = items.begin(), end = items.end(); propertyRootNodeIter != end; ++propertyRootNodeIter)
         {
-            auto& node = it->node();
-            std::string name = node.name();
-            std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-            std::string text = node.child("desc").first_child().child_value();
-            m_skillProperties[name] = text;
+            auto& propertyRootNode = propertyRootNodeIter->node();
+            std::string propertyName = propertyRootNode.name();
+            //std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+            //std::string desc = node.child("desc").first_child().child_value();
+            //std::string bonusPercent = node.child("bonus_percent").child("desc").first_child().child_value();
+
+            auto f = [](std::map<std::string, std::string>& strings, const pugi::xml_node& rootNode) {
+                std::function<void(const pugi::xml_node&, std::string)> innerFunc = [&](const pugi::xml_node& node, std::string pathStr) {
+                    if (!node.first_child()) {
+                        strings[pathStr] = node.value();
+                        return;
+                    }
+
+                    pathStr += "/";
+                    pathStr += node.name();
+
+                    std::string p;
+                    for (const auto& child : node.children()) {
+                        innerFunc(child, pathStr);
+                    }
+                };
+
+                std::string pathStr;
+                return innerFunc(rootNode, pathStr);
+            };
+
+            auto& propertyText = m_skillProperties[propertyName];
+            f(propertyText.PropertyStrings, propertyRootNode);
         }
     }
 
     return true;
+}
+
+std::string TextManager::SkillProperty::GetFormattedText(int value, const std::string& propertyName, const std::string& targetType, const std::string& propertyGroup) const
+{
+    std::string propertyString = GetPropertyString(propertyName, targetType, propertyGroup);
+    std::string tempStr = propertyString;
+    auto sign = (value < 0) ? "-" : (value > 0) ? "+" : "";
+
+    if (boost::find_first(tempStr, "$VALUE_PER_LEVEL$")) {
+        // We don't know the character's level
+        boost::replace_first(tempStr, "$SIGN$", "");
+        boost::replace_first(tempStr, "$VALUE$", "?");
+
+        boost::replace_first(tempStr, "$SIGN$", sign);
+        boost::replace_first(tempStr, "$VALUE_PER_LEVEL$", std::to_string(value));
+    }
+    else {
+        boost::replace_first(tempStr, "$SIGN$", sign);
+        boost::replace_first(tempStr, "$VALUE$", std::to_string(value));
+    }
+
+    return tempStr;
+}
+
+std::string TextManager::SkillProperty::GetFormattedText(const std::string& value, const std::string& propertyName, const std::string& targetType, const std::string& propertyGroup) const
+{
+    const auto& propertyString = GetPropertyString(propertyName, targetType, propertyGroup);
+    std::string tempStr = propertyString;
+
+    if (boost::find_first(tempStr, "$VALUE_PER_LEVEL$")) {
+        // We don't know the character's level
+        boost::replace_first(tempStr, "$SIGN$", "");
+        boost::replace_first(tempStr, "$VALUE$", "?");
+
+        boost::replace_first(tempStr, "$SIGN$", "");
+        boost::replace_first(tempStr, "$VALUE_PER_LEVEL$", value);
+    }
+    else {
+        boost::replace_first(tempStr, "$SIGN$", "");
+        boost::replace_first(tempStr, "$VALUE$", value);
+    }
+
+    return tempStr;
+}
+
+std::string TextManager::SkillProperty::GetPropertyString(const std::string& propertyName, const std::string& targetType, const std::string& propertyGroup) const
+{
+    std::string stringPath = "/" + propertyName;
+
+    if (!targetType.empty()) {
+        stringPath += "/" + targetType;
+    }
+
+    if (!propertyGroup.empty()) {
+        stringPath += "/" + propertyGroup;
+    }
+
+    stringPath += "/desc/eng";
+
+    const auto& propertyString = PropertyStrings.at(stringPath);
+    return propertyString;
+}
+
+bool GameData::EnchantmentData::CalculateValue(int& value, const inventory::Enchantment& enchantment) const
+{
+    try {
+        auto minValue = MinValue.at(enchantment.ValueIndex);
+        if (!MaxValue.empty()) {
+            auto maxValue = MaxValue.at(enchantment.ValueIndex);
+            // Round half down
+            value = static_cast<int>(std::ceil(minValue + (maxValue - minValue) * enchantment.ValueScale - 0.5f));
+            return true;
+        }
+
+        value = minValue;
+        return true;
+    }
+    catch (std::out_of_range&) {
+        return false;
+    }
 }
 
 }}

@@ -139,13 +139,8 @@ void StorageEditorPanel::initializeUi()
     // Enchantment list columns
     {
         m_artifactEnchantments->AppendTextColumn(wxEmptyString, -1, wxDATAVIEW_CELL_INERT, -1, wxALIGN_NOT, wxDATAVIEW_COL_HIDDEN);
-        m_artifactEnchantments->AppendTextColumn(_("Name"), 0, wxDATAVIEW_CELL_INERT, 100, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE)
+        m_artifactEnchantments->AppendTextColumn(_("Description"), 0, wxDATAVIEW_CELL_INERT, -1, wxALIGN_LEFT, 0)
             ->GetRenderer()->EnableEllipsize(wxELLIPSIZE_END);
-        m_artifactEnchantments->AppendTextColumn(_("Value"), 1, wxDATAVIEW_CELL_INERT, 90, wxALIGN_RIGHT, wxDATAVIEW_COL_RESIZABLE)
-            ->GetRenderer()->EnableEllipsize(wxELLIPSIZE_END);
-        m_artifactEnchantments->AppendTextColumn(_("Modifier"), 2, wxDATAVIEW_CELL_INERT, 70, wxALIGN_RIGHT, wxDATAVIEW_COL_RESIZABLE)
-            ->GetRenderer()->EnableEllipsize(wxELLIPSIZE_END);
-        m_artifactEnchantments->AppendTextColumn(wxEmptyString, -1, wxDATAVIEW_CELL_INERT, -1, wxALIGN_NOT, wxDATAVIEW_COL_HIDDEN);
     }
 }
 
@@ -162,8 +157,8 @@ void StorageEditorPanel::showPropertiesForArtifact(vanhelsing::engine::inventory
 
 void StorageEditorPanel::showPropertiesForEnchantment(vanhelsing::engine::inventory::Enchantment& enchantment)
 {
-    m_enchantmentValueProperty->SetValue(enchantment.EffectValue);
-    m_enchantmentModifierProperty->SetValue(enchantment.EffectModifier);
+    m_enchantmentValueIndexProperty->SetValue(enchantment.ValueIndex);
+    m_enchantmentValueScaleProperty->SetValue(enchantment.ValueScale);
     m_propertyManager->SelectPage(m_propertiesEnchantmentPage);
 }
 
@@ -223,7 +218,7 @@ void StorageEditorPanel::showImageForArtifact(vanhelsing::engine::inventory::Art
     auto& gameData = GameData::Get();
 
     GameData::ItemData artifactData;
-    if (!gameData.GetArtifactData(artifact.Id, artifactData)) {
+    if (!gameData.GetDataFor(artifact.Id, artifactData)) {
         // TODO: Log error
         return;
     }
@@ -268,9 +263,9 @@ void StorageEditorPanel::clearDependentOnArtifact()
 void StorageEditorPanel::artifactEnchantmentsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event)
 {
     using namespace vanhelsing::engine::inventory;
+    clearDependentOnEnchantment();
 
     if (!event.GetItem()) {
-        clearDependentOnEnchantment();
         return;
     }
 
@@ -329,11 +324,13 @@ void StorageEditorPanel::propertyManagerOnPropertyGridChanged(wxPropertyGridEven
         for (auto& selection : selections) {
             auto& enchantment = *reinterpret_cast<Enchantment*>(selection.GetID());
 
-            if (property == m_enchantmentValueProperty) {
-                enchantment.EffectValue = value.GetAny().As<decltype(enchantment.EffectValue)>();
+            if (property == m_enchantmentValueIndexProperty) {
+                enchantment.SetSafeValueIndex(value.GetAny().As<decltype(enchantment.ValueIndex)>());
+                property->SetValue(enchantment.ValueIndex);
             }
-            else if (property == m_enchantmentModifierProperty) {
-                enchantment.EffectModifier = value.GetAny().As<decltype(enchantment.EffectModifier)>();
+            else if (property == m_enchantmentValueScaleProperty) {
+                enchantment.SetSafeValueScale(value.GetAny().As<decltype(enchantment.ValueScale)>());
+                property->SetValue(enchantment.ValueScale);
             }
             else {
                 throw std::logic_error("Property is not mapped");
@@ -351,9 +348,9 @@ void StorageEditorPanel::propertyManagerOnPropertyGridChanged(wxPropertyGridEven
 void StorageEditorPanel::artifactsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event)
 {
     using namespace vanhelsing::engine::inventory;
+    clearDependentOnArtifact();
 
     if (!event.GetItem()) {
-        clearDependentOnArtifact();
         return;
     }
 

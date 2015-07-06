@@ -15,7 +15,7 @@ class EnchantmentViewModel : public wxDataViewModel
 {
     enum class ColumnId
     {
-        Name, Value, Modifier,
+        Description,
         LAST_PLUS_ONE
     };
 
