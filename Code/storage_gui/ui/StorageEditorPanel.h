@@ -57,7 +57,7 @@ private:
     void clearObjectVisualAppearanceViewAndDependentUi();
 
     void tryKillFocusFromPropertyGrid();
-
+    bool promptUseUnsafeValue();
 
     wxObjectDataPtr<ArtifactViewModel> m_artifactViewModel;
     wxObjectDataPtr<EnchantmentViewModel> m_enchantmentViewModel;

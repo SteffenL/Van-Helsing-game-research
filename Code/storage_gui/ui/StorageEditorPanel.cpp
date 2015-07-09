@@ -225,6 +225,18 @@ void StorageEditorPanel::tryKillFocusFromPropertyGrid()
     }
 }
 
+bool StorageEditorPanel::promptUseUnsafeValue()
+{
+    auto answer = wxMessageBox(_(
+        "This value is considered unsafe.\n\n"
+        "Values that are unsafe may have adverse effects on general stability, cause glitches, or actually have no function at all. Sometimes, a glitch will even be useful for something.\n\n"
+        "Please proceed at your own risk; otherwise, the value will be constrained."),
+        _("Unsafe value"),
+        wxOK | wxCANCEL | wxICON_WARNING
+    );
+    return answer == wxOK;
+}
+
 void StorageEditorPanel::populateDependentOnArtifact(vanhelsing::engine::inventory::Artifact& artifact)
 {
     populateEnchantments(artifact);
@@ -351,11 +363,25 @@ void StorageEditorPanel::propertyManagerOnPropertyGridChanged(wxPropertyGridEven
             auto& enchantment = *reinterpret_cast<Enchantment*>(selection.GetID());
 
             if (property == m_enchantmentValueIndexProperty) {
-                enchantment.SetSafeValueIndex(value.GetAny().As<decltype(enchantment.ValueIndex)>());
+                auto v = value.GetAny().As<decltype(enchantment.ValueIndex)>();
+                if (!enchantment.ValueIndexIsSafe(v) && promptUseUnsafeValue()) {
+                    enchantment.SetValueIndex(v);
+                }
+                else {
+                    enchantment.SetSafeValueIndex(v);
+                }
+
                 property->SetValue(enchantment.ValueIndex);
             }
             else if (property == m_enchantmentValueScaleProperty) {
-                enchantment.SetSafeValueScale(value.GetAny().As<decltype(enchantment.ValueScale)>());
+                auto v = value.GetAny().As<decltype(enchantment.ValueScale)>();
+                if (!enchantment.ScaleIsSafe(v) && promptUseUnsafeValue()) {
+                    enchantment.SetValueScale(v);
+                }
+                else {
+                    enchantment.SetSafeValueScale(v);
+                }
+
                 property->SetValue(enchantment.ValueScale);
             }
             else {
