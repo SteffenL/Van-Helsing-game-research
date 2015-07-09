@@ -39,6 +39,9 @@
     <ClCompile Include="ui\generated\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ui\VisualAppearanceView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -69,6 +72,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ui\generated\main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\VisualAppearanceView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

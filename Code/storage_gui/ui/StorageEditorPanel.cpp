@@ -2,6 +2,7 @@
 #include "viewmodels/ArtifactViewModel.h"
 #include "viewmodels/EnchantmentViewModel.h"
 #include "ObjectInspector.h"
+#include "VisualAppearanceView.h"
 #include "../services/ApplicationServices.h"
 #include <vanhelsing/engine/GameData.h>
 
@@ -177,33 +178,7 @@ void StorageEditorPanel::populateDependentOnArtifact(vanhelsing::engine::invento
 {
     populateEnchantments(artifact);
     m_objectInspector->ShowPropertiesForArtifact(artifact);
-    showImageForArtifact(artifact);
-}
-
-void StorageEditorPanel::showImageForArtifact(vanhelsing::engine::inventory::Artifact& artifact)
-{
-    using namespace vanhelsing::engine;
-
-    auto& gameData = GameData::Get();
-
-    GameData::ItemData artifactData;
-    if (!gameData.GetDataFor(artifact.Id, artifactData)) {
-        // TODO: Log error
-        return;
-    }
-
-    std::vector<char> artifactIconData;
-    if (!gameData.GetArtifactIcon(artifactData.Icon, artifactIconData)) {
-        // TODO: Log error
-        return;
-    }
-
-    wxMemoryInputStream memIStream(artifactIconData.data(), artifactIconData.size());
-    wxImage image(memIStream, wxBITMAP_TYPE_TGA);
-    wxBitmap bmp(image);
-
-    m_visualAppearanceImage->SetBitmap(bmp);
-    m_visualAppearancePanel->Layout();
+    m_visualAppearanceView->ShowImageForArtifact(artifact);
 }
 
 void StorageEditorPanel::clearDependentOnArtifactBag()
@@ -224,9 +199,7 @@ void StorageEditorPanel::clearDependentOnArtifact()
     }
 
     clearDependentOnEnchantment();
-
-    m_visualAppearanceImage->SetBitmap(wxNullBitmap);
-    m_visualAppearancePanel->Layout();
+    m_visualAppearanceView->ClearDisplay();
 }
 
 void StorageEditorPanel::artifactEnchantmentsOnDataViewCtrlSelectionChanging(wxDataViewEvent& event)

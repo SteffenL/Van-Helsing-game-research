@@ -12,6 +12,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
 class ObjectInspector;
+class VisualAppearanceView;
 
 #include <wx/string.h>
 #include <wx/bitmap.h>
@@ -27,8 +28,8 @@ class ObjectInspector;
 #include <wx/dataview.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
-#include <wx/statbmp.h>
 #include <wx/aui/aui.h>
+#include <wx/statbmp.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>
 #include <wx/propgrid/advprops.h>
@@ -83,8 +84,7 @@ class StorageEditorPanelBase : public wxPanel
 		wxPanel* m_panel6;
 		wxDataViewCtrl* m_artifactEnchantments;
 		ObjectInspector* m_objectInspector;
-		wxPanel* m_visualAppearancePanel;
-		wxStaticBitmap* m_visualAppearanceImage;
+		VisualAppearanceView* m_visualAppearanceView;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void artifactsOnDataViewCtrlSelectionChanged( wxDataViewEvent& event ) { event.Skip(); }
@@ -96,6 +96,23 @@ class StorageEditorPanelBase : public wxPanel
 		StorageEditorPanelBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 905,551 ), long style = wxTAB_TRAVERSAL ); wxAuiManager m_mgr;
 		
 		~StorageEditorPanelBase();
+	
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class VisualAppearanceViewBase
+///////////////////////////////////////////////////////////////////////////////
+class VisualAppearanceViewBase : public wxPanel 
+{
+	private:
+	
+	protected:
+		wxStaticBitmap* m_visualAppearanceImage;
+	
+	public:
+		
+		VisualAppearanceViewBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxTAB_TRAVERSAL ); 
+		~VisualAppearanceViewBase();
 	
 };
 

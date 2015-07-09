@@ -6,6 +6,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 #include "../ObjectInspector.h"
+#include "../VisualAppearanceView.h"
 
 #include "main.h"
 
@@ -117,25 +118,9 @@ StorageEditorPanelBase::StorageEditorPanelBase( wxWindow* parent, wxWindowID id,
 	m_objectInspector = new ObjectInspector( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_mgr.AddPane( m_objectInspector, wxAuiPaneInfo() .Name( wxT("objectInspector") ).Right() .Caption( _("Object inspector") ).CloseButton( false ).Movable( false ).Dock().Resizable().FloatingSize( wxSize( -1,-1 ) ).Floatable( false ).BestSize( wxSize( 280,-1 ) ).Layer( 2 ) );
 	
-	m_visualAppearancePanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_visualAppearancePanel, wxAuiPaneInfo() .Name( wxT("visualAppearance") ).Right() .Caption( _("Visual appearance") ).CloseButton( false ).Movable( false ).Dock().Resizable().FloatingSize( wxSize( -1,-1 ) ).Floatable( false ).Row( 0 ).Position( 0 ).BestSize( wxSize( 280,-1 ) ).Layer( 2 ) );
+	m_visualAppearanceView = new VisualAppearanceView( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_mgr.AddPane( m_visualAppearanceView, wxAuiPaneInfo() .Name( wxT("visualAppearance") ).Right() .Caption( _("Visual appearance") ).CloseButton( false ).Movable( false ).Dock().Resizable().FloatingSize( wxSize( -1,-1 ) ).Floatable( false ).Row( 0 ).Position( 0 ).BestSize( wxSize( 280,-1 ) ).Layer( 2 ) );
 	
-	wxBoxSizer* bSizer4;
-	bSizer4 = new wxBoxSizer( wxVERTICAL );
-	
-	
-	bSizer4->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	m_visualAppearanceImage = new wxStaticBitmap( m_visualAppearancePanel, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer4->Add( m_visualAppearanceImage, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
-	
-	
-	bSizer4->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	
-	m_visualAppearancePanel->SetSizer( bSizer4 );
-	m_visualAppearancePanel->Layout();
-	bSizer4->Fit( m_visualAppearancePanel );
 	
 	m_mgr.Update();
 	
@@ -152,6 +137,29 @@ StorageEditorPanelBase::~StorageEditorPanelBase()
 	
 	m_mgr.UnInit();
 	
+}
+
+VisualAppearanceViewBase::VisualAppearanceViewBase( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
+{
+	wxBoxSizer* bSizer4;
+	bSizer4 = new wxBoxSizer( wxVERTICAL );
+	
+	
+	bSizer4->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	m_visualAppearanceImage = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer4->Add( m_visualAppearanceImage, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+	
+	
+	bSizer4->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	
+	this->SetSizer( bSizer4 );
+	this->Layout();
+}
+
+VisualAppearanceViewBase::~VisualAppearanceViewBase()
+{
 }
 
 DummyForEmbeddedImages::DummyForEmbeddedImages( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )

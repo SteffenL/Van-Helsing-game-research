@@ -44,8 +44,6 @@ private:
     void populateDependentOnGameSave();
     void populateDependentOnArtifact(vanhelsing::engine::inventory::Artifact& artifact);
 
-    void showImageForArtifact(vanhelsing::engine::inventory::Artifact& artifact);
-
     void clearDependentOnGameSave();
     void clearDependentOnArtifactBag();
     void clearDependentOnArtifact();

@@ -94,6 +94,7 @@
     <ClCompile Include="ui\MainFrame.cpp" />
     <ClCompile Include="ui\StorageEditorPanel.cpp" />
     <ClCompile Include="ui\viewmodels\EnchantmentViewModel.cpp" />
+    <ClCompile Include="ui\VisualAppearanceView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -106,6 +107,7 @@
     <ClInclude Include="ui\MainFrame.h" />
     <ClInclude Include="ui\StorageEditorPanel.h" />
     <ClInclude Include="ui\viewmodels\EnchantmentViewModel.h" />
+    <ClInclude Include="ui\VisualAppearanceView.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ui\main.fbp" />
