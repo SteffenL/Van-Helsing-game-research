@@ -88,8 +88,9 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="services\ApplicationServices.cpp" />
-    <ClCompile Include="ui\viewmodels\ArtifactViewModel.cpp" />
     <ClCompile Include="ui\generated\main.cpp" />
+    <ClCompile Include="ui\ObjectInspector.cpp" />
+    <ClCompile Include="ui\viewmodels\ArtifactViewModel.cpp" />
     <ClCompile Include="ui\MainFrame.cpp" />
     <ClCompile Include="ui\StorageEditorPanel.cpp" />
     <ClCompile Include="ui\viewmodels\EnchantmentViewModel.cpp" />
@@ -99,8 +100,9 @@
     <ClInclude Include="AppVersion.h" />
     <ClInclude Include="msw\resource.h" />
     <ClInclude Include="services\ApplicationServices.h" />
-    <ClInclude Include="ui\viewmodels\ArtifactViewModel.h" />
     <ClInclude Include="ui\generated\main.h" />
+    <ClInclude Include="ui\ObjectInspector.h" />
+    <ClInclude Include="ui\viewmodels\ArtifactViewModel.h" />
     <ClInclude Include="ui\MainFrame.h" />
     <ClInclude Include="ui\StorageEditorPanel.h" />
     <ClInclude Include="ui\viewmodels\EnchantmentViewModel.h" />

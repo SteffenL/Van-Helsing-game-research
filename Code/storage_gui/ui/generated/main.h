@@ -11,6 +11,8 @@
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
+class ObjectInspector;
+
 #include <wx/string.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
@@ -25,11 +27,11 @@
 #include <wx/dataview.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
+#include <wx/statbmp.h>
+#include <wx/aui/aui.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>
 #include <wx/propgrid/advprops.h>
-#include <wx/statbmp.h>
-#include <wx/aui/aui.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -80,26 +82,13 @@ class StorageEditorPanelBase : public wxPanel
 		wxDataViewCtrl* m_artifacts;
 		wxPanel* m_panel6;
 		wxDataViewCtrl* m_artifactEnchantments;
-		wxPanel* m_panel7;
-		wxPropertyGridManager* m_propertyManager;
-		wxPropertyGridPage* m_propertiesEmptyPage;
-		wxPropertyGridPage* m_propertiesArtifactPage;
-		wxPGProperty* m_artifactRarityProperty;
-		wxPGProperty* m_artifactQualityProperty;
-		wxPGProperty* m_artifactQuantityProperty;
-		wxPGProperty* m_artifactIdentifiedProperty;
-		wxPGProperty* m_artifactProperty1Property;
-		wxPGProperty* m_artifactProperty2Property;
-		wxPropertyGridPage* m_propertiesEnchantmentPage;
-		wxPGProperty* m_enchantmentValueIndexProperty;
-		wxPGProperty* m_enchantmentValueScaleProperty;
+		ObjectInspector* m_objectInspector;
 		wxPanel* m_visualAppearancePanel;
 		wxStaticBitmap* m_visualAppearanceImage;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void artifactsOnDataViewCtrlSelectionChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void artifactEnchantmentsOnDataViewCtrlSelectionChanged( wxDataViewEvent& event ) { event.Skip(); }
-		virtual void propertyManagerOnPropertyGridChanged( wxPropertyGridEvent& event ) { event.Skip(); }
 		
 	
 	public:
@@ -124,6 +113,38 @@ class DummyForEmbeddedImages : public wxPanel
 		
 		DummyForEmbeddedImages( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxTAB_TRAVERSAL ); 
 		~DummyForEmbeddedImages();
+	
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class ObjectInspectorBase
+///////////////////////////////////////////////////////////////////////////////
+class ObjectInspectorBase : public wxPanel 
+{
+	private:
+	
+	protected:
+		wxPropertyGridManager* m_propertyManager;
+		wxPropertyGridPage* m_propertiesEmptyPage;
+		wxPropertyGridPage* m_propertiesArtifactPage;
+		wxPGProperty* m_artifactRarityProperty;
+		wxPGProperty* m_artifactQualityProperty;
+		wxPGProperty* m_artifactQuantityProperty;
+		wxPGProperty* m_artifactIdentifiedProperty;
+		wxPGProperty* m_artifactProperty1Property;
+		wxPGProperty* m_artifactProperty2Property;
+		wxPropertyGridPage* m_propertiesEnchantmentPage;
+		wxPGProperty* m_enchantmentValueIndexProperty;
+		wxPGProperty* m_enchantmentValueScaleProperty;
+		
+		// Virtual event handlers, overide them in your derived class
+		virtual void propertyManagerOnPropertyGridChanged( wxPropertyGridEvent& event ) { event.Skip(); }
+		
+	
+	public:
+		
+		ObjectInspectorBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxTAB_TRAVERSAL ); 
+		~ObjectInspectorBase();
 	
 };
 

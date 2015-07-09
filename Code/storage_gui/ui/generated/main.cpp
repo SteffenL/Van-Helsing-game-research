@@ -5,6 +5,8 @@
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
+#include "../ObjectInspector.h"
+
 #include "main.h"
 
 ///////////////////////////////////////////////////////////////////////////
@@ -112,38 +114,9 @@ StorageEditorPanelBase::StorageEditorPanelBase( wxWindow* parent, wxWindowID id,
 	m_panel6->SetSizer( bSizer10 );
 	m_panel6->Layout();
 	bSizer10->Fit( m_panel6 );
-	m_panel7 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_panel7, wxAuiPaneInfo() .Name( wxT("objectInspector") ).Right() .Caption( _("Object inspector") ).CloseButton( false ).Movable( false ).Dock().Resizable().FloatingSize( wxSize( -1,-1 ) ).Floatable( false ).BestSize( wxSize( 280,-1 ) ).Layer( 2 ) );
+	m_objectInspector = new ObjectInspector( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_mgr.AddPane( m_objectInspector, wxAuiPaneInfo() .Name( wxT("objectInspector") ).Right() .Caption( _("Object inspector") ).CloseButton( false ).Movable( false ).Dock().Resizable().FloatingSize( wxSize( -1,-1 ) ).Floatable( false ).BestSize( wxSize( 280,-1 ) ).Layer( 2 ) );
 	
-	wxBoxSizer* bSizer9;
-	bSizer9 = new wxBoxSizer( wxVERTICAL );
-	
-	m_propertyManager = new wxPropertyGridManager(m_panel7, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_HIDE_CATEGORIES|wxPG_HIDE_MARGIN|wxPG_SPLITTER_AUTO_CENTER|wxNO_BORDER);
-	m_propertyManager->SetExtraStyle( wxPG_EX_INIT_NOCAT|wxPG_EX_NO_FLAT_TOOLBAR ); 
-	
-	m_propertiesEmptyPage = m_propertyManager->AddPage( wxEmptyString, wxNullBitmap );
-	
-	m_propertiesArtifactPage = m_propertyManager->AddPage( wxEmptyString, wxNullBitmap );
-	m_artifactRarityProperty = m_propertiesArtifactPage->Append( new wxEnumProperty( _("Rarity"), _("Rarity") ) ); 
-	m_artifactQualityProperty = m_propertiesArtifactPage->Append( new wxEnumProperty( _("Quality"), _("Quality") ) ); 
-	m_artifactQuantityProperty = m_propertiesArtifactPage->Append( new wxIntProperty( _("Quantity"), _("Quantity") ) ); 
-	m_artifactIdentifiedProperty = m_propertiesArtifactPage->Append( new wxBoolProperty( _("Identified"), _("Identified") ) ); 
-	m_artifactProperty1Property = m_propertiesArtifactPage->Append( new wxIntProperty( _("Property 1"), _("Property 1") ) );
-	m_propertiesArtifactPage->SetPropertyHelpString( m_artifactProperty1Property, _("Armor: Defense") );
-	m_artifactProperty2Property = m_propertiesArtifactPage->Append( new wxIntProperty( _("Property 2"), _("Property 2") ) );
-	m_propertiesArtifactPage->SetPropertyHelpString( m_artifactProperty2Property, _("Armor: Essence capacity") );
-	
-	m_propertiesEnchantmentPage = m_propertyManager->AddPage( wxEmptyString, wxNullBitmap );
-	m_enchantmentValueIndexProperty = m_propertiesEnchantmentPage->Append( new wxIntProperty( _("Value index"), _("Value index") ) );
-	m_propertiesEnchantmentPage->SetPropertyHelpString( m_enchantmentValueIndexProperty, _("An index in the min/max value array specified for this item.\n\nPossible range: 0 to length of array minus 1.\nArray length is typically between 1 and 16.\n\nOnly the min value is used when there is no max value.\n\nSince a bounds check is not done for the index in-game, exceeding the bounds can produce interesting values.") );
-	m_enchantmentValueScaleProperty = m_propertiesEnchantmentPage->Append( new wxFloatProperty( _("Value scale"), _("Value scale") ) );
-	m_propertiesEnchantmentPage->SetPropertyHelpString( m_enchantmentValueScaleProperty, _("A percentage that scales the value between the minimum and maximum value specified for this item.") );
-	bSizer9->Add( m_propertyManager, 1, wxEXPAND, 5 );
-	
-	
-	m_panel7->SetSizer( bSizer9 );
-	m_panel7->Layout();
-	bSizer9->Fit( m_panel7 );
 	m_visualAppearancePanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_mgr.AddPane( m_visualAppearancePanel, wxAuiPaneInfo() .Name( wxT("visualAppearance") ).Right() .Caption( _("Visual appearance") ).CloseButton( false ).Movable( false ).Dock().Resizable().FloatingSize( wxSize( -1,-1 ) ).Floatable( false ).Row( 0 ).Position( 0 ).BestSize( wxSize( 280,-1 ) ).Layer( 2 ) );
 	
@@ -169,7 +142,6 @@ StorageEditorPanelBase::StorageEditorPanelBase( wxWindow* parent, wxWindowID id,
 	// Connect Events
 	m_artifacts->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( StorageEditorPanelBase::artifactsOnDataViewCtrlSelectionChanged ), NULL, this );
 	m_artifactEnchantments->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( StorageEditorPanelBase::artifactEnchantmentsOnDataViewCtrlSelectionChanged ), NULL, this );
-	m_propertyManager->Connect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( StorageEditorPanelBase::propertyManagerOnPropertyGridChanged ), NULL, this );
 }
 
 StorageEditorPanelBase::~StorageEditorPanelBase()
@@ -177,7 +149,6 @@ StorageEditorPanelBase::~StorageEditorPanelBase()
 	// Disconnect Events
 	m_artifacts->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( StorageEditorPanelBase::artifactsOnDataViewCtrlSelectionChanged ), NULL, this );
 	m_artifactEnchantments->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( StorageEditorPanelBase::artifactEnchantmentsOnDataViewCtrlSelectionChanged ), NULL, this );
-	m_propertyManager->Disconnect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( StorageEditorPanelBase::propertyManagerOnPropertyGridChanged ), NULL, this );
 	
 	m_mgr.UnInit();
 	
@@ -200,4 +171,46 @@ DummyForEmbeddedImages::DummyForEmbeddedImages( wxWindow* parent, wxWindowID id,
 
 DummyForEmbeddedImages::~DummyForEmbeddedImages()
 {
+}
+
+ObjectInspectorBase::ObjectInspectorBase( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
+{
+	wxBoxSizer* bSizer9;
+	bSizer9 = new wxBoxSizer( wxVERTICAL );
+	
+	m_propertyManager = new wxPropertyGridManager(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_HIDE_CATEGORIES|wxPG_HIDE_MARGIN|wxPG_SPLITTER_AUTO_CENTER|wxNO_BORDER);
+	m_propertyManager->SetExtraStyle( wxPG_EX_INIT_NOCAT|wxPG_EX_NO_FLAT_TOOLBAR ); 
+	
+	m_propertiesEmptyPage = m_propertyManager->AddPage( wxEmptyString, wxNullBitmap );
+	
+	m_propertiesArtifactPage = m_propertyManager->AddPage( wxEmptyString, wxNullBitmap );
+	m_artifactRarityProperty = m_propertiesArtifactPage->Append( new wxEnumProperty( _("Rarity"), _("Rarity") ) ); 
+	m_artifactQualityProperty = m_propertiesArtifactPage->Append( new wxEnumProperty( _("Quality"), _("Quality") ) ); 
+	m_artifactQuantityProperty = m_propertiesArtifactPage->Append( new wxIntProperty( _("Quantity"), _("Quantity") ) ); 
+	m_artifactIdentifiedProperty = m_propertiesArtifactPage->Append( new wxBoolProperty( _("Identified"), _("Identified") ) ); 
+	m_artifactProperty1Property = m_propertiesArtifactPage->Append( new wxIntProperty( _("Property 1"), _("Property 1") ) );
+	m_propertiesArtifactPage->SetPropertyHelpString( m_artifactProperty1Property, _("Armor: Defense") );
+	m_artifactProperty2Property = m_propertiesArtifactPage->Append( new wxIntProperty( _("Property 2"), _("Property 2") ) );
+	m_propertiesArtifactPage->SetPropertyHelpString( m_artifactProperty2Property, _("Armor: Essence capacity") );
+	
+	m_propertiesEnchantmentPage = m_propertyManager->AddPage( wxEmptyString, wxNullBitmap );
+	m_enchantmentValueIndexProperty = m_propertiesEnchantmentPage->Append( new wxIntProperty( _("Value index"), _("Value index") ) );
+	m_propertiesEnchantmentPage->SetPropertyHelpString( m_enchantmentValueIndexProperty, _("An index in the min/max value array specified for this item.\n\nPossible range: 0 to length of array minus 1.\nArray length is typically between 1 and 16.\n\nOnly the min value is used when there is no max value.\n\nSince a bounds check is not done for the index in-game, exceeding the bounds can produce interesting values.") );
+	m_enchantmentValueScaleProperty = m_propertiesEnchantmentPage->Append( new wxFloatProperty( _("Value scale"), _("Value scale") ) );
+	m_propertiesEnchantmentPage->SetPropertyHelpString( m_enchantmentValueScaleProperty, _("A percentage that scales the value between the minimum and maximum value specified for this item.") );
+	bSizer9->Add( m_propertyManager, 1, wxEXPAND, 5 );
+	
+	
+	this->SetSizer( bSizer9 );
+	this->Layout();
+	
+	// Connect Events
+	m_propertyManager->Connect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( ObjectInspectorBase::propertyManagerOnPropertyGridChanged ), NULL, this );
+}
+
+ObjectInspectorBase::~ObjectInspectorBase()
+{
+	// Disconnect Events
+	m_propertyManager->Disconnect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( ObjectInspectorBase::propertyManagerOnPropertyGridChanged ), NULL, this );
+	
 }

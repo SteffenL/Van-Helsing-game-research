@@ -28,7 +28,6 @@ private:
     virtual void artifactsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event);
     virtual void artifactEnchantmentsOnDataViewCtrlSelectionChanging(wxDataViewEvent& event);
     virtual void artifactEnchantmentsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event);
-    virtual void propertyManagerOnPropertyGridChanged(wxPropertyGridEvent& event);
 
     // Event handlers
     void onGameSaveOpened(vanhelsing::services::OpenedStorageGameSaveFile& fileInfo);
@@ -37,7 +36,6 @@ private:
     void subscribeToEvents();
 
     void initializeUi();
-    void initializeGameDataDependentProperties();
     void initializeGameSaveDependentUi();
 
     void populateArtifacts();
@@ -46,8 +44,6 @@ private:
     void populateDependentOnGameSave();
     void populateDependentOnArtifact(vanhelsing::engine::inventory::Artifact& artifact);
 
-    void showPropertiesForArtifact(vanhelsing::engine::inventory::Artifact& artifact);
-    void showPropertiesForEnchantment(vanhelsing::engine::inventory::Enchantment& enchantment);
     void showImageForArtifact(vanhelsing::engine::inventory::Artifact& artifact);
 
     void clearDependentOnGameSave();
@@ -55,9 +51,6 @@ private:
     void clearDependentOnArtifact();
     void clearDependentOnEnchantment();
     void clearObjectVisualAppearanceViewAndDependentUi();
-
-    void tryKillFocusFromPropertyGrid();
-    bool promptUseUnsafeValue();
 
     wxObjectDataPtr<ArtifactViewModel> m_artifactViewModel;
     wxObjectDataPtr<EnchantmentViewModel> m_enchantmentViewModel;
