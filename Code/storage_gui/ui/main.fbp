@@ -723,11 +723,11 @@
                     <property name="name">bSizer9</property>
                     <property name="orient">wxVERTICAL</property>
                     <property name="permission">none</property>
-                    <object class="sizeritem" expanded="0">
+                    <object class="sizeritem" expanded="1">
                         <property name="border">5</property>
                         <property name="flag">wxEXPAND</property>
                         <property name="proportion">1</property>
-                        <object class="wxPropertyGridManager" expanded="0">
+                        <object class="wxPropertyGridManager" expanded="1">
                             <property name="BottomDockable">1</property>
                             <property name="LeftDockable">1</property>
                             <property name="RightDockable">1</property>
@@ -866,16 +866,16 @@
                                 <property name="name">m_propertiesEnchantmentPage</property>
                                 <property name="permission">protected</property>
                                 <object class="propGridItem" expanded="0">
-                                    <property name="help"></property>
-                                    <property name="label">Value</property>
-                                    <property name="name">m_enchantmentValueProperty</property>
+                                    <property name="help">An index in the min/max value array specified for this item.&#x0A;&#x0A;Possible range: 0 to length of array minus 1.&#x0A;Array length is typically between 1 and 16.&#x0A;&#x0A;Only the min value is used when there is no max value.&#x0A;&#x0A;Since a bounds check is not done for the index in-game, exceeding the bounds can produce interesting values.</property>
+                                    <property name="label">Value index</property>
+                                    <property name="name">m_enchantmentValueIndexProperty</property>
                                     <property name="permission">protected</property>
                                     <property name="type">Int</property>
                                 </object>
                                 <object class="propGridItem" expanded="0">
-                                    <property name="help"></property>
-                                    <property name="label">Modifier</property>
-                                    <property name="name">m_enchantmentModifierProperty</property>
+                                    <property name="help">A percentage that scales the value between the minimum and maximum value specified for this item.</property>
+                                    <property name="label">Value scale</property>
+                                    <property name="name">m_enchantmentValueScaleProperty</property>
                                     <property name="permission">protected</property>
                                     <property name="type">Float</property>
                                 </object>

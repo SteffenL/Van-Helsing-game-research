@@ -81,8 +81,8 @@ void StorageGameSaveWriter::writeEnchantments(StreamHelperWriter& stream, const 
         using inventory::Enchantment;
 
         stream.Write(enchantment->Id);
-        stream.Write(enchantment->EffectValue);
-        stream.Write(enchantment->EffectModifier);
+        stream.Write(enchantment->ValueIndex);
+        stream.Write(enchantment->ValueScale);
         stream.Write(enchantment->Unknown.v4);
 
         if (m_containerInfo.Version >= 0x2b6) {

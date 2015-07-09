@@ -118,14 +118,14 @@ void StorageGameSaveReader::readEnchantments(StreamHelperReader& stream, invento
         m_logger << Log::indent;
 
         stream.Read(enchantment->Id);
-        stream.Read(enchantment->EffectValue);
-        stream.Read(enchantment->EffectModifier);
+        stream.Read(enchantment->ValueIndex);
+        stream.Read(enchantment->ValueScale);
         stream.Read(enchantment->Unknown.v4);
 
         auto& name = enchantment->GetName();
         m_logger << "ID: 0x" << std::hex << enchantment->Id << std::dec << " (" << (!name.empty() ? name : "unknown") << ")" << std::endl;
-        m_logger << "Effect value: " << enchantment->EffectValue << std::endl;
-        m_logger << "Effect modifier: " << enchantment->EffectModifier << std::endl;
+        m_logger << "Value index: " << enchantment->ValueIndex << std::endl;
+        m_logger << "Value scale: " << enchantment->ValueScale << std::endl;
 
         m_logger << "Unknown:" << std::endl;
         m_logger << Log::indent;

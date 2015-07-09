@@ -24,7 +24,9 @@ private:
     // Inherited event handlers
     virtual void artifactBagOnToolClicked(wxCommandEvent& event);
     virtual void artifactBagOnUpdateUI(wxUpdateUIEvent& event);
+    virtual void artifactsOnDataViewCtrlSelectionChanging(wxDataViewEvent& event);
     virtual void artifactsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event);
+    virtual void artifactEnchantmentsOnDataViewCtrlSelectionChanging(wxDataViewEvent& event);
     virtual void artifactEnchantmentsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event);
     virtual void propertyManagerOnPropertyGridChanged(wxPropertyGridEvent& event);
 
@@ -33,20 +35,29 @@ private:
 
 
     void subscribeToEvents();
+
+    void initializeUi();
+    void initializeGameDataDependentProperties();
+    void initializeGameSaveDependentUi();
+
     void populateArtifacts();
     void populateEnchantments(vanhelsing::engine::inventory::Artifact& artifact);
     void populateBags();
-    void populateGameSaveDependentUi();
-    void initializeUi();
+    void populateDependentOnGameSave();
+    void populateDependentOnArtifact(vanhelsing::engine::inventory::Artifact& artifact);
+
     void showPropertiesForArtifact(vanhelsing::engine::inventory::Artifact& artifact);
     void showPropertiesForEnchantment(vanhelsing::engine::inventory::Enchantment& enchantment);
-    void initializeGameDataDependentProperties();
-    void initializeGameSaveDependentUi();
-    void clearGameSaveDependentUi();
-    void clearArtifacts();
-    void clearEnchantments();
-    void clearProperties();
     void showImageForArtifact(vanhelsing::engine::inventory::Artifact& artifact);
+
+    void clearDependentOnGameSave();
+    void clearDependentOnArtifactBag();
+    void clearDependentOnArtifact();
+    void clearDependentOnEnchantment();
+    void clearObjectVisualAppearanceViewAndDependentUi();
+
+    void tryKillFocusFromPropertyGrid();
+    bool promptUseUnsafeValue();
 
     wxObjectDataPtr<ArtifactViewModel> m_artifactViewModel;
     wxObjectDataPtr<EnchantmentViewModel> m_enchantmentViewModel;

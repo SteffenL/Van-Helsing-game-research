@@ -1,0 +1,2 @@
+Patch includes:
+-  New event: wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGING

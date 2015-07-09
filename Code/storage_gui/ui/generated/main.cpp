@@ -134,8 +134,10 @@ StorageEditorPanelBase::StorageEditorPanelBase( wxWindow* parent, wxWindowID id,
 	m_propertiesArtifactPage->SetPropertyHelpString( m_artifactProperty2Property, _("Armor: Essence capacity") );
 	
 	m_propertiesEnchantmentPage = m_propertyManager->AddPage( wxEmptyString, wxNullBitmap );
-	m_enchantmentValueProperty = m_propertiesEnchantmentPage->Append( new wxIntProperty( _("Value"), _("Value") ) ); 
-	m_enchantmentModifierProperty = m_propertiesEnchantmentPage->Append( new wxFloatProperty( _("Modifier"), _("Modifier") ) ); 
+	m_enchantmentValueIndexProperty = m_propertiesEnchantmentPage->Append( new wxIntProperty( _("Value index"), _("Value index") ) );
+	m_propertiesEnchantmentPage->SetPropertyHelpString( m_enchantmentValueIndexProperty, _("An index in the min/max value array specified for this item.\n\nPossible range: 0 to length of array minus 1.\nArray length is typically between 1 and 16.\n\nOnly the min value is used when there is no max value.\n\nSince a bounds check is not done for the index in-game, exceeding the bounds can produce interesting values.") );
+	m_enchantmentValueScaleProperty = m_propertiesEnchantmentPage->Append( new wxFloatProperty( _("Value scale"), _("Value scale") ) );
+	m_propertiesEnchantmentPage->SetPropertyHelpString( m_enchantmentValueScaleProperty, _("A percentage that scales the value between the minimum and maximum value specified for this item.") );
 	bSizer9->Add( m_propertyManager, 1, wxEXPAND, 5 );
 	
 	

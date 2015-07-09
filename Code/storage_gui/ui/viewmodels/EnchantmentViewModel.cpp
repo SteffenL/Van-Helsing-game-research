@@ -24,12 +24,8 @@ unsigned int EnchantmentViewModel::GetColumnCount() const
 wxString EnchantmentViewModel::GetColumnType(unsigned int col) const
 {
     switch (static_cast<ColumnId>(col)) {
-    case ColumnId::Name:
+    case ColumnId::Description:
         return wxT("string");
-    case ColumnId::Value:
-        return wxT("long");
-    case ColumnId::Modifier:
-        return wxT("float");
 
     default:
         throw std::logic_error("Unexpected column");
@@ -38,25 +34,37 @@ wxString EnchantmentViewModel::GetColumnType(unsigned int col) const
 
 void EnchantmentViewModel::GetValue(wxVariant &variant, const wxDataViewItem &item, unsigned int col) const
 {
+    using namespace vanhelsing::engine;
     using namespace vanhelsing::engine::inventory;
 
     const auto& enchantment = *reinterpret_cast<Enchantment*>(item.GetID());
+    const auto& gameData = GameData::Get();
+    const auto& textManager = gameData.GetTextManager();
 
     switch (static_cast<ColumnId>(col)) {
-    case ColumnId::Name:
+    case ColumnId::Description:
         {
-            const auto& friendlyName = enchantment.GetName();
-            variant = wxString::FromUTF8(friendlyName.data());
+            GameData::EnchantmentData enchantmentData;
+            if (gameData.GetDataFor(enchantment.Id, enchantmentData)) {
+                const auto& propertyText = textManager.GetSkillPropertyText(enchantmentData.Property);
+                std::string formattedDescription;
+
+                int value = 0;
+                if (enchantmentData.CalculateValue(value, enchantment)) {
+                    formattedDescription = propertyText.GetFormattedText(value, enchantmentData.Property, enchantmentData.TargetType, enchantmentData.PriorityGroup);
+                }
+                else {
+                    formattedDescription = propertyText.GetFormattedText("?", enchantmentData.Property, enchantmentData.TargetType, enchantmentData.PriorityGroup);
+                }
+
+                variant = wxString::FromUTF8(formattedDescription.data());
+            }
+            else {
+                variant = wxString::FromUTF8(enchantment.GetName().data());
+            }
+
             break;
         }
-
-    case ColumnId::Value:
-        variant = static_cast<long>(enchantment.EffectValue);
-        break;
-
-    case ColumnId::Modifier:
-        variant = enchantment.EffectModifier;
-        break;
 
     default:
         throw std::logic_error("Unexpected column");

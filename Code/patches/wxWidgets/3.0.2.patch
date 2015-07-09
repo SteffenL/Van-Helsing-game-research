@@ -1,0 +1,214 @@
+diff --git include/wx/generic/grid.h include/wx/generic/grid.h
+index c58cec3..4b8d2e8 100644
+--- include/wx/generic/grid.h
++++ include/wx/generic/grid.h
+@@ -46,11 +46,13 @@ extern WXDLLIMPEXP_DATA_ADV(const char) wxGridNameStr[];
+ #define wxGRID_VALUE_STRING     wxT("string")
+ #define wxGRID_VALUE_BOOL       wxT("bool")
+ #define wxGRID_VALUE_NUMBER     wxT("long")
++#define wxGRID_VALUE_NUMBER64   wxT("longlong")
+ #define wxGRID_VALUE_FLOAT      wxT("double")
+ #define wxGRID_VALUE_CHOICE     wxT("choice")
+ 
+ #define wxGRID_VALUE_TEXT wxGRID_VALUE_STRING
+ #define wxGRID_VALUE_LONG wxGRID_VALUE_NUMBER
++#define wxGRID_VALUE_LONGLONG wxGRID_VALUE_NUMBER64
+ 
+ // magic constant which tells (to some functions) to automatically calculate
+ // the appropriate size
+@@ -694,10 +696,12 @@ public:
+     virtual bool CanSetValueAs( int row, int col, const wxString& typeName );
+ 
+     virtual long GetValueAsLong( int row, int col );
++    virtual wxLongLong_t GetValueAsLongLong( int row, int col );
+     virtual double GetValueAsDouble( int row, int col );
+     virtual bool GetValueAsBool( int row, int col );
+ 
+     virtual void SetValueAsLong( int row, int col, long value );
++    virtual void SetValueAsLongLong( int row, int col, wxLongLong_t value );
+     virtual void SetValueAsDouble( int row, int col, double value );
+     virtual void SetValueAsBool( int row, int col, bool value );
+ 
+diff --git interface/wx/grid.h interface/wx/grid.h
+index 98703e7..6542870 100644
+--- interface/wx/grid.h
++++ interface/wx/grid.h
+@@ -1447,6 +1447,15 @@ public:
+      */
+     virtual long GetValueAsLong(int row, int col);
+ 
++     /**
++        Returns the value of the given cell as a wxLongLong_t.
++
++        This should only be called if CanGetValueAs() returns @true when called
++        with @c wxGRID_VALUE_NUMBER64 argument. Default implementation always
++        return 0.
++     */
++    virtual wxLongLong_t GetValueAsLongLong(int row, int col);
++
+     /**
+         Returns the value of the given cell as a double.
+ 
+@@ -1482,6 +1491,15 @@ public:
+      */
+     virtual void SetValueAsLong(int row, int col, long value);
+ 
++     /**
++        Sets the value of the given cell as a wxLongLong_t.
++
++        This should only be called if CanSetValueAs() returns @true when called
++        with @c wxGRID_VALUE_NUMBER64 argument. Default implementation doesn't do
++        anything.
++     */
++    virtual void SetValueAsLongLong(int row, int col, wxLongLong_t value);
++
+     /**
+         Sets the value of the given cell as a double.
+ 
+diff --git src/generic/grid.cpp src/generic/grid.cpp
+index 6d7815a..0adc56d 100644
+--- src/generic/grid.cpp
++++ src/generic/grid.cpp
+@@ -1198,6 +1198,11 @@ long wxGridTableBase::GetValueAsLong( int WXUNUSED(row), int WXUNUSED(col) )
+     return 0;
+ }
+ 
++wxLongLong_t wxGridTableBase::GetValueAsLongLong( int WXUNUSED(row), int WXUNUSED(col) )
++{
++    return 0;
++}
++
+ double wxGridTableBase::GetValueAsDouble( int WXUNUSED(row), int WXUNUSED(col) )
+ {
+     return 0.0;
+@@ -1213,6 +1218,11 @@ void wxGridTableBase::SetValueAsLong( int WXUNUSED(row), int WXUNUSED(col),
+ {
+ }
+ 
++void wxGridTableBase::SetValueAsLongLong( int WXUNUSED(row), int WXUNUSED(col),
++                                          wxLongLong_t WXUNUSED(value) )
++{
++}
++
+ void wxGridTableBase::SetValueAsDouble( int WXUNUSED(row), int WXUNUSED(col),
+                                         double WXUNUSED(value) )
+ {
+diff --git src/msw/listctrl.cpp src/msw/listctrl.cpp
+index 0772db7..81f7ff3 100644
+--- src/msw/listctrl.cpp
++++ src/msw/listctrl.cpp
+@@ -40,6 +40,7 @@
+ 
+ #include "wx/imaglist.h"
+ #include "wx/vector.h"
++#include "wx/msw/uxtheme.h"
+ 
+ #include "wx/msw/private.h"
+ #include "wx/msw/private/keyboard.h"
+@@ -276,8 +277,13 @@ bool wxListCtrl::Create(wxWindow *parent,
+     // GetTextColour will always return black
+     SetTextColour(GetDefaultAttributes().colFg);
+ 
+-    if ( InReportView() )
+-        MSWSetExListStyles();
++    // Maybe call GetIfActive() instead of Get(), but somehow did not work?
++    if ( wxUxThemeEngine *theme = wxUxThemeEngine::Get() )
++    {
++        theme->SetWindowTheme(GetHwnd(), L"EXPLORER", NULL);
++    }
++
++    MSWSetExListStyles();
+ 
+     return true;
+ }
+@@ -286,23 +292,32 @@ void wxListCtrl::MSWSetExListStyles()
+ {
+     // for comctl32.dll v 4.70+ we want to have some non default extended
+     // styles because it's prettier (and also because wxGTK does it like this)
+-    if ( wxApp::GetComCtl32Version() >= 470 )
++    int ver = wxApp::GetComCtl32Version();
++    if ( ver >= 470 )
+     {
+-        ::SendMessage
+-        (
+-            GetHwnd(), LVM_SETEXTENDEDLISTVIEWSTYLE, 0,
+-            // LVS_EX_LABELTIP shouldn't be used under Windows CE where it's
+-            // not defined in the SDK headers
++        unsigned long exstyle = 0;
++        if ( InReportView() )
++        {
++            exstyle |=
++                // LVS_EX_LABELTIP shouldn't be used under Windows CE where it's
++                // not defined in the SDK headers
+ #ifdef LVS_EX_LABELTIP
+-            LVS_EX_LABELTIP |
++                LVS_EX_LABELTIP |
+ #endif
+-            LVS_EX_FULLROWSELECT |
+-            LVS_EX_SUBITEMIMAGES |
+-            // normally this should be governed by a style as it's probably not
+-            // always appropriate, but we don't have any free styles left and
+-            // it seems better to enable it by default than disable
+-            LVS_EX_HEADERDRAGDROP
+-        );
++                LVS_EX_FULLROWSELECT |
++                LVS_EX_SUBITEMIMAGES |
++                // normally this should be governed by a style as it's probably not
++                // always appropriate, but we don't have any free styles left and
++                // it seems better to enable it by default than disable
++                LVS_EX_HEADERDRAGDROP;
++        }
++
++        if ( ver >= 600 )
++        {
++            exstyle |= LVS_EX_DOUBLEBUFFER;
++        }
++
++        ::SendMessage(GetHwnd(), LVM_SETEXTENDEDLISTVIEWSTYLE, 0, exstyle);
+     }
+ }
+ 
+@@ -403,9 +418,12 @@ void wxListCtrl::UpdateStyle()
+         {
+             ::SetWindowLong(GetHwnd(), GWL_STYLE, dwStyleNew);
+ 
+-            // if we switched to the report view, set the extended styles for
++            // if we switched to a different view, set the extended styles for
+             // it too
+-            if ( !(dwStyleOld & LVS_REPORT) && (dwStyleNew & LVS_REPORT) )
++            if ( (!(dwStyleOld & LVS_ICON) && (dwStyleNew & LVS_ICON)) ||
++                 (!(dwStyleOld & LVS_LIST) && (dwStyleNew & LVS_LIST)) ||
++                 (!(dwStyleOld & LVS_REPORT) && (dwStyleNew & LVS_REPORT)) ||
++                 (!(dwStyleOld & LVS_SMALLICON) && (dwStyleNew & LVS_SMALLICON)) )
+                 MSWSetExListStyles();
+         }
+     }
+diff --git src/msw/treectrl.cpp src/msw/treectrl.cpp
+index 754ea31..fe20c9d 100644
+--- src/msw/treectrl.cpp
++++ src/msw/treectrl.cpp
+@@ -782,17 +782,15 @@ bool wxTreeCtrl::Create(wxWindow *parent,
+ 
+     wxSetCCUnicodeFormat(GetHwnd());
+ 
+-    if ( m_windowStyle & wxTR_TWIST_BUTTONS )
++    // Under Vista and later Explorer uses rotating ("twist") buttons
++    // instead of the default "+/-" ones so apply its theme to the tree
++    // control to implement this style.
++    if ( wxGetWinVersion() >= wxWinVersion_Vista )
+     {
+-        // Under Vista and later Explorer uses rotating ("twist") buttons
+-        // instead of the default "+/-" ones so apply its theme to the tree
+-        // control to implement this style.
+-        if ( wxGetWinVersion() >= wxWinVersion_Vista )
++        // Was GetIfActive() instead of Get(). Somehow did not work?
++        if ( wxUxThemeEngine *theme = wxUxThemeEngine::Get() )
+         {
+-            if ( wxUxThemeEngine *theme = wxUxThemeEngine::GetIfActive() )
+-            {
+-                theme->SetWindowTheme(GetHwnd(), L"EXPLORER", NULL);
+-            }
++            theme->SetWindowTheme(GetHwnd(), L"EXPLORER", NULL);
+         }
+     }
+ 

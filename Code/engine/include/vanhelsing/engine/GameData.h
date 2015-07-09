@@ -14,6 +14,18 @@ class TextManager
 {
     typedef std::map<std::string, std::string> TextMap;
 
+    struct SkillProperty
+    {
+        SkillProperty() {}
+
+        std::string GetFormattedText(const std::string& value, const std::string& propertyName, const std::string& targetType, const std::string& propertyGroup) const;
+        std::string GetFormattedText(int value, const std::string& propertyName, const std::string& targetType, const std::string& propertyGroup) const;
+        std::string GetPropertyString(const std::string& propertyName, const std::string& targetType, const std::string& propertyGroup) const;
+        std::map<std::string, std::string> PropertyStrings;
+    };
+
+    typedef std::map<std::string, SkillProperty> SkillPropertiesTextMap;
+
 public:
     bool Load(const std::string& filePath);
     std::string GetRarityText(inventory::Artifact::Rarity::type rarity) const;
@@ -22,13 +34,14 @@ public:
     std::string GetSetNameText(const std::string& name) const;
     /*const std::string GetTypeText(type) const;
     const std::string GetSubTypesText(subType) const;*/
+    const SkillProperty& GetSkillPropertyText(const std::string& name) const;
 
 private:
     bool loadArtifactText(const io::n2pk::N2pkFile& package);
     bool loadSkillText(const io::n2pk::N2pkFile& package);
 
 private:
-    TextMap m_skillProperties;
+    SkillPropertiesTextMap m_skillProperties;
     TextMap m_rarity;
     TextMap m_quality;
     TextMap m_items;
@@ -54,14 +67,21 @@ public:
     public:
         inventory::Enchantment::IdType Id;
         std::string Name;
+        std::string Property;
+        std::vector<int> MinValue;
+        std::vector<int> MaxValue;
+        std::string TargetType;
+        std::string PriorityGroup;
+
+        bool CalculateValue(int& value, const inventory::Enchantment& enchantment) const;
     };
 
     GameData();
     static GameData& Get();
     void Load(const std::string& gameDir);
     // Inventory items
-    bool GetArtifactData(inventory::Artifact::IdType id, ItemData& data) const;
-    bool GetArtifactData(inventory::Enchantment::IdType id, EnchantmentData& data) const;
+    bool GetDataFor(inventory::Artifact::IdType id, ItemData& data) const;
+    bool GetDataFor(inventory::Enchantment::IdType id, EnchantmentData& data) const;
     inventory::Artifact::IdType GetArtifactIdFromName(const std::string& name) const;
     const TextManager& GetTextManager() const;
     std::string GetItemNameFromId(inventory::Artifact::IdType id) const;

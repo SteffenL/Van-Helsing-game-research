@@ -27,14 +27,14 @@ void StorageEditorPanel::artifactBagOnToolClicked(wxCommandEvent& event)
 {
     using namespace vanhelsing::engine::inventory;
 
+    tryKillFocusFromPropertyGrid();
+
     auto toolbar = reinterpret_cast<wxToolBar*>(event.GetEventObject());
     auto tool = toolbar->FindById(event.GetId());
     auto& indexToBagPair = *reinterpret_cast<IndexToArtifactBagPair*>(tool->GetClientData());
     auto& bag = indexToBagPair.second;
 
-    clearArtifacts();
-    clearEnchantments();
-    clearProperties();
+    clearDependentOnArtifactBag();
 
     m_artifactViewModel = new ArtifactViewModel(bag);
     m_artifacts->AssociateModel(m_artifactViewModel.get());
@@ -45,16 +45,24 @@ void StorageEditorPanel::artifactBagOnUpdateUI(wxUpdateUIEvent& event)
     event.Enable(!!m_gameSave);
 }
 
+void StorageEditorPanel::artifactsOnDataViewCtrlSelectionChanging(wxDataViewEvent& event)
+{
+    tryKillFocusFromPropertyGrid();
+}
+
 void StorageEditorPanel::onGameSaveOpened(vanhelsing::services::OpenedStorageGameSaveFile& fileInfo)
 {
-    clearGameSaveDependentUi();
+    clearDependentOnGameSave();
     m_gameSave = fileInfo.GetGameSave();
     initializeGameSaveDependentUi();
-    populateGameSaveDependentUi();
+    populateDependentOnGameSave();
 }
 
 void StorageEditorPanel::subscribeToEvents()
 {
+    m_artifacts->Connect(wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGING, wxDataViewEventHandler(StorageEditorPanel::artifactsOnDataViewCtrlSelectionChanging), NULL, this);
+    m_artifactEnchantments->Connect(wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGING, wxDataViewEventHandler(StorageEditorPanel::artifactEnchantmentsOnDataViewCtrlSelectionChanging), NULL, this);
+
     auto& services = ApplicationServices::Get();
     services.StorageGameSave.OnOpened.connect(boost::bind(&StorageEditorPanel::onGameSaveOpened, this, _1));
 }
@@ -79,8 +87,6 @@ void StorageEditorPanel::populateEnchantments(vanhelsing::engine::inventory::Art
 
 void StorageEditorPanel::populateBags()
 {
-    m_artifactBagToolBar->ClearTools();
-
     // Add tools
     const auto& toolImage = inventory_png_to_wx_bitmap();
     wxToolBarToolBase* firstTool = nullptr;
@@ -111,7 +117,7 @@ void StorageEditorPanel::populateBags()
     Layout();
 }
 
-void StorageEditorPanel::populateGameSaveDependentUi()
+void StorageEditorPanel::populateDependentOnGameSave()
 {
     populateBags();
     populateArtifacts();
@@ -143,13 +149,8 @@ void StorageEditorPanel::initializeUi()
     // Enchantment list columns
     {
         m_artifactEnchantments->AppendTextColumn(wxEmptyString, -1, wxDATAVIEW_CELL_INERT, -1, wxALIGN_NOT, wxDATAVIEW_COL_HIDDEN);
-        m_artifactEnchantments->AppendTextColumn(_("Name"), 0, wxDATAVIEW_CELL_INERT, 100, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE)
+        m_artifactEnchantments->AppendTextColumn(_("Description"), 0, wxDATAVIEW_CELL_INERT, -1, wxALIGN_LEFT, 0)
             ->GetRenderer()->EnableEllipsize(wxELLIPSIZE_END);
-        m_artifactEnchantments->AppendTextColumn(_("Value"), 1, wxDATAVIEW_CELL_INERT, 90, wxALIGN_RIGHT, wxDATAVIEW_COL_RESIZABLE)
-            ->GetRenderer()->EnableEllipsize(wxELLIPSIZE_END);
-        m_artifactEnchantments->AppendTextColumn(_("Modifier"), 2, wxDATAVIEW_CELL_INERT, 70, wxALIGN_RIGHT, wxDATAVIEW_COL_RESIZABLE)
-            ->GetRenderer()->EnableEllipsize(wxELLIPSIZE_END);
-        m_artifactEnchantments->AppendTextColumn(wxEmptyString, -1, wxDATAVIEW_CELL_INERT, -1, wxALIGN_NOT, wxDATAVIEW_COL_HIDDEN);
     }
 }
 
@@ -166,8 +167,8 @@ void StorageEditorPanel::showPropertiesForArtifact(vanhelsing::engine::inventory
 
 void StorageEditorPanel::showPropertiesForEnchantment(vanhelsing::engine::inventory::Enchantment& enchantment)
 {
-    m_enchantmentValueProperty->SetValue(enchantment.EffectValue);
-    m_enchantmentModifierProperty->SetValue(enchantment.EffectModifier);
+    m_enchantmentValueIndexProperty->SetValue(enchantment.ValueIndex);
+    m_enchantmentValueScaleProperty->SetValue(enchantment.ValueScale);
     m_propertyManager->SelectPage(m_propertiesEnchantmentPage);
 }
 
@@ -201,33 +202,46 @@ void StorageEditorPanel::initializeGameSaveDependentUi()
     initializeGameDataDependentProperties();
 }
 
-void StorageEditorPanel::clearGameSaveDependentUi()
+void StorageEditorPanel::clearDependentOnGameSave()
 {
-    clearArtifacts();
-    clearEnchantments();
-    clearProperties();
+    m_artifactBagToolBar->ClearTools();
+    clearDependentOnArtifactBag();
 }
 
-void StorageEditorPanel::clearArtifacts()
-{
-    if (auto model = m_artifacts->GetModel()) {
-        m_artifacts->AssociateModel(nullptr);
-        model->Cleared();
-    }
-}
-
-void StorageEditorPanel::clearEnchantments()
-{
-    if (auto model = m_artifactEnchantments->GetModel()) {
-        m_artifactEnchantments->AssociateModel(nullptr);
-        model->Cleared();
-    }
-}
-
-void StorageEditorPanel::clearProperties()
+void StorageEditorPanel::clearDependentOnEnchantment()
 {
     // Select blank property page
     m_propertyManager->SelectPage(m_propertiesEmptyPage);
+}
+
+void StorageEditorPanel::tryKillFocusFromPropertyGrid()
+{
+    for (auto focusedWindow = wxWindow::FindFocus(); focusedWindow; focusedWindow = focusedWindow->GetParent()) {
+        if (auto propertyGrid = wxDynamicCast(focusedWindow, wxPropertyGrid)) {
+            wxFocusEvent focusEvent(wxEVT_KILL_FOCUS);
+            propertyGrid->GetEventHandler()->ProcessEvent(focusEvent);
+            break;
+        }
+    }
+}
+
+bool StorageEditorPanel::promptUseUnsafeValue()
+{
+    auto answer = wxMessageBox(_(
+        "This value is considered unsafe.\n\n"
+        "Values that are unsafe may have adverse effects on general stability, cause glitches, or actually have no function at all. Sometimes, a glitch will even be useful for something.\n\n"
+        "Please proceed at your own risk; otherwise, the value will be constrained."),
+        _("Unsafe value"),
+        wxOK | wxCANCEL | wxICON_WARNING
+    );
+    return answer == wxOK;
+}
+
+void StorageEditorPanel::populateDependentOnArtifact(vanhelsing::engine::inventory::Artifact& artifact)
+{
+    populateEnchantments(artifact);
+    showPropertiesForArtifact(artifact);
+    showImageForArtifact(artifact);
 }
 
 void StorageEditorPanel::showImageForArtifact(vanhelsing::engine::inventory::Artifact& artifact)
@@ -237,7 +251,7 @@ void StorageEditorPanel::showImageForArtifact(vanhelsing::engine::inventory::Art
     auto& gameData = GameData::Get();
 
     GameData::ItemData artifactData;
-    if (!gameData.GetArtifactData(artifact.Id, artifactData)) {
+    if (!gameData.GetDataFor(artifact.Id, artifactData)) {
         // TODO: Log error
         return;
     }
@@ -256,12 +270,40 @@ void StorageEditorPanel::showImageForArtifact(vanhelsing::engine::inventory::Art
     m_visualAppearancePanel->Layout();
 }
 
+void StorageEditorPanel::clearDependentOnArtifactBag()
+{
+    if (auto model = m_artifacts->GetModel()) {
+        m_artifacts->AssociateModel(nullptr);
+        model->Cleared();
+    }
+
+    clearDependentOnArtifact();
+}
+
+void StorageEditorPanel::clearDependentOnArtifact()
+{
+    if (auto model = m_artifactEnchantments->GetModel()) {
+        m_artifactEnchantments->AssociateModel(nullptr);
+        model->Cleared();
+    }
+
+    clearDependentOnEnchantment();
+
+    m_visualAppearanceImage->SetBitmap(wxNullBitmap);
+    m_visualAppearancePanel->Layout();
+}
+
+void StorageEditorPanel::artifactEnchantmentsOnDataViewCtrlSelectionChanging(wxDataViewEvent& event)
+{
+    tryKillFocusFromPropertyGrid();
+}
+
 void StorageEditorPanel::artifactEnchantmentsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event)
 {
     using namespace vanhelsing::engine::inventory;
+    clearDependentOnEnchantment();
 
     if (!event.GetItem()) {
-        clearProperties();
         return;
     }
 
@@ -320,11 +362,27 @@ void StorageEditorPanel::propertyManagerOnPropertyGridChanged(wxPropertyGridEven
         for (auto& selection : selections) {
             auto& enchantment = *reinterpret_cast<Enchantment*>(selection.GetID());
 
-            if (property == m_enchantmentValueProperty) {
-                enchantment.EffectValue = value.GetAny().As<decltype(enchantment.EffectValue)>();
+            if (property == m_enchantmentValueIndexProperty) {
+                auto v = value.GetAny().As<decltype(enchantment.ValueIndex)>();
+                if (!enchantment.ValueIndexIsSafe(v) && promptUseUnsafeValue()) {
+                    enchantment.SetValueIndex(v);
+                }
+                else {
+                    enchantment.SetSafeValueIndex(v);
+                }
+
+                property->SetValue(enchantment.ValueIndex);
             }
-            else if (property == m_enchantmentModifierProperty) {
-                enchantment.EffectModifier = value.GetAny().As<decltype(enchantment.EffectModifier)>();
+            else if (property == m_enchantmentValueScaleProperty) {
+                auto v = value.GetAny().As<decltype(enchantment.ValueScale)>();
+                if (!enchantment.ScaleIsSafe(v) && promptUseUnsafeValue()) {
+                    enchantment.SetValueScale(v);
+                }
+                else {
+                    enchantment.SetSafeValueScale(v);
+                }
+
+                property->SetValue(enchantment.ValueScale);
             }
             else {
                 throw std::logic_error("Property is not mapped");
@@ -342,17 +400,12 @@ void StorageEditorPanel::propertyManagerOnPropertyGridChanged(wxPropertyGridEven
 void StorageEditorPanel::artifactsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event)
 {
     using namespace vanhelsing::engine::inventory;
+    clearDependentOnArtifact();
 
     if (!event.GetItem()) {
-        clearEnchantments();
-        clearProperties();
         return;
     }
 
     auto& artifact = *reinterpret_cast<Artifact*>(event.GetItem().GetID());
-
-    clearEnchantments();
-    populateEnchantments(artifact);
-    showPropertiesForArtifact(artifact);
-    showImageForArtifact(artifact);
+    populateDependentOnArtifact(artifact);
 }
