@@ -27,6 +27,8 @@ void StorageEditorPanel::artifactBagOnToolClicked(wxCommandEvent& event)
 {
     using namespace vanhelsing::engine::inventory;
 
+    tryKillFocusFromPropertyGrid();
+
     auto toolbar = reinterpret_cast<wxToolBar*>(event.GetEventObject());
     auto tool = toolbar->FindById(event.GetId());
     auto& indexToBagPair = *reinterpret_cast<IndexToArtifactBagPair*>(tool->GetClientData());
