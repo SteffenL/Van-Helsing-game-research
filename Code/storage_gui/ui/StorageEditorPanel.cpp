@@ -43,6 +43,11 @@ void StorageEditorPanel::artifactBagOnUpdateUI(wxUpdateUIEvent& event)
     event.Enable(!!m_gameSave);
 }
 
+void StorageEditorPanel::artifactsOnDataViewCtrlSelectionChanging(wxDataViewEvent& event)
+{
+    tryKillFocusFromPropertyGrid();
+}
+
 void StorageEditorPanel::onGameSaveOpened(vanhelsing::services::OpenedStorageGameSaveFile& fileInfo)
 {
     clearDependentOnGameSave();
@@ -53,6 +58,9 @@ void StorageEditorPanel::onGameSaveOpened(vanhelsing::services::OpenedStorageGam
 
 void StorageEditorPanel::subscribeToEvents()
 {
+    m_artifacts->Connect(wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGING, wxDataViewEventHandler(StorageEditorPanel::artifactsOnDataViewCtrlSelectionChanging), NULL, this);
+    m_artifactEnchantments->Connect(wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGING, wxDataViewEventHandler(StorageEditorPanel::artifactEnchantmentsOnDataViewCtrlSelectionChanging), NULL, this);
+
     auto& services = ApplicationServices::Get();
     services.StorageGameSave.OnOpened.connect(boost::bind(&StorageEditorPanel::onGameSaveOpened, this, _1));
 }
@@ -204,6 +212,17 @@ void StorageEditorPanel::clearDependentOnEnchantment()
     m_propertyManager->SelectPage(m_propertiesEmptyPage);
 }
 
+void StorageEditorPanel::tryKillFocusFromPropertyGrid()
+{
+    for (auto focusedWindow = wxWindow::FindFocus(); focusedWindow; focusedWindow = focusedWindow->GetParent()) {
+        if (auto propertyGrid = wxDynamicCast(focusedWindow, wxPropertyGrid)) {
+            wxFocusEvent focusEvent(wxEVT_KILL_FOCUS);
+            propertyGrid->GetEventHandler()->ProcessEvent(focusEvent);
+            break;
+        }
+    }
+}
+
 void StorageEditorPanel::populateDependentOnArtifact(vanhelsing::engine::inventory::Artifact& artifact)
 {
     populateEnchantments(artifact);
@@ -258,6 +277,11 @@ void StorageEditorPanel::clearDependentOnArtifact()
 
     m_visualAppearanceImage->SetBitmap(wxNullBitmap);
     m_visualAppearancePanel->Layout();
+}
+
+void StorageEditorPanel::artifactEnchantmentsOnDataViewCtrlSelectionChanging(wxDataViewEvent& event)
+{
+    tryKillFocusFromPropertyGrid();
 }
 
 void StorageEditorPanel::artifactEnchantmentsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event)

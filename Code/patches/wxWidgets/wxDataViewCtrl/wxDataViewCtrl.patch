@@ -1,0 +1,145 @@
+diff --git include/wx/dataview.h include/wx/dataview.h
+index bf5554f..01b2c1d 100644
+--- include/wx/dataview.h
++++ include/wx/dataview.h
+@@ -882,6 +882,7 @@ private:
+     wxDECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxDataViewEvent);
+ };
+ 
++wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_DATAVIEW_SELECTION_CHANGING, wxDataViewEvent );
+ wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_DATAVIEW_SELECTION_CHANGED, wxDataViewEvent );
+ 
+ wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_DATAVIEW_ITEM_ACTIVATED, wxDataViewEvent );
+@@ -915,6 +916,7 @@ typedef void (wxEvtHandler::*wxDataViewEventFunction)(wxDataViewEvent&);
+ #define wx__DECLARE_DATAVIEWEVT(evt, id, fn) \
+     wx__DECLARE_EVT1(wxEVT_DATAVIEW_ ## evt, id, wxDataViewEventHandler(fn))
+ 
++#define EVT_DATAVIEW_SELECTION_CHANGING(id, fn) wx__DECLARE_DATAVIEWEVT(SELECTION_CHANGING, id, fn)
+ #define EVT_DATAVIEW_SELECTION_CHANGED(id, fn) wx__DECLARE_DATAVIEWEVT(SELECTION_CHANGED, id, fn)
+ 
+ #define EVT_DATAVIEW_ITEM_ACTIVATED(id, fn) wx__DECLARE_DATAVIEWEVT(ITEM_ACTIVATED, id, fn)
+@@ -1347,6 +1349,7 @@ private:
+ };
+ 
+ // old wxEVT_COMMAND_* constants
++#define wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGING          wxEVT_DATAVIEW_SELECTION_CHANGING
+ #define wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED           wxEVT_DATAVIEW_SELECTION_CHANGED
+ #define wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED              wxEVT_DATAVIEW_ITEM_ACTIVATED
+ #define wxEVT_COMMAND_DATAVIEW_ITEM_COLLAPSED              wxEVT_DATAVIEW_ITEM_COLLAPSED
+diff --git interface/wx/dataview.h interface/wx/dataview.h
+index 1892e60..bab5150 100644
+--- interface/wx/dataview.h
++++ interface/wx/dataview.h
+@@ -768,6 +768,7 @@ public:
+ 
+ // events
+ 
++wxEventType wxEVT_DATAVIEW_SELECTION_CHANGING;
+ wxEventType wxEVT_DATAVIEW_SELECTION_CHANGED;
+ 
+ wxEventType wxEVT_DATAVIEW_ITEM_ACTIVATED;
+@@ -854,6 +855,8 @@ wxEventType wxEVT_DATAVIEW_ITEM_DROP;
+     @endStyleTable
+ 
+     @beginEventEmissionTable{wxDataViewEvent}
++    @event{EVT_DATAVIEW_SELECTION_CHANGING(id, func)}
++           Process a @c wxEVT_DATAVIEW_SELECTION_CHANGING event.
+     @event{EVT_DATAVIEW_SELECTION_CHANGED(id, func)}
+            Process a @c wxEVT_DATAVIEW_SELECTION_CHANGED event.
+     @event{EVT_DATAVIEW_ITEM_ACTIVATED(id, func)}
+@@ -3346,6 +3349,8 @@ public:
+     This is the event class for the wxDataViewCtrl notifications.
+ 
+     @beginEventTable{wxDataViewEvent}
++    @event{EVT_DATAVIEW_SELECTION_CHANGING(id, func)}
++           Process a @c wxEVT_DATAVIEW_SELECTION_CHANGING event.
+     @event{EVT_DATAVIEW_SELECTION_CHANGED(id, func)}
+            Process a @c wxEVT_DATAVIEW_SELECTION_CHANGED event.
+     @event{EVT_DATAVIEW_ITEM_ACTIVATED(id, func)}
+diff --git samples/dataview/dataview.cpp samples/dataview/dataview.cpp
+index 1b536f9..e1915bc 100644
+--- samples/dataview/dataview.cpp
++++ samples/dataview/dataview.cpp
+@@ -105,6 +105,7 @@ private:
+     void OnExpanded( wxDataViewEvent &event );
+     void OnCollapsing( wxDataViewEvent &event );
+     void OnCollapsed( wxDataViewEvent &event );
++    void OnSelectionChanging( wxDataViewEvent &event );
+     void OnSelectionChanged( wxDataViewEvent &event );
+ 
+     void OnStartEditing( wxDataViewEvent &event );
+@@ -342,6 +343,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
+     EVT_DATAVIEW_ITEM_EXPANDED(ID_MUSIC_CTRL, MyFrame::OnExpanded)
+     EVT_DATAVIEW_ITEM_COLLAPSING(ID_MUSIC_CTRL, MyFrame::OnCollapsing)
+     EVT_DATAVIEW_ITEM_COLLAPSED(ID_MUSIC_CTRL, MyFrame::OnCollapsed)
++    EVT_DATAVIEW_SELECTION_CHANGING(ID_MUSIC_CTRL, MyFrame::OnSelectionChanging)
+     EVT_DATAVIEW_SELECTION_CHANGED(ID_MUSIC_CTRL, MyFrame::OnSelectionChanged)
+ 
+     EVT_DATAVIEW_ITEM_START_EDITING(ID_MUSIC_CTRL, MyFrame::OnStartEditing)
+@@ -1006,6 +1008,15 @@ void MyFrame::OnActivated( wxDataViewEvent &event )
+     }
+ }
+ 
++void MyFrame::OnSelectionChanging( wxDataViewEvent &event )
++{
++    wxString title = m_music_model->GetTitle( event.GetItem() );
++    if (title.empty())
++        title = "None";
++
++    wxLogMessage( "wxEVT_DATAVIEW_SELECTION_CHANGING, First selected Item: %s", title );
++}
++
+ void MyFrame::OnSelectionChanged( wxDataViewEvent &event )
+ {
+     wxString title = m_music_model->GetTitle( event.GetItem() );
+diff --git src/common/datavcmn.cpp src/common/datavcmn.cpp
+index 53252c0..457ea56 100644
+--- src/common/datavcmn.cpp
++++ src/common/datavcmn.cpp
+@@ -1482,6 +1482,7 @@ void wxDataViewCtrlBase::StartEditor(const wxDataViewItem& item, unsigned int co
+ 
+ wxIMPLEMENT_DYNAMIC_CLASS(wxDataViewEvent,wxNotifyEvent);
+ 
++wxDEFINE_EVENT( wxEVT_DATAVIEW_SELECTION_CHANGING, wxDataViewEvent );
+ wxDEFINE_EVENT( wxEVT_DATAVIEW_SELECTION_CHANGED, wxDataViewEvent );
+ 
+ wxDEFINE_EVENT( wxEVT_DATAVIEW_ITEM_ACTIVATED, wxDataViewEvent );
+diff --git src/generic/datavgen.cpp src/generic/datavgen.cpp
+index 6eccb3f..c7ef381 100644
+--- src/generic/datavgen.cpp
++++ src/generic/datavgen.cpp
+@@ -782,6 +782,7 @@ public:
+     void SelectRows( unsigned int from, unsigned int to );
+     void ReverseRowSelection( unsigned int row );
+     bool IsRowSelected( unsigned int row );
++    void SendSelectionChangingEvent( const wxDataViewItem& item);
+     void SendSelectionChangedEvent( const wxDataViewItem& item);
+ 
+     void RefreshRow( unsigned int row );
+@@ -2782,6 +2783,18 @@ bool wxDataViewMainWindow::IsRowSelected( unsigned int row )
+     return m_selection.IsSelected(row);
+ }
+ 
++void wxDataViewMainWindow::SendSelectionChangingEvent( const wxDataViewItem& item)
++{
++    wxWindow *parent = GetParent();
++    wxDataViewEvent le(wxEVT_DATAVIEW_SELECTION_CHANGING, parent->GetId());
++
++    le.SetEventObject(parent);
++    le.SetModel(GetModel());
++    le.SetItem( item );
++
++    parent->ProcessWindowEvent(le);
++}
++
+ void wxDataViewMainWindow::SendSelectionChangedEvent( const wxDataViewItem& item)
+ {
+     wxWindow *parent = GetParent();
+@@ -4331,6 +4344,7 @@ void wxDataViewMainWindow::OnMouse( wxMouseEvent &event )
+         {
+             if ( IsSingleSel() || !IsRowSelected(current) )
+             {
++                SendSelectionChangingEvent( GetItemByRow(m_currentRow) );
+                 SelectAllRows( false );
+                 ChangeCurrentRow(current);
+                 SelectRow(m_currentRow,true);

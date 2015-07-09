@@ -24,7 +24,9 @@ private:
     // Inherited event handlers
     virtual void artifactBagOnToolClicked(wxCommandEvent& event);
     virtual void artifactBagOnUpdateUI(wxUpdateUIEvent& event);
+    virtual void artifactsOnDataViewCtrlSelectionChanging(wxDataViewEvent& event);
     virtual void artifactsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event);
+    virtual void artifactEnchantmentsOnDataViewCtrlSelectionChanging(wxDataViewEvent& event);
     virtual void artifactEnchantmentsOnDataViewCtrlSelectionChanged(wxDataViewEvent& event);
     virtual void propertyManagerOnPropertyGridChanged(wxPropertyGridEvent& event);
 
@@ -53,6 +55,9 @@ private:
     void clearDependentOnArtifact();
     void clearDependentOnEnchantment();
     void clearObjectVisualAppearanceViewAndDependentUi();
+
+    void tryKillFocusFromPropertyGrid();
+
 
     wxObjectDataPtr<ArtifactViewModel> m_artifactViewModel;
     wxObjectDataPtr<EnchantmentViewModel> m_enchantmentViewModel;
