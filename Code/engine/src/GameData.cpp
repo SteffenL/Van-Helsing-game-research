@@ -354,7 +354,8 @@ const std::vector<vanhelsing::engine::inventory::Artifact::Rarity::type> GameDat
     list.push_back(Artifact::Rarity::Rare);
     list.push_back(Artifact::Rarity::Epic);
     list.push_back(Artifact::Rarity::Set);
-    list.push_back(Artifact::Rarity::Random);
+    // I don't think this is supposed to exist in the game
+    //list.push_back(Artifact::Rarity::Random);
     return list;
 }
 
@@ -416,10 +417,6 @@ std::string TextManager::GetRarityText(inventory::Artifact::Rarity::type rarity)
 
     case Artifact::Rarity::Set:
         textName = "Set";
-        break;
-
-    case Artifact::Rarity::Random:
-        return "Random?";
         break;
 
     default:
