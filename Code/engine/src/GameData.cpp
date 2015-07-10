@@ -149,7 +149,12 @@ void GameData::loadArtifacts()
         ItemData data;
         data.Name = group.at("Name");
         data.Id = GetArtifactIdFromName(data.Name);
-        data.Icon = group.at("Icon");
+
+        const auto iconIter = group.find("Icon");
+        if (iconIter != group.end()) {
+            data.Icon = iconIter->second;
+        }
+
         m_impl->m_itemData.insert(data);
         //logger << "0x" << std::setfill('0') << std::setw(8) << std::hex << id << std::dec << "  " << name << std::endl;
 
