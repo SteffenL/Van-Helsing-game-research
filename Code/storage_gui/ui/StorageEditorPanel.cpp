@@ -112,7 +112,9 @@ void StorageEditorPanel::populateBags()
     }
 
     // Select the first tool
-    m_artifactBagToolBar->ToggleTool(firstTool->GetId(), true);
+    if (firstTool) {
+        m_artifactBagToolBar->ToggleTool(firstTool->GetId(), true);
+    }
 
     m_artifactBagToolBar->Realize();
     m_artifactBagToolBar->Show(!bags.empty());
