@@ -44,7 +44,7 @@ private:
     SkillPropertiesTextMap m_skillProperties;
     TextMap m_rarity;
     TextMap m_quality;
-    TextMap m_items;
+    TextMap m_artifacts;
     TextMap m_enchantments;
     TextMap m_setName;
     TextMap m_types;

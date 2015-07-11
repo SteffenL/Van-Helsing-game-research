@@ -43,10 +43,12 @@ public:
     std::unique_ptr<N2pkIStream> GetFile(const std::string& path) const;
     FileEntry GetFileEntry(unsigned int index) const;
     FileEntry GetFileEntry(const std::string& path) const;
+    const std::string& GetPackagePath() const;
 
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;
+    std::string m_filePath;
     std::unique_ptr<std::istream> m_stream;
     std::streamoff m_dataffset;
     std::streamoff m_entryTableOffset;

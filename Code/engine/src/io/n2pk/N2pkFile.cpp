@@ -83,13 +83,22 @@ vanhelsing::engine::io::n2pk::FileEntry N2pkFile::GetFileEntry(const std::string
     auto& view = m_impl->Files.get<1>();
     auto it = view.find(path);
     if (it == view.end()) {
-        throw VanHelsingEngineError("File not found: " + path);
+        throw VanHelsingEngineError("File \"" + path + "\" not found in package \"" + m_filePath + "\"");
     }
 
     return *it;
 }
 
-N2pkFile::N2pkFile(const std::string& filePath) : m_entryTableOffset(0), m_impl(std::make_unique<Impl>()), m_logger(common::LogLevel::Trace)
+const std::string& N2pkFile::GetPackagePath() const
+{
+    return m_filePath;
+}
+
+N2pkFile::N2pkFile(const std::string& filePath)
+    : m_entryTableOffset(0),
+    m_impl(std::make_unique<Impl>()),
+    m_logger(common::LogLevel::Trace),
+    m_filePath(filePath)
 {
     m_logger << "Opening Neocore Package: " << filePath << std::endl;
 

@@ -147,7 +147,15 @@ void GameData::loadArtifacts()
     for (auto& group : parser.GetGroups()) {
         using namespace inventory;
         ItemData data;
-        data.Name = group.at("Name");
+
+        // We must have a name
+        const auto nameIter = group.find("Name");
+        if (nameIter == group.end()) {
+            Log(LogLevel::Warning) << "Skipped loading data for artifact that has no name." << std::endl;
+            continue;
+        }
+
+        data.Name = nameIter->second;
         data.Id = GetArtifactIdFromName(data.Name);
 
         const auto iconIter = group.find("Icon");
@@ -196,11 +204,15 @@ void GameData::loadEnchantments()
         using namespace inventory;
         EnchantmentData data;
 
-        auto nameIter = group.find("Name");
-        if (nameIter != group.end()) {
-            data.Name = nameIter->second;
-            data.Id = GetArtifactIdFromName(data.Name);
+        // We must have a name
+        const auto nameIter = group.find("Name");
+        if (nameIter == group.end()) {
+            Log(LogLevel::Warning) << "Skipped loading data for enchantment that has no name." << std::endl;
+            continue;
         }
+
+        data.Name = nameIter->second;
+        data.Id = GetArtifactIdFromName(data.Name);
 
         auto propertyIter = group.find("Property");
         if (propertyIter != group.end()) {
@@ -361,17 +373,17 @@ const std::vector<vanhelsing::engine::inventory::Artifact::Rarity::type> GameDat
 
 bool GameData::GetArtifactIcon(const std::string& name, std::vector<char>& imageData) const
 {
+    using namespace common;
+
     if (!m_artifactIconsPackage) {
-        // TODO: Log error instead of throwing?
-        //throw VanHelsingEngineError("Artifact icon package is not loaded: " + name);
+        Log(LogLevel::Error) << "Tried to get artifact icon, but the required package is not loaded: " << name << std::endl;
         return false;
     }
 
     const std::string& fileName = name + "_idle.tga";
     auto file = m_artifactIconsPackage->GetFile(fileName);
     if (!file) {
-        // TODO: Log error instead of throwing?
-        //throw VanHelsingEngineError("Failed to get artifact icon: " + name);
+        Log(LogLevel::Error) << "Failed to get artifact icon: " << name << std::endl;
         return false;
     }
 
@@ -394,134 +406,129 @@ bool TextManager::Load(const std::string& filePath)
 
 std::string TextManager::GetRarityText(inventory::Artifact::Rarity::type rarity) const
 {
+    using namespace common;
     using inventory::Artifact;
 
-    std::string textName;
-    switch (rarity)
-    {
-    case Artifact::Rarity::Normal:
-        textName = "Normal";
-        break;
+    const std::map<Artifact::Rarity::type, std::string> textNameMap{
+        { Artifact::Rarity::Normal, "Normal" },
+        { Artifact::Rarity::Magic, "Magic" },
+        { Artifact::Rarity::Rare, "Rare" },
+        { Artifact::Rarity::Epic, "Epic" },
+        { Artifact::Rarity::Set, "Set" },
+        // I don't think this is supposed to exist in the game
+        //{ Artifact::Rarity::Random, "Random" },
+    };
 
-    case Artifact::Rarity::Magic:
-        textName = "Magic";
-        break;
-
-    case Artifact::Rarity::Rare:
-        textName = "Rare";
-        break;
-
-    case Artifact::Rarity::Epic:
-        textName = "Epic";
-        break;
-
-    case Artifact::Rarity::Set:
-        textName = "Set";
-        break;
-
-    default:
-        {
-            std::stringstream ss;
-            ss << rarity << " (invalid)";
-            return ss.str();
-        }
+    const auto textNameIter = textNameMap.find(rarity);
+    if (textNameIter == textNameMap.end()) {
+        Log(LogLevel::Error) << "Invalid artifact rarity: " << std::to_string(rarity) << std::endl;
+        return std::to_string(rarity);
     }
 
-    std::transform(textName.begin(), textName.end(), textName.begin(), ::tolower);
-    try {
-        return m_rarity.at(textName);
+    const auto& textName = textNameIter->second;
+    auto textNameLc = textName;
+    std::transform(textNameLc.begin(), textNameLc.end(), textNameLc.begin(), ::tolower);
+
+    auto it = m_rarity.find(textNameLc);
+    if (it == m_rarity.end()) {
+        Log(LogLevel::Error) << "Text for artifact quality not found: " << textName << std::endl;
+        return std::to_string(rarity);
     }
-    catch (std::out_of_range&) {
-        std::stringstream ss;
-        ss << rarity << " (invalid)";
-        return ss.str();
-    }
+
+    return it->second;
 }
 
 std::string TextManager::GetQualityText(inventory::Artifact::Quality::type quality) const
 {
+    using namespace common;
     using inventory::Artifact;
 
-    std::string textName;
-    switch (quality)
-    {
-    case Artifact::Quality::Normal:
-        return "";
-
-    case Artifact::Quality::Cracked:
-        textName = "Cracked";
-        break;
-
-    case Artifact::Quality::Masterwork:
-        textName = "Masterwork";
-        break;
-
-    default:
-        {
-            std::stringstream ss;
-            ss << quality << " (invalid)";
-            return ss.str();
-        }
+    // There is no text for this quality
+    if (quality == Artifact::Quality::Normal) {
+        return std::string();
     }
 
-    std::transform(textName.begin(), textName.end(), textName.begin(), ::tolower);
-    try {
-        return m_quality.at(textName);
+    const std::map<Artifact::Quality::type, std::string> textNameMap{
+        { Artifact::Quality::Cracked, "Cracked" },
+        { Artifact::Quality::Masterwork, "Masterwork" }
+    };
+
+    const auto textNameIter = textNameMap.find(quality);
+    if (textNameIter == textNameMap.end()) {
+        Log(LogLevel::Error) << "Invalid artifact quality: " << std::to_string(quality) << std::endl;
+        return std::to_string(quality);
     }
-    catch (std::out_of_range&) {
-        std::stringstream ss;
-        ss << quality << " (invalid)";
-        return ss.str();
+
+    const auto& textName = textNameIter->second;
+    auto textNameLc = textName;
+    std::transform(textNameLc.begin(), textNameLc.end(), textNameLc.begin(), ::tolower);
+
+    auto it = m_quality.find(textNameLc);
+    if (it == m_quality.end()) {
+        Log(LogLevel::Error) << "Text for artifact quality not found: " << textName << std::endl;
+        return std::to_string(quality);
     }
+
+    return it->second;
 }
 
 std::string TextManager::GetItemText(const std::string& name) const
 {
+    using namespace common;
+
     std::string nameLc(name);
     std::transform(nameLc.begin(), nameLc.end(), nameLc.begin(), ::tolower);
-    try {
-        return m_items.at(nameLc);
+
+    auto it = m_artifacts.find(nameLc);
+    if (it == m_artifacts.end()) {
+        Log(LogLevel::Error) << "Text for artifact not found: " << name << std::endl;
+        return name;
     }
-    catch (std::out_of_range&) {
-        std::string text(name);
-        text += " (no name)";
-        return text;
-    }
+
+    return it->second;
 }
 
 std::string TextManager::GetSetNameText(const std::string& name) const
 {
+    using namespace common;
+
     std::string nameLc(name);
     std::transform(nameLc.begin(), nameLc.end(), nameLc.begin(), ::tolower);
-    try {
-        return m_setName.at(nameLc);
+
+    auto it = m_setName.find(nameLc);
+    if (it == m_setName.end()) {
+        Log(LogLevel::Error) << "Text for set not found: " << name << std::endl;
+        return name;
     }
-    catch (std::out_of_range&) {
-        std::string text(name);
-        text += " (no name)";
-        return text;
-    }
+
+    return it->second;
 }
 
 const TextManager::SkillProperty& TextManager::GetSkillPropertyText(const std::string& name) const
 {
-    try {
-        return m_skillProperties.at(name);
-    }
-    catch (std::out_of_range&) {
+    using namespace common;
+
+    auto it = m_skillProperties.find(name);
+    if (it == m_skillProperties.end()) {
+        Log(LogLevel::Error) << "Skill property not found: " << name << std::endl;
+
         static SkillProperty emptySkillProperty;
         return emptySkillProperty;
     }
+
+    return it->second;
 }
 
 bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
 {
-    auto file = package.GetFile("lang_artifacts.xml");
+    const std::string fileName = "lang_artifacts.xml";
+
+    auto file = package.GetFile(fileName);
     if (!file) {
         return false;
     }
 
-    auto& fileEntry = package.GetFileEntry("lang_artifacts.xml");
+    auto& fileEntry = package.GetFileEntry(fileName);
 
     pugi::xml_document doc;
     std::vector<char> buf;
@@ -534,7 +541,7 @@ bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
 #pragma warning(pop)
 
     if (!result) {
-        throw VanHelsingEngineError("Error while parsing language XML file.");
+        throw VanHelsingEngineError("Error while parsing language XML file \"" + fileName + "\" in package \"" + package.GetPackagePath() + "\"");
     }
 
     // Items
@@ -546,7 +553,7 @@ bool TextManager::loadArtifactText(const io::n2pk::N2pkFile& package)
             std::string name = node.name();
             std::transform(name.begin(), name.end(), name.begin(), ::tolower);
             std::string text = node.child("Name").first_child().child_value();
-            m_items[name] = text;
+            m_artifacts[name] = text;
         }
     }
 
