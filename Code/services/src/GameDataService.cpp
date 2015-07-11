@@ -1,7 +1,8 @@
 #include <vanhelsing/services/GameDataService.h>
 
 #include <vanhelsing/engine/GameData.h>
-#include <vanhelsing/engine/GamePaths.h>
+#include <common/SteamPaths.h>
+#include <common/Log.h>
 
 
 namespace vanhelsing { namespace services {
@@ -15,18 +16,30 @@ GameDataService::~GameDataService()
 {
 }
 
-void GameDataService::Load()
+void GameDataService::Load(const std::string& desiredGameDir)
 {
+    // TODO: Decouple this
+    unsigned int steamAppId = 215530;
+
+    using namespace common;
     using namespace vanhelsing::engine;
 
-    const auto& gameDir = GamePaths::GetInstallPath();
-    if (gameDir.empty()) {
-        // TODO: Handle this
-        return;
+    std::string effectiveGameDir;
+    if (desiredGameDir.empty()) {
+        const auto& installPath = SteamPaths::GetAppInstallPath(steamAppId);
+        if (installPath.empty()) {
+            Log(LogLevel::Error) << "Unable to locate the game install path." << std::endl;
+            return;
+        }
+
+        effectiveGameDir = installPath;
+    }
+    else {
+        effectiveGameDir = desiredGameDir;
     }
 
     auto& gameData = GameData::Get();
-    gameData.Load(gameDir);
+    gameData.Load(effectiveGameDir);
 }
 
 }}

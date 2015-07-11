@@ -2,7 +2,7 @@
 #include <vanhelsing/engine/io/StorageGameSaveReader.h>
 #include <common/Log.h>
 #include <vanhelsing/engine/GameData.h>
-#include <vanhelsing/engine/GamePaths.h>
+#include <common/SteamPaths.h>
 
 #include <nowide/args.hpp>
 #include <nowide/convert.hpp>
@@ -33,6 +33,9 @@ int main(int argc, char* argv[])
         Log::SetLogLevelFilter(LogLevel::Trace);
     }
 
+    // TODO: Decouple this
+    unsigned int steamAppId = 215530;
+
     try {
         // Load game data before anything attempts to use it
         std::string gameDir;
@@ -41,7 +44,7 @@ int main(int argc, char* argv[])
             gameDir = gameDir_c;
         }
         else {
-            gameDir = GamePaths::GetInstallPath();
+            gameDir = SteamPaths::GetAppInstallPath(steamAppId);
         }
 
         if (!gameDir.empty()) {

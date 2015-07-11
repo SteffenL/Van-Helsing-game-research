@@ -9,7 +9,7 @@ class MainFrame : public MainFrameBase
     static wxEventType FirstIdleEvent;
 
 public:
-    MainFrame(wxWindow* parent);
+    MainFrame(wxWindow* parent, bool enableDebug);
     virtual ~MainFrame();
 
 private:

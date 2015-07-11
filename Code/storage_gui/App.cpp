@@ -7,8 +7,28 @@
 #include <vanhelsing/engine/exceptions/VanHelsingEngineError.h>
 #include <common/my_console_output_buffer.h>
 
+struct CmdLineArgName
+{
+    static const char* Debug;
+    static const char* GameDir;
+};
+
+const char* CmdLineArgName::Debug = "debug";
+const char* CmdLineArgName::GameDir = "game-dir";
+
 
 wxIMPLEMENT_APP(App);
+
+
+const App::CmdLineArgs& App::GetCmdLineArgs() const
+{
+    return *m_cmdArgs;
+}
+
+App* App::Get()
+{
+    return dynamic_cast<App*>(GetInstance());
+}
 
 bool App::OnInit()
 {
@@ -20,21 +40,34 @@ bool App::OnInit()
     SetAppName(APP_FRIENDLY_NAME);
     SetAppDisplayName(APP_FRIENDLY_NAME_I18N);
 
-    // TODO: Add switch for logging verbosity
-    bool shouldBeVerbose = false;
-    if (shouldBeVerbose) {
+    if (m_cmdArgs->EnableDebug) {
         using namespace common;
         Log::SetLogLevelFilter(LogLevel::Trace);
     }
 
-    DebugLogWindow::Create(nullptr, &std::cout);
-
-
     wxImage::AddHandler(new wxPNGHandler);
     wxImage::AddHandler(new wxTGAHandler);
 
-    auto frame = new MainFrame(nullptr);
-    frame->Show();
+    auto frame = new MainFrame(nullptr, m_cmdArgs->EnableDebug);
+    return true;
+}
+
+void App::OnInitCmdLine(wxCmdLineParser& parser)
+{
+    wxApp::OnInitCmdLine(parser);
+    parser.AddLongSwitch(CmdLineArgName::Debug, "enable verbose debug logging");
+    parser.AddLongOption(CmdLineArgName::GameDir, "game directory", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
+}
+
+bool App::OnCmdLineParsed(wxCmdLineParser& parser)
+{
+    if (!wxApp::OnCmdLineParsed(parser)) {
+        return false;
+    }
+
+    m_cmdArgs = std::make_unique<CmdLineArgs>();
+    m_cmdArgs->EnableDebug = parser.Found(CmdLineArgName::Debug);
+    m_cmdArgs->GameDirSpecified = parser.Found(CmdLineArgName::GameDir, &m_cmdArgs->GameDir);
     return true;
 }
 

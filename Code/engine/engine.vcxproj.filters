@@ -48,9 +48,6 @@
     <ClCompile Include="src\io\GameSaveContainerReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GamePaths.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\io\GameSaveContainerWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -96,9 +93,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vanhelsing\engine\GamePaths.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerWriter.h">

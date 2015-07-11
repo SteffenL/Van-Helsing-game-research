@@ -16,6 +16,7 @@
     <ClInclude Include="include\common\Log.h" />
     <ClInclude Include="include\common\my_console_output_buffer.h" />
     <ClInclude Include="include\common\Registry.h" />
+    <ClInclude Include="include\common\SteamPaths.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\3rd_party\nowide\src\iostream.cpp" />
@@ -24,6 +25,7 @@
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\my_console_output_buffer.cpp" />
     <ClCompile Include="src\Registry.cpp" />
+    <ClCompile Include="src\SteamPaths.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A8FAC840-25F0-4EA7-B9DD-66EB9F4328E6}</ProjectGuid>

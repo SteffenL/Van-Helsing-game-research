@@ -13,7 +13,6 @@
   <ItemGroup>
     <ClCompile Include="src\CfgParser.cpp" />
     <ClCompile Include="src\GameData.cpp" />
-    <ClCompile Include="src\GamePaths.cpp" />
     <ClCompile Include="src\GameSave.cpp" />
     <ClCompile Include="src\inventory.cpp" />
     <ClCompile Include="src\io\GameSaveContainerReader.cpp" />
@@ -32,7 +31,6 @@
     <ClInclude Include="include\vanhelsing\engine\CfgParser.h" />
     <ClInclude Include="include\vanhelsing\engine\exceptions\VanHelsingEngineError.h" />
     <ClInclude Include="include\vanhelsing\engine\GameData.h" />
-    <ClInclude Include="include\vanhelsing\engine\GamePaths.h" />
     <ClInclude Include="include\vanhelsing\engine\GameSave.h" />
     <ClInclude Include="include\vanhelsing\engine\inventory.h" />
     <ClInclude Include="include\vanhelsing\engine\io\GameSaveContainerBase.h" />

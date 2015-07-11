@@ -1,22 +1,21 @@
-#include <vanhelsing/engine/GamePaths.h>
+#include <common/SteamPaths.h>
 #include <boost/filesystem.hpp>
 #include <memory>
-#include <misc/registry_value.h>
 #include <common/Registry.h>
 #include <nowide/convert.hpp>
 
-namespace vanhelsing { namespace engine {
+namespace common {
 
-GamePaths::GamePaths() {}
+SteamPaths::SteamPaths() {}
 
-GamePaths::~GamePaths() {}
+SteamPaths::~SteamPaths() {}
 
-std::string GamePaths::GetInstallPath()
+std::string SteamPaths::GetAppInstallPath(unsigned int steamId)
 {
     using namespace common;
     namespace fs = boost::filesystem;
 
-    const std::string regPath("HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 215530\\InstallLocation");
+    const std::string regPath("HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App " + std::to_string(steamId) + "\\InstallLocation");
     if (Registry::ValueExists(regPath)) {
         std::string installLocation;
         Registry::GetValue(regPath, installLocation, RegWow64Flag::_32bit);
@@ -29,9 +28,9 @@ std::string GamePaths::GetInstallPath()
     return std::string();
 }
 
-std::string GamePaths::GetGetGameSavePath()
+std::string SteamPaths::GetGetGameSavePath()
 {
     return std::string();
 }
 
-}}
+}
