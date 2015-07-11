@@ -33,6 +33,8 @@ class VisualAppearanceView;
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>
 #include <wx/propgrid/advprops.h>
+#include <wx/textctrl.h>
+#include <wx/button.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -40,6 +42,7 @@ class VisualAppearanceView;
 #define ID_SAVE 1001
 #define ID_EXIT 1002
 #define ID_ABOUT 1003
+#define ID_SHOW_DEBUG_LOG 1004
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class MainFrameBase
@@ -60,6 +63,8 @@ class MainFrameBase : public wxFrame
 		virtual void saveOnUpdateUI( wxUpdateUIEvent& event ) = 0;
 		virtual void exitOnMenuSelection( wxCommandEvent& event ) = 0;
 		virtual void aboutOnMenuSelection( wxCommandEvent& event ) = 0;
+		virtual void showDebugLogOnMenuSelection( wxCommandEvent& event ) = 0;
+		virtual void showDebugLogOnUpdateUI( wxUpdateUIEvent& event ) = 0;
 		
 	
 	public:
@@ -162,6 +167,31 @@ class ObjectInspectorBase : public wxPanel
 		
 		ObjectInspectorBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxTAB_TRAVERSAL ); 
 		~ObjectInspectorBase();
+	
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class DebugLogWindowBase
+///////////////////////////////////////////////////////////////////////////////
+class DebugLogWindowBase : public wxFrame 
+{
+	private:
+	
+	protected:
+		wxPanel* m_panel5;
+		wxTextCtrl* m_text;
+		wxStdDialogButtonSizer* m_sdbSizer1;
+		wxButton* m_sdbSizer1Save;
+		
+		// Virtual event handlers, overide them in your derived class
+		virtual void onSaveButtonClick( wxCommandEvent& event ) = 0;
+		
+	
+	public:
+		
+		DebugLogWindowBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Debug log"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 650,439 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		
+		~DebugLogWindowBase();
 	
 };
 

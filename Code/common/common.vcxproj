@@ -14,6 +14,7 @@
     <ClInclude Include="include\common\exceptions\IoError.h" />
     <ClInclude Include="include\common\Backup.h" />
     <ClInclude Include="include\common\Log.h" />
+    <ClInclude Include="include\common\my_console_output_buffer.h" />
     <ClInclude Include="include\common\Registry.h" />
   </ItemGroup>
   <ItemGroup>
@@ -21,6 +22,7 @@
     <ClCompile Include="..\3rd_party\pugixml-1.2\src\pugixml.cpp" />
     <ClCompile Include="src\Backup.cpp" />
     <ClCompile Include="src\Log.cpp" />
+    <ClCompile Include="src\my_console_output_buffer.cpp" />
     <ClCompile Include="src\Registry.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

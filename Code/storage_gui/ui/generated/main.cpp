@@ -51,6 +51,10 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	#endif
 	help->Append( about );
 	
+	wxMenuItem* showDebugLog;
+	showDebugLog = new wxMenuItem( help, ID_SHOW_DEBUG_LOG, wxString( _("Show debug log") ) , wxEmptyString, wxITEM_NORMAL );
+	help->Append( showDebugLog );
+	
 	m_menubar1->Append( help, _("&Help") ); 
 	
 	this->SetMenuBar( m_menubar1 );
@@ -65,6 +69,8 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	this->Connect( save->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler( MainFrameBase::saveOnUpdateUI ) );
 	this->Connect( exit->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::exitOnMenuSelection ) );
 	this->Connect( about->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::aboutOnMenuSelection ) );
+	this->Connect( showDebugLog->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::showDebugLogOnMenuSelection ) );
+	this->Connect( showDebugLog->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler( MainFrameBase::showDebugLogOnUpdateUI ) );
 }
 
 MainFrameBase::~MainFrameBase()
@@ -76,6 +82,8 @@ MainFrameBase::~MainFrameBase()
 	this->Disconnect( ID_SAVE, wxEVT_UPDATE_UI, wxUpdateUIEventHandler( MainFrameBase::saveOnUpdateUI ) );
 	this->Disconnect( ID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::exitOnMenuSelection ) );
 	this->Disconnect( ID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::aboutOnMenuSelection ) );
+	this->Disconnect( ID_SHOW_DEBUG_LOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::showDebugLogOnMenuSelection ) );
+	this->Disconnect( ID_SHOW_DEBUG_LOG, wxEVT_UPDATE_UI, wxUpdateUIEventHandler( MainFrameBase::showDebugLogOnUpdateUI ) );
 	
 }
 
@@ -220,5 +228,49 @@ ObjectInspectorBase::~ObjectInspectorBase()
 {
 	// Disconnect Events
 	m_propertyManager->Disconnect( wxEVT_PG_CHANGED, wxPropertyGridEventHandler( ObjectInspectorBase::propertyManagerOnPropertyGridChanged ), NULL, this );
+	
+}
+
+DebugLogWindowBase::DebugLogWindowBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* bSizer6;
+	bSizer6 = new wxBoxSizer( wxVERTICAL );
+	
+	m_panel5 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer5;
+	bSizer5 = new wxBoxSizer( wxVERTICAL );
+	
+	m_text = new wxTextCtrl( m_panel5, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2 );
+	bSizer5->Add( m_text, 1, wxEXPAND, 5 );
+	
+	m_sdbSizer1 = new wxStdDialogButtonSizer();
+	m_sdbSizer1Save = new wxButton( m_panel5, wxID_SAVE );
+	m_sdbSizer1->AddButton( m_sdbSizer1Save );
+	m_sdbSizer1->Realize();
+	
+	bSizer5->Add( m_sdbSizer1, 0, wxEXPAND|wxTOP|wxBOTTOM, 5 );
+	
+	
+	m_panel5->SetSizer( bSizer5 );
+	m_panel5->Layout();
+	bSizer5->Fit( m_panel5 );
+	bSizer6->Add( m_panel5, 1, wxEXPAND, 5 );
+	
+	
+	this->SetSizer( bSizer6 );
+	this->Layout();
+	
+	this->Centre( wxBOTH );
+	
+	// Connect Events
+	m_sdbSizer1Save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DebugLogWindowBase::onSaveButtonClick ), NULL, this );
+}
+
+DebugLogWindowBase::~DebugLogWindowBase()
+{
+	// Disconnect Events
+	m_sdbSizer1Save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DebugLogWindowBase::onSaveButtonClick ), NULL, this );
 	
 }

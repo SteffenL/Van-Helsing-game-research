@@ -1,7 +1,6 @@
 #include <common/Log.h>
 #include <iomanip>
 #include <sstream>
-#include <nowide/iostream.hpp>
 
 namespace common {
 
@@ -14,7 +13,7 @@ void Log::Outdent() { sm_indentLevel -= 1; }
 
 Log::Log(LogLevel::type logLevel)
     // May want to use nowide::clog
-    : std::ostream(&m_buffer), m_buffer(nowide::cout, logLevel) {}
+    : std::ostream(&m_buffer), m_buffer(std::cout, logLevel) {}
 
 LogLevel::type Log::GetLogLevelFilter()
 {

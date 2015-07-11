@@ -1,5 +1,7 @@
 #include "MainFrame.h"
 #include "StorageEditorPanel.h"
+#include "DebugLogWindow.h"
+
 #include "../services/ApplicationServices.h"
 #include "../AppVersion.h"
 #include <vanhelsing/engine/GameData.h>
@@ -100,6 +102,16 @@ void MainFrame::loadGameData()
     while (task.wait_for(std::chrono::milliseconds(30)) != std::future_status::ready) {
         wxYield();
     }
+}
+
+void MainFrame::showDebugLogOnMenuSelection(wxCommandEvent& event)
+{
+    DebugLogWindow::Get().Show();
+}
+
+void MainFrame::showDebugLogOnUpdateUI(wxUpdateUIEvent& event)
+{
+    event.Enable(!DebugLogWindow::Get().IsVisible());
 }
 
 void MainFrame::onIdle(wxIdleEvent& event)

@@ -3,6 +3,9 @@
 #include <wx/wx.h>
 #include <wx/debugrpt.h>
 
+class DebugLogWindow;
+
+
 class App : public wxApp
 {
 private:

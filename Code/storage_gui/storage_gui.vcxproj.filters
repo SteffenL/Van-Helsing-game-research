@@ -42,6 +42,9 @@
     <ClCompile Include="ui\VisualAppearanceView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ui\DebugLogWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -75,6 +78,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ui\VisualAppearanceView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\DebugLogWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
