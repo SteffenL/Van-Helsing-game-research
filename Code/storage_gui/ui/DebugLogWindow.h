@@ -3,6 +3,8 @@
 #include "generated/main.h"
 #include <wx/textctrl.h>
 #include <iostream>
+#include <streambuf>
+#include <memory>
 
 
 class DebugLogWindow : public DebugLogWindowBase
@@ -15,10 +17,12 @@ public:
     static DebugLogWindow& Create(wxWindow* parent, std::ostream* ostr);
 
 protected:
-    void onSaveButtonClick(wxCommandEvent& event);
+    virtual void onSaveButtonClick(wxCommandEvent& event);
+    virtual void onClose(wxCloseEvent& event);
 
 private:
     // This is a raw pointer because wxWidgets manages the window's lifetime
     static DebugLogWindow* m_instance;
-    wxStreamToTextRedirector m_stdOutRedirector;
+    std::unique_ptr<std::streambuf> m_streambuf;
+    std::ostream* m_ostream;
 };

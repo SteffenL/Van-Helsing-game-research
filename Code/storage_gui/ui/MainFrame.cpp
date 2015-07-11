@@ -94,14 +94,15 @@ void MainFrame::loadGameData()
     wxWindowDisabler wd;
     wxBusyInfo info(wxBusyInfoFlags().Parent(this).Title(heading).Text(statusMsg));
 
+    wxYield();
     auto& services = ApplicationServices::Get();
-    auto task = std::async(std::launch::async, [&services]() {
-        services.GameData.Load();
-    });
+    services.GameData.Load();
+}
 
-    while (task.wait_for(std::chrono::milliseconds(30)) != std::future_status::ready) {
-        wxYield();
-    }
+void MainFrame::onClose(wxCloseEvent& event)
+{
+    DebugLogWindow::Get().Close(true);
+    event.Skip();
 }
 
 void MainFrame::showDebugLogOnMenuSelection(wxCommandEvent& event)

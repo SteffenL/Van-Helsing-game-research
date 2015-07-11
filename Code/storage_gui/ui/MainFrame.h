@@ -24,6 +24,7 @@ private:
     virtual void onIdle(wxIdleEvent& event);
     virtual void showDebugLogOnMenuSelection(wxCommandEvent& event);
     virtual void showDebugLogOnUpdateUI(wxUpdateUIEvent& event);
+    virtual void onClose(wxCloseEvent& event);
 
     // Event handlers
     void onFirstIdle(wxCommandEvent& event);

@@ -57,6 +57,7 @@ class MainFrameBase : public wxFrame
 		wxMenu* help;
 		
 		// Virtual event handlers, overide them in your derived class
+		virtual void onClose( wxCloseEvent& event ) = 0;
 		virtual void onIdle( wxIdleEvent& event ) = 0;
 		virtual void openOnMenuSelection( wxCommandEvent& event ) = 0;
 		virtual void saveOnMenuSelection( wxCommandEvent& event ) = 0;
@@ -184,6 +185,7 @@ class DebugLogWindowBase : public wxFrame
 		wxButton* m_sdbSizer1Save;
 		
 		// Virtual event handlers, overide them in your derived class
+		virtual void onClose( wxCloseEvent& event ) = 0;
 		virtual void onSaveButtonClick( wxCommandEvent& event ) = 0;
 		
 	

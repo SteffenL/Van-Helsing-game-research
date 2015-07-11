@@ -12,32 +12,23 @@ wxIMPLEMENT_APP(App);
 
 bool App::OnInit()
 {
-#ifdef __WXMSW__
-    // For logging; redirects output so that it works with the allocated console
-    if (::AllocConsole()) {
-        ::freopen("CONOUT$", "w", stdout);
-        auto h = ::GetStdHandle(STD_OUTPUT_HANDLE);
-        // For nowide; output is not displayed otherwise
-        std::cout.set_rdbuf(new common::my_console_output_buffer(h));
+    if (!wxApp::OnInit()) {
+        return false;
     }
-#endif
-
-    // TODO: Add switch for logging verbosity
-    bool shouldBeVerbose = true;
-    if (shouldBeVerbose) {
-        using namespace common;
-        Log::SetLogLevelFilter(LogLevel::Trace);
-    }
-
-    //DebugLogWindow::Create(nullptr, &std::cout).Show();
 
     SetVendorName(APP_VENDOR_NAME);
     SetAppName(APP_FRIENDLY_NAME);
     SetAppDisplayName(APP_FRIENDLY_NAME_I18N);
 
-    if (!wxApp::OnInit()) {
-        return false;
+    // TODO: Add switch for logging verbosity
+    bool shouldBeVerbose = false;
+    if (shouldBeVerbose) {
+        using namespace common;
+        Log::SetLogLevelFilter(LogLevel::Trace);
     }
+
+    DebugLogWindow::Create(nullptr, &std::cout);
+
 
     wxImage::AddHandler(new wxPNGHandler);
     wxImage::AddHandler(new wxTGAHandler);
